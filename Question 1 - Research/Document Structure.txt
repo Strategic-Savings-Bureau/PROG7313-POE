@@ -1,0 +1,17 @@
+This report is structured as follows:
+1.	An overview of YNAB, Spendee and Money Manager 
+	including screenshots and detailed descriptions.
+
+2.	A description of each app’s advantages and drawbacks, 
+	providing insight into their usability and efficiency.
+
+3.	A breakdown of the unique functionalities of 
+	each app that differentiates it from one another.
+
+4.	An infographic illustrating the similarities and differences 
+	among the three apps to provide a clear, side-by-side comparison.
+
+5.	A compilation of the best features from all three apps 
+	that we intend to incorporate into our budgeting application.
+
+6.	A summary of our findings and key takeaways from the research.
