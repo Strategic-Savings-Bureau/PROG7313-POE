@@ -7,55 +7,51 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.MainActivity
-import com.ssba.strategic_savings_budget_app.databinding.ActivityLoginBinding
+import com.ssba.strategic_savings_budget_app.databinding.ActivitySplashScreenBinding
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {
 
     // region Declarations
-    // View Binding
-    private lateinit var binding: ActivityLoginBinding
-
-    // Firebase Authentication
+    private lateinit var binding: ActivitySplashScreenBinding
     private lateinit var auth: FirebaseAuth
+    private var keepSplashOnScreen = true
     // endregion
 
-    // onCreate Method
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        // region Initialisation
-        // Default
+        // Initialisation
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         // View Binding
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Firebase Authentication
-        auth = FirebaseAuth.getInstance()
-        // endregion
+        // Keep splash screen on-screen until auth state is checked
+        splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
 
-        // Delay the redirection by 3 seconds
+        // Hybrid approach: Wait for both persistence load AND minimal delay
         Handler(Looper.getMainLooper()).postDelayed({
-            // Check if user is already logged in
-            val currentUser = auth.currentUser
+            checkAuthState()
+        }, 300)
+    }
 
-            if (currentUser != null) {
-                // User is already logged in, navigate to MainActivity
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+    // Method to check authentication state
+    private fun checkAuthState() {
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        val destination = if (currentUser != null) {
+            MainActivity::class.java
+        } else {
+            LoginActivity::class.java
+        }
 
-            } else {
-                // User is not logged in, navigate to LoginActivity
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-        }, 1000)
-
+        keepSplashOnScreen = false
+        startActivity(Intent(this, destination))
+        finish()
     }
 }

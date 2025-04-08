@@ -2,6 +2,7 @@ package com.ssba.strategic_savings_budget_app.landing
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -29,9 +30,7 @@ class LoginActivity : AppCompatActivity() {
 
     // onCreate Method
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        // region Initialisation
-        // Default
+        // Initialisation
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -47,19 +46,25 @@ class LoginActivity : AppCompatActivity() {
         etPassword = binding.etPassword
         btnLogin = binding.btnLogin
         btnRegister = binding.btnRegister
-        // endregion
 
-        // btnLogin On Click Listener
+        // Log into Account On Click Listener
         btnLogin.setOnClickListener {
             // Get Email and Password from EditText
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
-            // Email validation
-            if (email.isEmpty()) {
-                etEmail.error = "Email is Required"
-                etEmail.requestFocus()
-                return@setOnClickListener
+            // Email Validation
+            when {
+                email.isEmpty() -> {
+                    etEmail.error = "Email is Required"
+                    etEmail.requestFocus()
+                    return@setOnClickListener
+                }
+                !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                    etEmail.error = "Invalid Email"
+                    etEmail.requestFocus()
+                    return@setOnClickListener
+                }
             }
             // Password validation
             if (password.isEmpty()) {
@@ -85,13 +90,11 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // On click listener for the register button
+        // Direct User to Register Activity On Click Listener
         btnRegister.setOnClickListener {
             // Navigate to UserEmailPasswordActivity
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RegisterActivity::class.java))
             finish()
         }
-
     }
 }
