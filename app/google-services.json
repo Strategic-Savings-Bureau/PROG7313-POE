@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "558786247088",
+    "project_id": "strategic-savings-app",
+    "storage_bucket": "strategic-savings-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558786247088:android:57014c7edd68cd002cfe75",
+        "android_client_info": {
+          "package_name": "com.ssba.strategic_savings_budget_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaEBnfXPPzVL_aEdf9tcdpN5af53cY-PU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
