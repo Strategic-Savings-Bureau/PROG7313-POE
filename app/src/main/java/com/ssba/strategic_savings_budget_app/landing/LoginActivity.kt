@@ -27,7 +27,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnRegister: Button
     // endregion
 
+    // onCreate Method
     override fun onCreate(savedInstanceState: Bundle?) {
+
         // region Initialisation
         // Default
         super.onCreate(savedInstanceState)
@@ -37,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //  Firebase Authentication
+        // Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
         // View Components
@@ -90,5 +92,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
     }
 }
