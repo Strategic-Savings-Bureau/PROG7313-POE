@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">strategic-savings-budget-app</string>
+    <string name="app_name">Banter Box</string>
+
+    <!--Login -->
+    <string name="login_title">Welcome Back!</string>
+    <string name="email_hint">Email Address</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="register_text">Don\'t have an account? Register</string>
+
+    <!-- Register - Email and Password -->
+    <string name="register_title">Create Account Credentials</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="next_button_text">Next</string>
+    <string name="login_prompt_text">Already have an account? Login Here</string>
 </resources>
