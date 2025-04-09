@@ -4,6 +4,8 @@ Welcome to the official repository for the **Budgeting App** developed by the **
 
 This app enables users to efficiently manage their personal finances, track income 💸 and expenses 🏷️, set savings goals 🎯, and visualize their financial data 📊.
 
+----
+
 ## 🛠️ **Tech Stack**:
 
 - **Kotlin** 🧑‍💻 – Primary programming language
@@ -20,3 +22,16 @@ This app is a user-friendly solution for budgeting and financial tracking, demon
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg" height = "60" />
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg" height = "60" />     
 </p>
+
+----
+
+## 🧑 **Team Members**:
+
+| **Team Members**            |
+|-----------------------------|
+| Blaise Mikka de Gier        |
+| Sashveer Lakhan Ramjathan   |
+| Shravan Ramjathan           |
+| Uvaan Covenden              |
+
+
