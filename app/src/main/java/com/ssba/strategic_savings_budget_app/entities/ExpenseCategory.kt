@@ -1,6 +1,7 @@
 package com.ssba.strategic_savings_budget_app.entities
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
@@ -11,6 +12,10 @@ import androidx.room.PrimaryKey
  * a maximum monthly total, which can be used to help track and manage the user's expenses within that category.
  * Each expense category is linked to a specific user through the `userId` field.
  *
+ * Indices:
+ * - `name`: Index is created on the `name` field to optimize queries that search or filter categories based on their name.
+ * - `userId`: Index is created on the `userId` field to optimize queries that filter or retrieve categories for a specific user.
+ *
  * @property categoryId Unique identifier for the expense category (auto-incremented).
  * @property name Name of the expense category (e.g., "Groceries", "Utilities").
  * @property description A detailed description of the expense category (e.g., "All grocery-related expenses").
@@ -18,7 +23,10 @@ import androidx.room.PrimaryKey
  * @property maximumMonthlyTotal The maximum allowable total for expenses in this category each month.
  * @property userId The ID of the associated user (foreign key referencing the user table).
  */
-@Entity(tableName = "expense_category")
+@Entity(
+    tableName = "expense_category",
+    indices = [Index(value = ["name"]), Index(value = ["userId"])]
+)
 data class ExpenseCategory(
 
     @PrimaryKey(autoGenerate = true)

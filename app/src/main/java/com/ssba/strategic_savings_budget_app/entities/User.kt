@@ -1,12 +1,19 @@
 package com.ssba.strategic_savings_budget_app.entities
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
  * Represents a user in the Strategic Savings Budget App.
  *
  * This entity stores user-specific details and is linked to Firebase Authentication via `userId`.
+ * It includes indices for `fullName`, `email`, and `username` to optimize queries and lookups on these columns.
+ *
+ * Indices:
+ * - `fullName`: Index is created to speed up searches and queries based on the user's full name.
+ * - `email`: Index is created to speed up searches and queries based on the user's email address.
+ * - `username`: Index is created to speed up searches and queries based on the user's app-specific username.
  *
  * @property userId The unique identifier for the user, obtained from Firebase Authentication.
  * @property fullName The full name of the user.
@@ -14,7 +21,10 @@ import androidx.room.PrimaryKey
  * @property username The app-specific username chosen by the user.
  * @property profilePictureUrl The URL to the user's profile picture, typically stored in Supabase Storage.
  */
-@Entity(tableName = "user")
+@Entity(
+    tableName = "user",
+    indices = [Index(value = ["fullName"]), Index(value = ["email"]), Index(value = ["username"])]
+)
 data class User(
 
     @PrimaryKey(autoGenerate = false)
