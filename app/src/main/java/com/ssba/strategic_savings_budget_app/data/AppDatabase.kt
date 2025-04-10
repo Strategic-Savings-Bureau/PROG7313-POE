@@ -77,6 +77,9 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                     // Optional: Wipes and rebuilds DB if migration isn't handled
                     .fallbackToDestructiveMigration()
+                    // Setting the journal mode to WRITE_AHEAD_LOGGING (WAL)
+                    // This improves performance and concurrency for write-heavy operations
+                    .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
                     .build()
                     .also {
                         INSTANCE = it
