@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">strategic-savings-budget-app</string>
+    <string name="app_name">Strategic Savings Budget App</string>
+
+    <!--Login -->
+    <string name="login_title">Login</string>
+    <string name="email_hint">Email Address</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="register_text">Don\'t have an account? Register</string>
+
+    <!-- Register -->
+    <string name="register_title">Register</string>
+    <string name="profile_image_desc">Profile picture</string>
+    <string name="add_profile_picture">Add Profile Picture</string>
+    <string name="username_hint">Username</string>
+    <string name="full_name_hint">Full name</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="bio_hint">Bio</string>
+    <string name="create_account">Create Account</string>
+    <string name="login_prompt_text">Already have an account? Login Here</string>
 </resources>
