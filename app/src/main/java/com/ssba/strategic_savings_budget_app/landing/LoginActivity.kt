@@ -8,9 +8,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.MainActivity
+import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityLoginBinding
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -20,6 +23,9 @@ class LoginActivity : AppCompatActivity() {
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
+
+    // Room Database
+    private lateinit var db: AppDatabase
 
     // View Components
     private lateinit var etEmail: EditText
@@ -40,6 +46,9 @@ class LoginActivity : AppCompatActivity() {
 
         // Firebase Authentication
         auth = FirebaseAuth.getInstance()
+
+        // Room Database
+        db = AppDatabase.getInstance(this)
 
         // View Components
         etEmail = binding.etEmail
@@ -73,19 +82,24 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Attempt To Login
-            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Display success message
-                    Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                // Check if User Exists in Room Database
+                val user = db.userDao.getUserByEmail(email)
 
-                    // Navigate to MainActivity
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    // Show error message if login fails
-                    Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_SHORT).show()
+                // Attempt To Login
+                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    if (task.isSuccessful && user != null) {
+                        // Display success message
+                        Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT).show()
+
+                        // Navigate to MainActivity
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // Show error message if login fails
+                        Toast.makeText(this@LoginActivity, "Invalid Email or Password", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
