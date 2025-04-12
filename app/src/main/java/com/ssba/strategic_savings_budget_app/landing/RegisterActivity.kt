@@ -1,6 +1,7 @@
 package com.ssba.strategic_savings_budget_app.landing
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -8,10 +9,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.MainActivity
+import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityRegisterBinding
-import com.ssba.strategic_savings_budget_app.landing.models.RegistrationViewModel
+import com.ssba.strategic_savings_budget_app.entities.User
+import com.ssba.strategic_savings_budget_app.models.UserViewModel
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.storage
+import io.ktor.http.ContentType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -20,17 +32,32 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
 
     // Data Binding
-    private val viewModel: RegistrationViewModel by viewModels()
+    private val viewModel: UserViewModel by viewModels()
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
+
+    // Room Database
+    private lateinit var db: AppDatabase
+
+    // Supabase Storage
+    private val supabase = createSupabaseClient(
+        supabaseUrl = "https://bxpptnwmvrqqvdwpzucp.supabase.co",
+        supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4cHB0bndtdnJxcXZkd3B6dWNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxNDU0OTUsImV4cCI6MjA1OTcyMTQ5NX0.rl2dikHc7MA6ECiBUvgD5LnHctCujKq3AU9p-nh-1CI"
+    ) {
+        install(Postgrest)
+        install(Storage)
+    }
+
+    // Profile Picture Uri
+    private var profilePictureUri: Uri? = null
 
     // Image Picker
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
                 binding.ivProfilePic.setImageURI(it)
-                // Upload to server or save locally (eg. using Bitmap or ByteArray)
+                profilePictureUri = it
             }
         }
     // endregion
@@ -50,6 +77,9 @@ class RegisterActivity : AppCompatActivity() {
 
         // Firebase Authentication
         auth = FirebaseAuth.getInstance()
+
+        // Room Database
+        db = AppDatabase.getInstance(this)
 
         setupTextWatchers()
         setupValidationObservers()
@@ -83,11 +113,6 @@ class RegisterActivity : AppCompatActivity() {
             viewModel.confirmPassword.value = text
             viewModel.validateConfirmPassword()
         }
-        binding.etBio.addTextChangedListener { editable ->
-            val text = editable.toString()
-            viewModel.bio.value = text
-            viewModel.validateBio()
-        }
     }
 
     // Validation Observer for All Input Errors
@@ -106,9 +131,6 @@ class RegisterActivity : AppCompatActivity() {
         }
         viewModel.confirmPasswordError.observe(this) { error ->
             binding.etConfirmPassword.error = error
-        }
-        viewModel.bioError.observe(this) { error ->
-            binding.etBio.error = error
         }
     }
 
@@ -138,14 +160,32 @@ class RegisterActivity : AppCompatActivity() {
 
     // Method for Registration Logic
     private fun registerUser() {
-        // !!! Subject to change depending on FireStore/Supabase or use of a 'Data' class !!!
         auth.createUserWithEmailAndPassword(
             binding.etEmail.text.toString(),
             binding.etPassword.text.toString()
         ).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                // Add user to server or save locally
-                // FireStore Implementation eg. 'firestore.collection("users").document(newUser.userId).set(newUser)'
+                // Get User ID
+                val userId = auth.currentUser!!.uid
+
+                lifecycleScope.launch {
+                    // Upload the image if present; otherwise, default to an empty string.
+                    val profilePictureUrl = profilePictureUri?.let { uri ->
+                        uploadImageToSupabase(uri, userId)
+                    } ?: ""
+
+                    // Create the user object with the result of the upload (or default URL).
+                    val user = User(
+                        userId = userId,
+                        username = binding.etUsername.text.toString(),
+                        fullName = binding.etFullName.text.toString(),
+                        email = binding.etEmail.text.toString(),
+                        profilePictureUrl = profilePictureUrl
+                    )
+
+                    // Insert user into RoomDB.
+                    db.userDao.upsertUser(user)
+                }
 
                 // Navigate to Login Activity
                 startActivity(Intent(this, MainActivity::class.java))
@@ -157,6 +197,46 @@ class RegisterActivity : AppCompatActivity() {
                 // Show error message if registration fails
                 Toast.makeText(this, "Registration Failed", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    // Method for Image Upload to Supabase
+    private suspend fun uploadImageToSupabase(uri: Uri, fileName: String): String {
+        val bucketId = "user-profile-pictures"
+
+        val fileBytes = withContext(Dispatchers.IO) {
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                inputStream.readBytes()
+            }
+        }
+
+        if (fileBytes == null) {
+            return ""
+        }
+
+        return try {
+
+            // Initialize the storage bucket
+            val bucket = supabase.storage.from(bucketId)
+
+            // Upload the image to the specified file path within the bucket
+            bucket.upload(fileName, fileBytes)
+            {
+                upsert = false // Set to true to overwrite if the file already exists
+                contentType = ContentType.Image.JPEG // Set the content type to JPEG
+            }
+
+            // Retrieve and return the public URL of the uploaded image
+            return bucket.publicUrl(fileName)
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    this@RegisterActivity,
+                    "Failed to Upload Profile Picture",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            ""
         }
     }
 }
