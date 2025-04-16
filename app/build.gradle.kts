@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
 
+    // Add Supabase to App
+    val kotlin_version = "2.1.20"
+    kotlin("plugin.serialization") version "$kotlin_version"
+
     // import kotlin symbol processor (KSP)
     id("com.google.devtools.ksp")
 }
@@ -63,4 +67,13 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version") // Generates Room-related code using KSP (preferred for Kotlin)
     annotationProcessor("androidx.room:room-compiler:$room_version") // Alternative for Java projects (not needed with KSP)
     implementation("androidx.room:room-ktx:$room_version") // Kotlin extensions for Room (adds coroutines support)
+
+    // Add Supabase to App
+    val kotlin_version = "3.1.4"
+    val ktor_version = "3.1.2"
+
+    implementation(platform("io.github.jan-tennert.supabase:bom:$kotlin_version"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.ktor:ktor-client-android:$ktor_version")
+    implementation("io.github.jan-tennert.supabase:storage-kt:$ktor_version")
 }
