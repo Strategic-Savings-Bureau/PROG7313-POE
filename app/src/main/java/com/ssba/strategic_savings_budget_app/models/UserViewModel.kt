@@ -1,10 +1,10 @@
-package com.ssba.strategic_savings_budget_app.landing.models
+package com.ssba.strategic_savings_budget_app.models
 
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class RegistrationViewModel : ViewModel() {
+class UserViewModel : ViewModel() {
 
     // region Declarations
     // Fields for Sser Input
@@ -13,7 +13,6 @@ class RegistrationViewModel : ViewModel() {
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
     val confirmPassword = MutableLiveData<String>()
-    val bio = MutableLiveData<String>()
 
     // Error States
     val usernameError = MutableLiveData<String?>()
@@ -21,7 +20,6 @@ class RegistrationViewModel : ViewModel() {
     val emailError = MutableLiveData<String?>()
     val passwordError = MutableLiveData<String?>()
     val confirmPasswordError = MutableLiveData<String?>()
-    val bioError = MutableLiveData<String?>()
     // endregion
 
     // Method to validate all fields
@@ -31,13 +29,11 @@ class RegistrationViewModel : ViewModel() {
         validateEmail()
         validatePassword()
         validateConfirmPassword()
-        validateBio()
         return usernameError.value == null &&
                 fullNameError.value == null &&
                 emailError.value == null &&
                 passwordError.value == null &&
-                confirmPasswordError.value == null &&
-                bioError.value == null
+                confirmPasswordError.value == null
     }
 
     // Method to validate each field
@@ -105,23 +101,6 @@ class RegistrationViewModel : ViewModel() {
             }
             else -> {
                 confirmPasswordError.value = null
-            }
-        }
-    }
-
-    fun validateBio() {
-        when {
-            bio.value.isNullOrEmpty() -> {
-                bioError.value = "Bio cannot be empty"
-            }
-            bio.value!!.length < 3 -> {
-                bioError.value = "Bio too short (min 3 characters)"
-            }
-            bio.value!!.length > 150 -> {
-                bioError.value = "Bio too long (max 150 characters)"
-            }
-            else -> {
-                bioError.value = null
             }
         }
     }

@@ -4,17 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.databinding.ActivityMainBinding
-import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.databinding.ActivityProfileBinding
 
-class MainActivity : AppCompatActivity() {
+class ProfileActivity : AppCompatActivity() {
+
     // region Declarations
     // View Binding
-    private lateinit var binding: ActivityMainBinding
-
-    // Firebase Authentication
-    private lateinit var auth: FirebaseAuth
+    private lateinit var binding: ActivityProfileBinding
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,31 +19,26 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         // View Binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Firebase Authentication
-        auth = FirebaseAuth.getInstance()
-
         // Highlight the Menu Item
-        binding.bottomNav.selectedItemId = R.id.miHome
+        binding.bottomNav.selectedItemId = R.id.miProfile
 
         // Method to Set Up onClickListeners
         setupOnClickListeners()
     }
 
     private fun setupOnClickListeners() {
-        // Button to Log Out the Current User
-        binding.btnLogout.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
-
         // Set up Bottom Navigation View onClickListener
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 // Navigate to Main (Home) Activity
-                R.id.miHome -> true
+                R.id.miHome -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                    true
+                }
                 // Navigate to Analysis Activity
                 R.id.miAnalysis -> {
                     startActivity(Intent(this, AnalysisActivity::class.java))
@@ -67,11 +58,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 // Navigate to Profile Activity
-                R.id.miProfile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    finish()
-                    true
-                }
+                R.id.miProfile -> true
 
                 else -> false
             }
