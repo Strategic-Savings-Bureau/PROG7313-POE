@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/miHome"
+        android:icon="@drawable/ic_nav_home"
+        android:title="@string/nav_home" />
+
+    <item
+        android:id="@+id/miAnalysis"
+        android:icon="@drawable/ic_nav_analysis"
+        android:title="@string/nav_analysis" />
+
+    <item
+        android:id="@+id/miTransactions"
+        android:icon="@drawable/ic_nav_transactions"
+        android:title="@string/nav_transactions" />
+
+    <item
+        android:id="@+id/miSavings"
+        android:icon="@drawable/ic_nav_savings"
+        android:title="@string/nav_savings" />
+
+    <item
+        android:id="@+id/miProfile"
+        android:icon="@drawable/ic_nav_profile"
+        android:title="@string/nav_profile" />
+
+</menu>

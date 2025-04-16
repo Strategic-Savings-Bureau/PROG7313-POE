@@ -18,4 +18,11 @@
     <string name="bio_hint">Bio</string>
     <string name="create_account">Create Account</string>
     <string name="login_prompt_text">Already have an account? Login Here</string>
+
+    <!-- NavBar -->
+    <string name="nav_home">Home</string>
+    <string name="nav_analysis">Analysis</string>
+    <string name="nav_transactions">Transactions</string>
+    <string name="nav_savings">Savings</string>
+    <string name="nav_profile">Profile</string>
 </resources>
