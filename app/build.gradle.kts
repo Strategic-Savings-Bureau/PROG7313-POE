@@ -56,9 +56,14 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.androidx.core.splashscreen)
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.9.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
 
     // Add Room to App
     val room_version = "2.6.1"
@@ -66,7 +71,8 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version") // Core Room library for database operations
     ksp("androidx.room:room-compiler:$room_version") // Generates Room-related code using KSP (preferred for Kotlin)
     annotationProcessor("androidx.room:room-compiler:$room_version") // Alternative for Java projects (not needed with KSP)
-    implementation("androidx.room:room-ktx:$room_version") // Kotlin extensions for Room (adds coroutines support)
+    implementation("androidx.room:room-ktx:$room_version")
+    // Kotlin extensions for Room (adds coroutines support)
 
     // Add Supabase to App
     val kotlin_version = "3.1.4"
@@ -76,4 +82,5 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.ktor:ktor-client-android:$ktor_version")
     implementation("io.github.jan-tennert.supabase:storage-kt:$ktor_version")
+    implementation ("com.github.PhilJay:MPAndroidChart:3.1.0")
 }

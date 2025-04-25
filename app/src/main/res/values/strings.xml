@@ -18,6 +18,14 @@
     <string name="bio_hint">Bio</string>
     <string name="create_account">Create Account</string>
     <string name="login_prompt_text">Already have an account? Login Here</string>
+    <string name="desc_groceries_category">Groceries Category</string>
+    <string name="desc_rent_category">Rent Category</string>
+    <string name="desc_gifts_category">Gifts Category</string>
+    <string name="desc_savings_category">Savings Category</string>
+    <string name="desc_entertainment_category">Entertainment Category</string>
+    <string name="desc_food_category">Food Category</string>
+    <string name="desc_transport_category">Transport Category</string>
+    <string name="desc_medicine_category">Medicine Category</string>
 
     <!-- NavBar -->
     <string name="nav_home">Home</string>
