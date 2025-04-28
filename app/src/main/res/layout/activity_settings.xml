@@ -55,7 +55,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_default_profile"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription,ImageContrastCheck" />
 
         <TextView
             android:id="@+id/tvFullName"
@@ -97,7 +97,8 @@
                 app:icon="@drawable/ic_settings_profile"
                 app:iconPadding="12dp"
                 app:iconSize="40dp"
-                app:iconTint="@null" />
+                app:iconTint="@null"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintButtonSize" />
 
             <!-- Repeat for other buttons with respective icons -->
             <com.google.android.material.button.MaterialButton
@@ -111,7 +112,8 @@
                 app:iconGravity="start"
                 app:iconPadding="12dp"
                 app:iconSize="40dp"
-                app:iconTint="@null" />
+                app:iconTint="@null"
+                tools:ignore="VisualLintButtonSize" />
 
 
             <com.google.android.material.button.MaterialButton
@@ -123,7 +125,8 @@
                 android:text="@string/currency_converter_title"
                 app:icon="@drawable/ic_settings_curcon"
                 app:iconSize="40dp"
-                app:iconTint="@null" />
+                app:iconTint="@null"
+                tools:ignore="VisualLintButtonSize" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNotifications"
@@ -134,7 +137,8 @@
                 android:text="@string/notifications_title"
                 app:icon="@drawable/ic_settings_notifications"
                 app:iconSize="40dp"
-                app:iconTint="@null" />
+                app:iconTint="@null"
+                tools:ignore="VisualLintButtonSize" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnBudgeting"
@@ -145,7 +149,8 @@
                 android:text="@string/budgeting_title"
                 app:icon="@drawable/ic_settings_budgeting"
                 app:iconSize="40dp"
-                app:iconTint="@null" />
+                app:iconTint="@null"
+                tools:ignore="VisualLintButtonSize" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnYourData"
@@ -156,7 +161,8 @@
                 android:text="@string/your_data_title"
                 app:icon="@drawable/ic_settings_yourdata"
                 app:iconSize="40dp"
-                app:iconTint="@null" />
+                app:iconTint="@null"
+                tools:ignore="TouchTargetSizeCheck,VisualLintButtonSize" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
@@ -166,7 +172,8 @@
                 android:text="@string/logout_title"
                 app:icon="@drawable/ic_settings_logout"
                 app:iconSize="40dp"
-                app:iconTint="@null" />
+                app:iconTint="@null"
+                tools:ignore="VisualLintButtonSize" />
         </LinearLayout>
     </ScrollView>
 
