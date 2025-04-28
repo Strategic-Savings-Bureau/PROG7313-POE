@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.Strategicsavingsbudgetapp" parent="Base.Theme.Strategicsavingsbudgetapp" />
+
+    <style name="RoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
 </resources>

@@ -6,4 +6,5 @@
     <color name="income_green">#34C759</color>
     <color name="expense_gold">#E0A13B</color>
     <color name="savings_blue">#6DB6FE</color>
+    <color name="expense_red">#FF4C4C</color>
 </resources>
