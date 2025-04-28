@@ -13,10 +13,11 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <Button
+            android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profile Activity" />
+            android:text="Logout" />
 
     </LinearLayout>
 
