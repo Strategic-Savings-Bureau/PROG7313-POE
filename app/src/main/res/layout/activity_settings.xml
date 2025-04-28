@@ -12,31 +12,32 @@
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:paddingTop="16dp">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="@string/settings_title"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnRewards"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_chainStyle="packed"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/btnRewards"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/ic_rewards"
-            app:iconSize="24dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:background="@drawable/btn_rewards_background_round"
+            android:contentDescription="@string/cd_rewards_button"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_gift_unfilled"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -45,30 +46,32 @@
         android:id="@+id/userSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
         android:layout_below="@id/topBar"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:padding="16dp">
 
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_default_profile"
-            android:contentDescription="Profile icon"/>
+            tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/tvFullName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="John Doe"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:text="@string/full_name_hint"
+            android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/tvUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ID: 12345678"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="4dp"
+            android:text="@string/username_hint"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <!-- Menu Buttons -->
@@ -83,53 +86,87 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Inside the ScrollView's LinearLayout -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnProfile"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Profile"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:text="@string/profile_title"
+                app:icon="@drawable/ic_settings_profile"
+                app:iconPadding="12dp"
+                app:iconSize="40dp"
+                app:iconTint="@null" />
 
+            <!-- Repeat for other buttons with respective icons -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSharedBudget"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Shared Budget"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:text="@string/shared_budget_title"
+                app:icon="@drawable/ic_settings_shared"
+                app:iconGravity="start"
+                app:iconPadding="12dp"
+                app:iconSize="40dp"
+                app:iconTint="@null" />
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCurrencyConverter"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Currency Converter"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:text="@string/currency_converter_title"
+                app:icon="@drawable/ic_settings_curcon"
+                app:iconSize="40dp"
+                app:iconTint="@null" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNotifications"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Notifications"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:text="@string/notifications_title"
+                app:icon="@drawable/ic_settings_notifications"
+                app:iconSize="40dp"
+                app:iconTint="@null" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnBudgeting"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Budgeting"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:text="@string/budgeting_title"
+                app:icon="@drawable/ic_settings_budgeting"
+                app:iconSize="40dp"
+                app:iconTint="@null" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnYourData"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your Data"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:text="@string/your_data_title"
+                app:icon="@drawable/ic_settings_yourdata"
+                app:iconSize="40dp"
+                app:iconTint="@null" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Logout"/>
+                android:text="@string/logout_title"
+                app:icon="@drawable/ic_settings_logout"
+                app:iconSize="40dp"
+                app:iconTint="@null" />
         </LinearLayout>
     </ScrollView>
 
