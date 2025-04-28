@@ -26,6 +26,10 @@
     <string name="nav_savings">Savings</string>
     <string name="nav_profile">Profile</string>
 
+    <!-- Expense -->
+    <string name="enter_date">Date</string>
+    <string name="amount">Amount</string>
+
     <!-- Home -->
     <string name="tv_welcome_back">Welcome Back,</string>
     <string name="tv_place_holder_name">Place Holder Name</string>
