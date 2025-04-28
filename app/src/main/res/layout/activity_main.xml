@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:id="@+id/clHeader">
+        android:id="@+id/clHeader"
+        android:padding="20dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -215,7 +216,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvRecentTransactions"
                     android:layout_width="match_parent"
-                    android:layout_height="288dp"
+                    android:layout_height="0dp"
                     android:layout_margin="5dp"
                     android:contentDescription="@string/cd_list_of_recent_transactions"/>
             </LinearLayout>
