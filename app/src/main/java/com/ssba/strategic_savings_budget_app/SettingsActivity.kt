@@ -2,11 +2,15 @@ package com.ssba.strategic_savings_budget_app
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.ssba.strategic_savings_budget_app.databinding.ActivityProfileBinding
+import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -14,6 +18,14 @@ class SettingsActivity : AppCompatActivity() {
     // View Binding
     private lateinit var binding: ActivitySettingsBinding
 
+    // endregion
+
+    // Firebase Authentication
+    private lateinit var auth: FirebaseAuth
+
+    // region View Components
+    // View Binding
+    private lateinit var btnLogout: Button
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +36,13 @@ class SettingsActivity : AppCompatActivity() {
         // View Binding
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Firebase Authentication
+        auth = FirebaseAuth.getInstance()
+
+        // region Initialise View Components
+        btnLogout = binding.btnLogout
+        // endregion
 
         // Highlight the Menu Item
         binding.bottomNav.selectedItemId = R.id.miSettings
@@ -64,6 +83,11 @@ class SettingsActivity : AppCompatActivity() {
         binding.btnLogout.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
+
+        // Button to Log Out the Current User
+        binding.btnLogout.setOnClickListener {
+            auth.signOut()
+            startActivity(Intent(this, LoginActivity::class.java))
         }
 
         // Set up Bottom Navigation View onClickListener

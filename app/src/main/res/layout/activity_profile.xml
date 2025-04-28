@@ -17,11 +17,11 @@
         android:paddingBottom="60dp"
         tools:context=".settings.ProfileActivity">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:text="Logout" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/header"

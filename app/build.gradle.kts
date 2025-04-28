@@ -62,7 +62,7 @@ dependencies {
 
     // Add Room to App
     val room_version = "2.6.1"
-
+    implementation ("com.google.android.material:material:<version>")
     implementation("androidx.room:room-runtime:$room_version") // Core Room library for database operations
     ksp("androidx.room:room-compiler:$room_version") // Generates Room-related code using KSP (preferred for Kotlin)
     annotationProcessor("androidx.room:room-compiler:$room_version") // Alternative for Java projects (not needed with KSP)
