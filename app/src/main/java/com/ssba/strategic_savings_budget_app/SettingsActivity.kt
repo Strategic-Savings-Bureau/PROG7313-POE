@@ -38,6 +38,9 @@ class SettingsActivity : AppCompatActivity() {
         // Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
+        // Database Instance
+        db = AppDatabase.getInstance(this)
+
         // Load User Profile
         lifecycleScope.launch {
             val userId = auth.currentUser?.uid

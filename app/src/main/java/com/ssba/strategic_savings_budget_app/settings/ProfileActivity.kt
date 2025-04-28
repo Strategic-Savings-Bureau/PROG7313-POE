@@ -117,7 +117,7 @@ class ProfileActivity : AppCompatActivity() {
     // Implementation for Button On Click Listeners
     private fun setupButtonClickListeners() {
         // Back Button to Return to Menu On Click Listener
-        binding.ivBackButton.setOnClickListener {
+        binding.btnBackButton.setOnClickListener {
             // Update Primary and Secondary Currency
             // Set Colour Theme App Wide?
             startActivity(Intent(this, SettingsActivity::class.java))

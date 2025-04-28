@@ -27,16 +27,14 @@
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:paddingTop="40dp">
 
                 <!-- Back Button -->
-                <ImageView
-                    android:id="@+id/ivBackButton"
+                <ImageButton
+                    android:id="@+id/btnBackButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:background="@null"
                     android:src="@drawable/ic_back_arrow_filled"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +52,7 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ivBackButton"
+                    app:layout_constraintStart_toEndOf="@id/btnBackButton"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
