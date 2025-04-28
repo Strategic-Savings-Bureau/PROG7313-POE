@@ -29,4 +29,31 @@
     <!-- Expense -->
     <string name="enter_date">Date</string>
     <string name="amount">Amount</string>
+
+    <!-- Home -->
+    <string name="tv_welcome_back">Welcome Back,</string>
+    <string name="tv_place_holder_name">Place Holder Name</string>
+    <string name="cd_rewards_button">Rewards Button</string>
+    <string name="tv_quick_actions">Quick Actions</string>
+    <string name="cd_add_income_button">Add Income Button</string>
+    <string name="tv_add_income">Add Income</string>
+    <string name="cd_add_expense_button">Add Expense Button</string>
+    <string name="tv_add_expense">Add Expense</string>
+    <string name="cd_add_savings_button">Add Savings Button</string>
+    <string name="tv_add_savings">Add Savings</string>
+    <string name="tv_recent_transactions">Recent Transactions</string>
+    <string name="cd_list_of_recent_transactions">List of recent transactions</string>
+    <string name="tv_no_transactions_to_display">No Transactions to display</string>
+
+    <!-- Item: Recent Transaction -->
+    <string name="cd_transaction_icon">Transaction Icon</string>
+    <string name="tv_transaction_title">Transaction Title</string>
+    <string name="tv_transaction_date">Transaction Date</string>
+    <string name="tv_transaction_type">Transaction Type</string>
+    <string name="tv_transaction_amount">Amount</string>
+
+    <!-- Recent Transactions Adapter -->
+    <string name="tv_transaction_type_expense">Expense</string>
+    <string name="tv_transaction_type_income">Income</string>
+
 </resources>
