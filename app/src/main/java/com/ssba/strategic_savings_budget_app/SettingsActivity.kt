@@ -9,8 +9,6 @@ import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.databinding.ActivityProfileBinding
-import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -18,12 +16,9 @@ class SettingsActivity : AppCompatActivity() {
     // View Binding
     private lateinit var binding: ActivitySettingsBinding
 
-    // endregion
-
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
 
-    // region View Components
     // View Binding
     private lateinit var btnLogout: Button
     // endregion
@@ -84,43 +79,44 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
 
-        // Button to Log Out the Current User
-        binding.btnLogout.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
+            // Button to Log Out the Current User
+            binding.btnLogout.setOnClickListener {
+                auth.signOut()
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
 
-        // Set up Bottom Navigation View onClickListener
-        binding.bottomNav.setOnItemSelectedListener {
-            when (it.itemId) {
-                // Navigate to Main (Home) Activity
-                R.id.miHome -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                    true
-                }
-                // Navigate to Analysis Activity
-                R.id.miAnalysis -> {
-                    startActivity(Intent(this, AnalysisActivity::class.java))
-                    finish()
-                    true
-                }
-                // Navigate to Transactions Activity
-                R.id.miTransactions -> {
-                    startActivity(Intent(this, TransactionsActivity::class.java))
-                    finish()
-                    true
-                }
-                // Navigate to Savings Activity
-                R.id.miSavings -> {
-                    startActivity(Intent(this, SavingsActivity::class.java))
-                    finish()
-                    true
-                }
-                // Navigate to Profile Activity
-                R.id.miSettings -> true
+            // Set up Bottom Navigation View onClickListener
+            binding.bottomNav.setOnItemSelectedListener {
+                when (it.itemId) {
+                    // Navigate to Main (Home) Activity
+                    R.id.miHome -> {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                        true
+                    }
+                    // Navigate to Analysis Activity
+                    R.id.miAnalysis -> {
+                        startActivity(Intent(this, AnalysisActivity::class.java))
+                        finish()
+                        true
+                    }
+                    // Navigate to Transactions Activity
+                    R.id.miTransactions -> {
+                        startActivity(Intent(this, TransactionsActivity::class.java))
+                        finish()
+                        true
+                    }
+                    // Navigate to Savings Activity
+                    R.id.miSavings -> {
+                        startActivity(Intent(this, SavingsActivity::class.java))
+                        finish()
+                        true
+                    }
+                    // Navigate to Profile Activity
+                    R.id.miSettings -> true
 
-                else -> false
+                    else -> false
+                }
             }
         }
     }
