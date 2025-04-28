@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.adapters.RecentTransactionAdapter
+import com.ssba.strategic_savings_budget_app.budget.ExpenseEntryActivity
+import com.ssba.strategic_savings_budget_app.budget.IncomeEntryActivity
+import com.ssba.strategic_savings_budget_app.budget.SavingsEntryActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityMainBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
@@ -138,23 +141,20 @@ class MainActivity : AppCompatActivity() {
 
         btnAddIncome.setOnClickListener {
 
-            Toast.makeText(this, "Add Income Coming Soon", Toast.LENGTH_SHORT).show()
-
             // Start Add Income Intent Here
+            startActivity(Intent(this, IncomeEntryActivity::class.java))
         }
 
         btnAddExpense.setOnClickListener {
 
-            Toast.makeText(this, "Add Expense Coming Soon", Toast.LENGTH_SHORT).show()
-
             // Start Add Expense Intent Here
+            startActivity(Intent(this, ExpenseEntryActivity::class.java))
         }
 
         btnAddSavings.setOnClickListener {
 
-            Toast.makeText(this, "Add Savings Coming Soon", Toast.LENGTH_SHORT).show()
-
             // Start Add Savings Intent Here
+            startActivity(Intent(this, SavingsEntryActivity::class.java))
         }
 
         btnRewards.setOnClickListener {
