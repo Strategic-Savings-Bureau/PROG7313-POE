@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.ssba.strategic_savings_budget_app.databinding.ActivityAnalysisBinding
-import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 
 class AnalysisActivity : AppCompatActivity() {
 
@@ -55,8 +54,8 @@ class AnalysisActivity : AppCompatActivity() {
                     true
                 }
                 // Navigate to Profile Activity
-                R.id.miProfile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                R.id.miSettings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
                     finish()
                     true
                 }
