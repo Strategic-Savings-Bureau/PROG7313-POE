@@ -25,4 +25,10 @@
     <string name="nav_transactions">Transactions</string>
     <string name="nav_savings">Savings</string>
     <string name="nav_profile">Profile</string>
+
+    <!-- Profile Settings -->
+    <string name="profile_title">Profile</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="change_password">Change Password</string>
+    <string name="update_password">Update Password</string>
 </resources>

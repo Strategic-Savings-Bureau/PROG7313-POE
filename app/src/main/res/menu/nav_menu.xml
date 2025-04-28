@@ -22,7 +22,7 @@
         android:title="@string/nav_savings" />
 
     <item
-        android:id="@+id/miProfile"
+        android:id="@+id/miSettings"
         android:icon="@drawable/ic_nav_profile"
         android:title="@string/nav_profile" />
 

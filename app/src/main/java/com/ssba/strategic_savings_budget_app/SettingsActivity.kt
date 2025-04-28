@@ -4,32 +4,68 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.ssba.strategic_savings_budget_app.databinding.ActivityProfileBinding
+import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
+import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
 
-class ProfileActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     // region Declarations
     // View Binding
-    private lateinit var binding: ActivityProfileBinding
+    private lateinit var binding: ActivitySettingsBinding
+
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Initialisation
+        // Initialise
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         // View Binding
-        binding = ActivityProfileBinding.inflate(layoutInflater)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Highlight the Menu Item
-        binding.bottomNav.selectedItemId = R.id.miProfile
+        binding.bottomNav.selectedItemId = R.id.miSettings
 
-        // Method to Set Up onClickListeners
         setupOnClickListeners()
     }
 
     private fun setupOnClickListeners() {
+        binding.btnRewards.setOnClickListener {
+
+        }
+
+        binding.btnProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+        }
+
+        binding.btnSharedBudget.setOnClickListener {
+
+        }
+
+        binding.btnCurrencyConverter.setOnClickListener {
+
+        }
+
+        binding.btnNotifications.setOnClickListener {
+
+        }
+
+        binding.btnBudgeting.setOnClickListener {
+
+        }
+
+        binding.btnYourData.setOnClickListener {
+
+        }
+
+        binding.btnLogout.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+
         // Set up Bottom Navigation View onClickListener
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
@@ -58,7 +94,7 @@ class ProfileActivity : AppCompatActivity() {
                     true
                 }
                 // Navigate to Profile Activity
-                R.id.miProfile -> true
+                R.id.miSettings -> true
 
                 else -> false
             }
