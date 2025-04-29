@@ -15,6 +15,35 @@
         android:theme="@style/Theme.Strategicsavingsbudgetapp"
         tools:targetApi="31">
         <activity
+            android:name=".landing.SplashScreenActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".landing.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".landing.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AnalysisActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TransactionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SavingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".budget.SavingGoalEntryActivity"
             android:exported="false" />
         <activity
@@ -26,37 +55,9 @@
         <activity
             android:name=".budget.ExpenseEntryActivity"
             android:exported="false" />
-
         <activity
-            android:name=".landing.SplashScreenActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".landing.LoginActivity"
-            android:exported="true" />
-        <activity
-            android:name=".landing.RegisterActivity"
-            android:exported="true" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true" />
-        <activity
-            android:name=".AnalysisActivity"
-            android:exported="true" />
-        <activity
-            android:name=".TransactionsActivity"
-            android:exported="true" />
-        <activity
-            android:name=".SavingsActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ProfileActivity"
-            android:exported="true" />
+            android:name=".settings.ProfileActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
