@@ -2,52 +2,97 @@ package com.ssba.strategic_savings_budget_app
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.databinding.ActivityProfileBinding
+import com.ssba.strategic_savings_budget_app.data.AppDatabase
+import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
+import com.ssba.strategic_savings_budget_app.entities.User
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
+import kotlinx.coroutines.launch
 
-class ProfileActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     // region Declarations
     // View Binding
-    private lateinit var binding: ActivityProfileBinding
-    // endregion
+    private lateinit var binding: ActivitySettingsBinding
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
 
-    // region View Components
-    // View Binding
-    private lateinit var btnLogout: Button
+    // Database
+    private lateinit var db: AppDatabase
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Initialisation
+        // Initialise
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         // View Binding
-        binding = ActivityProfileBinding.inflate(layoutInflater)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
-        // region Initialise View Components
-        btnLogout = binding.btnLogout
-        // endregion
+        // Database Instance
+        db = AppDatabase.getInstance(this)
+
+        // Load User Profile
+        lifecycleScope.launch {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                val user = getCurrentUser(userId)
+                if (user != null) {
+                    binding.tvFullName.text = user.fullName
+                    binding.tvUsername.text = user.username
+                }
+            }
+        }
 
         // Highlight the Menu Item
-        binding.bottomNav.selectedItemId = R.id.miProfile
+        binding.bottomNav.selectedItemId = R.id.miSettings
 
-        // Method to Set Up onClickListeners
         setupOnClickListeners()
     }
 
     private fun setupOnClickListeners() {
+        binding.btnRewards.setOnClickListener {
+
+        }
+
+        binding.btnProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+        }
+
+        binding.btnSharedBudget.setOnClickListener {
+
+        }
+
+        binding.btnCurrencyConverter.setOnClickListener {
+
+        }
+
+        binding.btnNotifications.setOnClickListener {
+
+        }
+
+        binding.btnBudgeting.setOnClickListener {
+
+        }
+
+        binding.btnYourData.setOnClickListener {
+
+        }
+
+        binding.btnLogout.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
 
         // Button to Log Out the Current User
         binding.btnLogout.setOnClickListener {
@@ -83,10 +128,14 @@ class ProfileActivity : AppCompatActivity() {
                     true
                 }
                 // Navigate to Profile Activity
-                R.id.miProfile -> true
+                R.id.miSettings -> true
 
                 else -> false
             }
         }
+    }
+
+    private suspend fun getCurrentUser(userId: String): User? {
+        return db.userDao.getUserById(userId)
     }
 }
