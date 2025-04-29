@@ -3,14 +3,17 @@ package com.ssba.strategic_savings_budget_app
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.ssba.strategic_savings_budget_app.adapters.TransactionHistoryAdapter
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityTransactionsBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
@@ -38,6 +41,7 @@ class TransactionsActivity : AppCompatActivity() {
     private lateinit var tvTotalIncome: TextView
     private lateinit var tvTotalExpenses: TextView
     private lateinit var rvTransactions: RecyclerView
+    private lateinit var tvNoTransactions: TextView
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +69,7 @@ class TransactionsActivity : AppCompatActivity() {
         tvTotalIncome = binding.tvTotalIncome
         tvTotalExpenses = binding.tvTotalExpense
         rvTransactions = binding.rvTransactions
+        tvNoTransactions = binding.tvNoTransactions
         // endregion
 
         lifecycleScope.launch {
@@ -86,6 +91,27 @@ class TransactionsActivity : AppCompatActivity() {
             // Set the text of the total income and expenses
             tvTotalIncome.text = "R $totalIncome"
             tvTotalExpenses.text = "R $totalExpenses"
+
+            // set up the recycler view
+            val transactions = getAllTransactions(db, userId)
+
+            if (transactions.isEmpty())
+            {
+                rvTransactions.visibility = View.GONE
+                tvNoTransactions.visibility = View.VISIBLE
+            }
+            else
+            {
+                rvTransactions.visibility = View.VISIBLE
+                tvNoTransactions.visibility = View.GONE
+
+                // Set up the recycler view
+                val adapter = TransactionHistoryAdapter(transactions)
+
+                rvTransactions.layoutManager = LinearLayoutManager(this@TransactionsActivity)
+
+                rvTransactions.adapter = adapter
+            }
         }
 
 

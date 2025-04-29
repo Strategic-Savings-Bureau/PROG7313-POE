@@ -87,4 +87,11 @@
     <string name="tv_total_expense">Total Expense</string>
     <string name="tv_transactions">Transactions</string>
     <string name="cd_list_of_income_and_expense_transactions">List of income and expense transactions</string>
+
+    <!-- Item: Transaction History -->
+    <string name="tv_transaction_category">Category</string>
+
+    <!-- Transaction History Adapter -->
+    <string name="content_no_category">No Category</string>
+    <string name="tv_transaction_type_savings">Savings</string>
 </resources>
