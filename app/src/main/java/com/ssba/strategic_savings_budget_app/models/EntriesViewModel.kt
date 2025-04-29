@@ -93,18 +93,31 @@ class IncomeEntryViewModel : BaseEntryViewModel() {
  * Savings entry ViewModel
  * Preloads a list of saving types (e.g. "Emergency Fund", "Vacation", etc.)
  */
-class SavingsEntryViewModel(preloadedTypes: List<String>) : BaseEntryViewModel() {
+class SavingsEntryViewModel() : BaseEntryViewModel() {
     val typePosition = MutableLiveData(0)
+
     private val _typeError = MutableLiveData<String?>()
     val typeError: LiveData<String?> = _typeError
-    val types = preloadedTypes
+
+    // This will hold the dynamically loaded savings goal titles
+    val savingsGoals = MutableLiveData<List<String>>()
+
+    // This will hold the ID of the selected savings goal
+    val selectedGoalId = MutableLiveData<Int?>()
 
     override fun validateAll(): Boolean {
         var valid = super.validateAll()
-        if ((typePosition.value ?: -1) < 0 || (typePosition.value ?: 0) >= types.size) {
-            _typeError.value = "Please select a saving type"
+
+        val goals = savingsGoals.value ?: emptyList()
+        val pos = typePosition.value ?: -1
+
+        if (pos < 0 || pos >= goals.size) {
+            _typeError.value = "Please select a saving goal"
             valid = false
-        } else _typeError.value = null
+        } else {
+            _typeError.value = null
+        }
+
         return valid
     }
 }

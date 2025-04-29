@@ -157,7 +157,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
                     categoryId = categoryId
                 )
 
-                // Save expense in background
+                // Save expense in backg
+                // round
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
                         expenseDao.upsertExpense(expense)
@@ -174,6 +175,9 @@ class ExpenseEntryActivity : AppCompatActivity() {
         // Cancel button
         binding.btnCancel.setOnClickListener {
             finish()
+        }
+        binding.btnRewards.setOnClickListener {
+            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
         }
     }
 }

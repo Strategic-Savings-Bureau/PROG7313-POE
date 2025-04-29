@@ -1,0 +1,91 @@
+package com.ssba.strategic_savings_budget_app.budget
+
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.ssba.strategic_savings_budget_app.R
+import com.ssba.strategic_savings_budget_app.data.AppDatabase
+import com.ssba.strategic_savings_budget_app.databinding.ActivityCreateCategoryBinding
+import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
+import com.ssba.strategic_savings_budget_app.models.CreateCategoryViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+class CreateCategoryActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityCreateCategoryBinding
+    private lateinit var viewModel: CreateCategoryViewModel
+    private lateinit var db: AppDatabase
+    private val auth = Firebase.auth
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        // DataBinding setup
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_category)
+        binding.lifecycleOwner = this
+
+        // Initialize ViewModel
+
+        binding.viewmodel = viewModel
+
+        // Initialize database
+        db = AppDatabase.getInstance(this)
+
+        // Edge-to-edge padding
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            insets
+        }
+
+        setupButtons()
+    }
+
+    private fun setupButtons() {
+        // Save button
+        binding.btnSaveCategory.setOnClickListener {
+            if (viewModel.validateAll()) {
+                saveCategoryToDb()
+            } else {
+                Toast.makeText(this, "Please complete all required fields.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Cancel button
+        binding.btnCancelCategory.setOnClickListener { finish() }
+        binding.btnRewards.setOnClickListener {
+            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveCategoryToDb() {
+        // Create the new category instance
+        val newCategory = ExpenseCategory(
+            categoryId = 0, // Auto-generated in DB
+            name = viewModel.categoryName.value.orEmpty(),
+            description = viewModel.categoryDescription.value.orEmpty(),
+            icon = viewModel.categoryIcon.value.orEmpty(),
+            maximumMonthlyTotal = viewModel.maximumMonthlyTotal.value?.toDoubleOrNull() ?: 0.0,
+            userId = auth.currentUser?.uid.toString()
+        )
+
+        // Save to database
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                db.expenseCategoryDao.upsertExpenseCategory(newCategory)
+            }
+            Toast.makeText(this@CreateCategoryActivity, "Category created!", Toast.LENGTH_SHORT).show()
+            finish() // Finish activity after saving
+        }
+    }
+}

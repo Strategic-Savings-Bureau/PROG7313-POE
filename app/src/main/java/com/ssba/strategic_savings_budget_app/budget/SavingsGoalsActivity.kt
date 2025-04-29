@@ -90,7 +90,7 @@ class SavingGoalEntryActivity : AppCompatActivity() {
 
                 // Create the SavingGoal object
                 val savingGoal = SavingGoal(
-                    userId = auth.currentUser?.email.toString(),
+                    userId = auth.currentUser?.uid.toString(),
                     title = title,
                     targetAmount = amount,
                     description = description,
@@ -110,5 +110,8 @@ class SavingGoalEntryActivity : AppCompatActivity() {
 
         // Handle Cancel button click
         binding.btnCancelGoal.setOnClickListener { finish() }
+        binding.btnRewards.setOnClickListener {
+            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
+        }
     }
 }

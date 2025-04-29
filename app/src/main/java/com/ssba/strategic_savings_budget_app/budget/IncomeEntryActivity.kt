@@ -9,9 +9,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityIncomeEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Income
@@ -24,7 +23,7 @@ class IncomeEntryActivity : AppCompatActivity() {
 
     private val viewModel: IncomeEntryViewModel by viewModels()
     private lateinit var binding: ActivityIncomeEntryBinding
-     val auth = Firebase.auth
+    private val auth = Firebase.auth
     private lateinit var db: AppDatabase
     private lateinit var incomeDao: com.ssba.strategic_savings_budget_app.daos.IncomeDao
 
@@ -38,17 +37,16 @@ class IncomeEntryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Init DB and DAO
+        // init DB & DAO
         db = AppDatabase.getInstance(this)
         incomeDao = db.incomeDao
 
-        // Inflate\ binding
         binding = ActivityIncomeEntryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
 
-        // Insets
+        // edge-to-edge padding
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(sys.left, sys.top, sys.right, sys.bottom)
@@ -73,33 +71,42 @@ class IncomeEntryActivity : AppCompatActivity() {
     }
 
     private fun setupValidationObservers() {
-        viewModel.titleError.observe(this) { binding.etTitle.error = it }
-        viewModel.dateError.observe(this) { binding.etDate.error = it }
+        viewModel.titleError.observe(this)       { binding.etTitle.error       = it }
+        viewModel.dateError.observe(this)        { binding.etDate.error        = it }
+        viewModel.amountError.observe(this)      { binding.etAmount.error      = it }
         viewModel.descriptionError.observe(this) { binding.etDescription.error = it }
     }
 
     private fun setupActions() {
         binding.btnSave.setOnClickListener {
+            // this will now also validate amount via viewModel.amountError
             if (viewModel.validateAll()) {
-                val title = viewModel.titleOrName.value.orEmpty()
-                val description = viewModel.description.value.orEmpty()
-                val date = Date(selectedDateMillis ?: System.currentTimeMillis())
+                val title       = viewModel.titleOrName.value!!.trim()
+                val description = viewModel.description.value!!.trim()
+                val date        = Date(selectedDateMillis ?: System.currentTimeMillis())
+                val amountVal   = viewModel.amount.value!!.toDouble() // safe: validated >0
 
                 val income = Income(
-                 userId =  auth.currentUser?.email.toString() ,
-                    title = title,
-                    date = date,
-                    amount = 0.0, // default amount
+                    userId      = auth.currentUser?.uid.toString(),
+                    title       = title,
+                    date        = date,
+                    amount      = amountVal,
                     description = description
                 )
 
                 lifecycleScope.launch(Dispatchers.IO) {
                     incomeDao.upsertIncome(income)
                 }
+
                 Toast.makeText(this, "Income Saved", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
-        binding.btnCancel.setOnClickListener { finish() }
+        binding.btnCancel.setOnClickListener {
+            finish()
+        }
+        binding.btnRewards.setOnClickListener {
+            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
+        }
     }
 }

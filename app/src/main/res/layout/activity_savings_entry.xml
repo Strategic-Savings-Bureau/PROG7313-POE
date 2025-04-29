@@ -12,7 +12,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#E6FAF4"
+        android:background="@color/bg_teal"
         android:padding="16dp"
         tools:context=".budget.SavingsEntryActivity">
 
@@ -24,15 +24,33 @@
             android:padding="24dp"
             android:elevation="4dp">
 
-            <!-- Title -->
-            <TextView
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add A Saving"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textColor="#000000"
-                android:layout_marginBottom="24dp" />
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Add A Saving"
+                    android:textSize="24sp"
+                    android:textColor="#000000" />
+
+
+                <ImageButton
+                    android:id="@+id/btnRewards"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="@drawable/btn_rewards_background_round"
+                    android:contentDescription="@string/cd_rewards_button"
+                    android:padding="8dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_gift_unfilled"
+                    tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
+            </FrameLayout>
 
             <!-- Saving Title -->
             <TextView
@@ -93,11 +111,28 @@
                     android:text="@={viewmodel.date}" />
             </com.google.android.material.textfield.TextInputLayout>
 
+           <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Savings Goal"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+            <Spinner
+                android:id="@+id/spinnerSavingsGoal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_input"
+                android:padding="18dp"
+                android:spinnerMode="dropdown"
+
+                android:selectedItemPosition="@={viewmodel.selectedGoalId}"/>
             <!-- Description -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="Description"
                 android:textSize="16sp"
                 android:textColor="#000000" />
@@ -115,7 +150,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -126,7 +161,7 @@
                     android:layout_weight="1"
                     android:backgroundTint="#4CD7A9"
                     android:text="Save"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#000000" />
 
                 <Space
                     android:layout_width="16dp"
