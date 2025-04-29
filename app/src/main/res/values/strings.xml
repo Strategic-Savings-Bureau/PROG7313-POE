@@ -76,4 +76,15 @@
 
     <!-- Your Data -->
     <string name="your_data_title">Your Data</string>
+
+    <!-- Transaction History -->
+    <string name="tv_title_transaction_history">Transaction History</string>
+    <string name="cd_income_arrow">Income Arrow</string>
+    <string name="tv_income">Income</string>
+    <string name="tv_total_income">Total Income</string>
+    <string name="cd_expense_arrow">Expense Arrow</string>
+    <string name="tv_expense">Expense</string>
+    <string name="tv_total_expense">Total Expense</string>
+    <string name="tv_transactions">Transactions</string>
+    <string name="cd_list_of_income_and_expense_transactions">List of income and expense transactions</string>
 </resources>
