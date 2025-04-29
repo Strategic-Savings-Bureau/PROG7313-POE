@@ -126,7 +126,7 @@
                 android:background="@drawable/rounded_input"
                 android:padding="18dp"
                 android:spinnerMode="dropdown"
-                app:entries="@{viewmodel.savingsGoals}"
+
                 android:selectedItemPosition="@={viewmodel.selectedGoalId}"/>
             <!-- Description -->
             <TextView
