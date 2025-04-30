@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".IncomeHistoryActivity"
+    tools:context=".ExpenseHistoryActivity"
     android:background="@color/bg_teal">
 
     <!-- Header Section -->
@@ -51,7 +51,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tv_title_income_history"
+            android:text="@string/tv_title_expense_history"
             android:textSize="19sp"
             android:textStyle="bold"
             android:padding="8dp"
@@ -63,7 +63,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- Transaction Cards Section -->
+    <!-- Transaction Card Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clTransactionCards"
         android:layout_width="0dp"
@@ -74,53 +74,53 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="10dp">
 
-        <!-- Income Card -->
+        <!-- Expense Card -->
         <LinearLayout
-            android:id="@+id/cardIncome"
+            android:id="@+id/cardExpense"
             android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_marginEnd="8dp"
             android:orientation="vertical"
             android:gravity="center"
             android:padding="16dp"
-            android:background="@drawable/bg_card_income"
+            android:background="@drawable/bg_card_expense"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/cardIncomeGoal"
+            app:layout_constraintBottom_toTopOf="@id/cardExpenseLimit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
-                android:id="@+id/ivIncomeTransactions"
+                android:id="@+id/ivExpenseTransactions"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:contentDescription="@string/cd_income_arrow"
+                android:contentDescription="@string/cd_expense_arrow"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_income_arrow_unfilled"
+                android:src="@drawable/ic_expense_arrow_unfilled"
                 tools:ignore="ImageContrastCheck" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_total_income"
+                android:text="@string/tv_total_expense"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp" />
 
             <TextView
-                android:id="@+id/tvTotalIncome"
+                android:id="@+id/tvTotalExpense"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/tv_total_income"
-                android:textColor="#43A047"
+                android:text="@string/tv_total_expense"
+                android:textColor="@color/expense_red"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Income Progress Card -->
+        <!-- Expense Limit Card -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardIncomeGoal"
+            android:id="@+id/cardExpenseLimit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -129,7 +129,7 @@
             android:backgroundTint="@android:color/white"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@id/cardIncome"
+            app:layout_constraintTop_toBottomOf="@id/cardExpense"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -140,12 +140,12 @@
                 android:padding="16dp"
                 android:gravity="center_horizontal">
 
-                <!-- Goal Text -->
+                <!-- Limit Text -->
                 <TextView
-                    android:id="@+id/tvMinIncomeGoal"
+                    android:id="@+id/tvMaxExpenseLimit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tv_minimum_income_goal"
+                    android:text="@string/tv_maximum_expense_limit"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -153,15 +153,15 @@
 
                 <!-- Progress Bar -->
                 <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/progressIncomeGoal"
+                    android:id="@+id/progressExpenseLimit"
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:progress="40"
-                    android:progressTint="@color/income_green"
+                    android:progressTint="@color/expense_red"
                     app:trackColor="@android:color/darker_gray"
                     app:trackThickness="8dp"
                     android:indeterminate="false"
-                    app:indicatorColor="@color/income_green" />
+                    app:indicatorColor="@color/expense_red" />
 
                 <!-- Progress Percentage -->
                 <TextView
@@ -169,7 +169,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/tv_progress_percentage"
+                    android:text="@string/tv_expense_progress_percentage"
                     android:textColor="#757575"
                     android:textSize="14sp" />
 
@@ -179,9 +179,9 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Recent Transactions Section -->
+    <!-- Expense Transactions Section -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardRecentTransactions"
+        android:id="@+id/cardExpenseTransactions"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="20dp"
@@ -233,7 +233,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvIncomeTransactions"
+                android:id="@+id/rvExpenseTransactions"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

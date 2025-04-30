@@ -134,4 +134,9 @@
     <string name="tv_minimum_income_goal">Minimum Income Goal: R5,000</string>
     <string name="tv_progress_percentage">40% towards goal</string>
 
+    <!-- Expense History -->
+    <string name="tv_title_expense_history">Expense History</string>
+    <string name="tv_maximum_expense_limit">Maximum Expense Limit: R30 000</string>
+    <string name="tv_expense_progress_percentage">55% towards limit</string>
+
 </resources>
