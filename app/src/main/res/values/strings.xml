@@ -87,6 +87,7 @@
     <string name="tv_total_expense">Total Expense</string>
     <string name="tv_transactions">Transactions</string>
     <string name="cd_list_of_income_and_expense_transactions">List of income and expense transactions</string>
+    <string name="cd_filter_by_date_range_button">Filter by date range button</string>
 
     <!-- Item: Transaction History -->
     <string name="tv_transaction_category">Category</string>
@@ -94,4 +95,12 @@
     <!-- Transaction History Adapter -->
     <string name="content_no_category">No Category</string>
     <string name="tv_transaction_type_savings">Savings</string>
+
+    <!-- Date Range Dialog -->
+    <string name="tv_title">Choose a date range to filter</string>
+    <string name="tv_hint_start_date">Start Date</string>
+    <string name="tv_hint_end_date">End Date</string>
+    <string name="btn_filter">Filter</string>
+    <string name="btn_text_clear_filter">Clear Filter</string>
+
 </resources>
