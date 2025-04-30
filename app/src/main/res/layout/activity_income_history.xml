@@ -157,11 +157,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:progress="40"
-                    android:progressTint="@color/bg_teal"
+                    android:progressTint="@color/income_green"
                     app:trackColor="@android:color/darker_gray"
                     app:trackThickness="8dp"
                     android:indeterminate="false"
-                    app:indicatorColor="@color/bg_teal" />
+                    app:indicatorColor="@color/income_green" />
 
                 <!-- Progress Percentage -->
                 <TextView
