@@ -145,7 +145,9 @@ class TransactionsActivity : AppCompatActivity() {
         }
 
         btnExpenseTransactions.setOnClickListener {
-            Toast.makeText(this, "Expense Transactions Coming Soon", Toast.LENGTH_SHORT).show()
+
+            // Navigate to Expense Transactions Activity
+            startActivity(Intent(this, ExpenseHistoryActivity::class.java))
         }
 
         btnDateFilter.setOnClickListener {
