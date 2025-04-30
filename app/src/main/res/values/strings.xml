@@ -127,4 +127,11 @@
     <string name="cd_receipt_image">Receipt Image</string>
     <string name="btn_expense_close">Close</string>
 
+    <!-- Income History -->
+    <string name="tv_title_income_history">Income History</string>
+    <string name="cd_back_button">Back Button</string>
+    <string name="cd_list_of_income_transactions">List of Income Transactions</string>
+    <string name="tv_minimum_income_goal">Minimum Income Goal: R5,000</string>
+    <string name="tv_progress_percentage">40% towards goal</string>
+
 </resources>
