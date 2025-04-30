@@ -54,8 +54,8 @@ class TransactionsActivity : AppCompatActivity() {
                     true
                 }
                 // Navigate to Profile Activity
-                R.id.miProfile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                R.id.miSettings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
                     finish()
                     true
                 }

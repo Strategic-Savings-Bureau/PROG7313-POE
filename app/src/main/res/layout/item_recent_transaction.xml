@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="12dp">
+
+    <!-- Left: Icon -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivTransactionType"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/cd_transaction_icon"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_default_profile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"
+        tools:ignore="ImageContrastCheck" />
+
+
+    <!-- Middle: Title and Date -->
+    <LinearLayout
+        android:id="@+id/textContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/ivTransactionType"
+        app:layout_constraintTop_toTopOf="@id/ivTransactionType"
+        app:layout_constraintBottom_toBottomOf="@id/ivTransactionType"
+        app:layout_constraintEnd_toStartOf="@id/tvTransactionType"
+        android:layout_marginStart="12dp">
+
+        <TextView
+            android:id="@+id/tvTransactionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_transaction_title"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTransactionDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/tv_transaction_date"
+            android:textColor="#0277BD"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <!-- Middle Right: Type -->
+    <TextView
+        android:id="@+id/tvTransactionType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_transaction_type"
+        android:textSize="14sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toTopOf="@id/ivTransactionType"
+        app:layout_constraintBottom_toBottomOf="@id/ivTransactionType"
+        app:layout_constraintEnd_toStartOf="@id/tvTransactionAmount"
+        android:layout_marginEnd="12dp"/>
+
+    <!-- Right: Amount -->
+    <TextView
+        android:id="@+id/tvTransactionAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_transaction_amount"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@id/ivTransactionType"
+        app:layout_constraintBottom_toBottomOf="@id/ivTransactionType"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

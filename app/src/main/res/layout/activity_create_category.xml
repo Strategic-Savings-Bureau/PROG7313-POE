@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.ssba.strategic_savings_budget_app.models.CreateCategoryViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_teal"
+        android:padding="16dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/categoryForm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_card"
+                android:padding="24dp"
+                android:elevation="4dp"
+                android:gravity="center_horizontal"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp">
+
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Add A Category"
+                        android:textSize="24sp"
+                        android:textColor="#000000" />
+
+                    <ImageButton
+                        android:id="@+id/btnRewards"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:background="@drawable/btn_rewards_background_round"
+                        android:contentDescription="@string/cd_rewards_button"
+                        android:padding="8dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_gift_unfilled"
+                        tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
+                </FrameLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Category Name"
+                    android:textSize="16sp"
+                    android:textColor="#000" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCategoryName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_input"
+                    android:padding="12dp"
+                    android:hint="e.g., Groceries"
+                    android:inputType="textPersonName"
+                    android:text="@={viewmodel.categoryName}"
+                    android:layout_marginTop="12dp" />
+
+                <!-- Category Description -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Category Description"
+                    android:textSize="16sp"
+                    android:textColor="#000" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCategoryDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_input"
+                    android:padding="12dp"
+                    android:hint="e.g., All food and grocery items"
+                    android:inputType="textMultiLine"
+                    android:text="@={viewmodel.categoryDescription}"
+                    android:layout_marginTop="12dp" />
+
+                <!-- Icon (Text for now) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Category Icon (Name or URL)"
+                    android:textSize="16sp"
+                    android:textColor="#000" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCategoryIcon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_input"
+                    android:padding="12dp"
+                    android:hint="e.g., groceries_icon"
+                    android:inputType="textUri"
+                    android:text="@={viewmodel.categoryIcon}"
+                    android:layout_marginTop="12dp" />
+
+                <!-- Maximum Monthly Total -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Maximum Monthly Total"
+                    android:textSize="16sp"
+                    android:textColor="#000" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMaxMonthlyTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_input"
+                    android:padding="12dp"
+                    android:hint="R0.00"
+                    android:inputType="numberDecimal"
+                    android:text="@={viewmodel.maximumMonthlyTotal}"
+                    android:layout_marginTop="12dp" />
+
+                <!-- Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="100dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btnSaveCategory"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="#4CD7A9"
+                        android:text="Save"
+                        android:textColor="#000000" />
+
+                    <Space
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/btnCancelCategory"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="#000"
+                        android:text="Cancel"
+                        android:textColor="#FFF" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>
