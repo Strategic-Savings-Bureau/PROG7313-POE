@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:contentDescription="@string/cd_transaction_icon"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_default_image"
+        android:src="@drawable/ic_default_profile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,6 +42,14 @@
             android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTransactionCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/tv_transaction_category"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tvTransactionDate"
