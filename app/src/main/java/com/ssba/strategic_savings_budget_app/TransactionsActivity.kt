@@ -487,7 +487,7 @@ class TransactionsActivity : AppCompatActivity() {
     }
 
 
-    // Method to get all transactions for the current user
+    // Method to filter transactions by date range
     private fun filterTransactionsByDateRange(list: List<Any>, startDate: Date, endDate: Date): List<Any>
     {
         return list

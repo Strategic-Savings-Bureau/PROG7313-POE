@@ -1,9 +1,11 @@
 package com.ssba.strategic_savings_budget_app
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -11,8 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,8 +23,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.adapters.IncomeHistoryAdapter
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityIncomeHistoryBinding
-import com.ssba.strategic_savings_budget_app.databinding.ActivityTransactionsBinding
-import com.ssba.strategic_savings_budget_app.entities.Budget
 import com.ssba.strategic_savings_budget_app.entities.Income
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
@@ -57,6 +55,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     // endregion
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?)
     {
         // Initialisation
@@ -97,7 +96,7 @@ class IncomeHistoryActivity : AppCompatActivity()
                 return@launch
             }
 
-            // Get the total income and expenses for the current user
+            // Get the total income for the current user
             val totalIncome = getTotalIncome(db, userId)
 
             // Set the text of the total income
@@ -124,7 +123,7 @@ class IncomeHistoryActivity : AppCompatActivity()
             // region Set up RecyclerView
 
             // get all the incomes for the current user
-            val incomeTransactions = getIncomeAllTransactions(db, userId)
+            val incomeTransactions = getAllIncomeTransactions(db, userId)
 
             if (incomeTransactions.isEmpty())
             {
@@ -152,6 +151,8 @@ class IncomeHistoryActivity : AppCompatActivity()
         setupOnClickListeners()
     }
 
+    @SuppressLint("SetTextI18n")
+    @Suppress("LABEL_NAME_CLASH")
     private fun setupOnClickListeners()
     {
         btnRewards.setOnClickListener {
@@ -163,13 +164,233 @@ class IncomeHistoryActivity : AppCompatActivity()
         }
 
         btnDateFilter.setOnClickListener {
-            Toast.makeText(this, "Date Filter Coming Soon", Toast.LENGTH_SHORT).show()
+
+            // show date picker dialog
+            val dialogView = layoutInflater.inflate(R.layout.dialog_date_range_filter, null)
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create()
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.show()
+
+            // access view components in dialog
+            val etStartDate = dialogView.findViewById<EditText>(R.id.etStartDate)
+            val etEndDate = dialogView.findViewById<EditText>(R.id.etEndDate)
+            val btnApplyDateFilter = dialogView.findViewById<Button>(R.id.btnApplyDateFilter)
+            val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
+
+            etStartDate.setOnClickListener {
+                showDatePicker(true, etStartDate, etEndDate)
+            }
+
+            etEndDate.setOnClickListener {
+                showDatePicker(false, etStartDate, etEndDate)
+            }
+
+            btnApplyDateFilter.setOnClickListener {
+
+                // get the selected dates
+                val startDate = etStartDate.text.toString()
+                val endDate = etEndDate.text.toString()
+
+                // check if the dates are empty
+                if (startDate.isEmpty() || endDate.isEmpty())
+                {
+                    Toast.makeText(this, "Please select both dates", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // convert the dates to Date objects
+                val startDateObj =
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+                val endDateObj =
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+
+                // check if the dates are valid
+                if (startDateObj != null && endDateObj != null)
+                {
+                    lifecycleScope.launch {
+
+                        // Get the current user's ID
+                        val userId = auth.currentUser?.uid
+
+                        if (userId == null)
+                        {
+                            startActivity(Intent(this@IncomeHistoryActivity, LoginActivity::class.java))
+                            finish()
+                            return@launch
+                        }
+
+                        // set up the recycler view
+                        val transactions = getAllIncomeTransactions(db, userId)
+
+                        if (transactions.isEmpty())
+                        {
+                            rvTransactions.visibility = View.GONE
+                            tvNoTransactions.visibility = View.VISIBLE
+
+                            dialog.dismiss()
+                            Toast.makeText(this@IncomeHistoryActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+                        // filter the transactions by date
+                        val filteredTransactions = filterIncomeByDateRange(transactions, startDateObj, endDateObj)
+
+                        if (filteredTransactions.isEmpty())
+                        {
+                            rvTransactions.visibility = View.GONE
+                            tvNoTransactions.visibility = View.VISIBLE
+                            Toast.makeText(this@IncomeHistoryActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                            return@launch
+                        }
+                        else
+                        {
+                            binding.cardIncomeGoal.visibility = View.GONE
+
+                            val totalIncome = calculateTotalIncome(filteredTransactions)
+
+                            tvTotalIncome.text = "R $totalIncome"
+
+                            rvTransactions.visibility = View.VISIBLE
+                            tvNoTransactions.visibility = View.GONE
+
+                            // Set up the recycler view
+                            val adapter = IncomeHistoryAdapter(filteredTransactions)
+
+                            rvTransactions.layoutManager = LinearLayoutManager(this@IncomeHistoryActivity)
+
+                            rvTransactions.adapter = adapter
+
+                            dialog.dismiss()
+                            Toast.makeText(this@IncomeHistoryActivity, "Transactions Filtered Successfully", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+                    }
+                }
+                else
+                {
+                    Toast.makeText(this, "Invalid Date Range", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+            btnClearFilter.setOnClickListener {
+
+                lifecycleScope.launch {
+
+                    // Get the current user's ID
+                    val userId = auth.currentUser?.uid
+
+                    if (userId == null) {
+                        startActivity(Intent(this@IncomeHistoryActivity, LoginActivity::class.java))
+                        finish()
+                        return@launch
+                    }
+
+                    // set up the recycler view
+                    val transactions = getAllIncomeTransactions(db, userId)
+
+                    if (transactions.isEmpty()) {
+                        rvTransactions.visibility = View.GONE
+                        tvNoTransactions.visibility = View.VISIBLE
+
+                        dialog.dismiss()
+                        Toast.makeText(
+                            this@IncomeHistoryActivity,
+                            "No Transactions Found",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@launch
+                    }
+                    else
+                    {
+
+                        // Get the total income for the current user
+                        val totalIncome = getTotalIncome(db, userId)
+
+                        // Set the text of the total income
+                        tvTotalIncome.text = "R $totalIncome"
+
+                        // make income goal card visible
+                        binding.cardIncomeGoal.visibility = View.VISIBLE
+
+                        // Get the minimum monthly income goal for the current user
+                        val minimumIncome = getMinimumIncome(db, userId)
+
+                        // Set the text of the minimum monthly income goal
+                        tvMinIncomeGoal.text = "Minimum Monthly Income: R $minimumIncome"
+
+                        // Get the total income for the current month
+                        val totalIncomeForCurrentMonth = getTotalIncomeForCurrentMonth(db, userId)
+
+                        // Calculate the progress percentage
+                        val progressPercentage = (totalIncomeForCurrentMonth / minimumIncome) * 100
+
+                        // Set the progress of the progress bar
+                        pbIncomeGoal.progress = progressPercentage.toInt()
+
+                        // Set the text of the progress percentage
+                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards goal"
+
+                        // region Set up RecyclerView
+
+                        // get all the incomes for the current user
+                        val incomeTransactions = getAllIncomeTransactions(db, userId)
+
+                        if (incomeTransactions.isEmpty())
+                        {
+                            tvNoTransactions.visibility = View.VISIBLE
+                            rvTransactions.visibility = View.GONE
+                        }
+                        else
+                        {
+                            rvTransactions.visibility = View.VISIBLE
+                            tvNoTransactions.visibility = View.GONE
+
+                            val adapter = IncomeHistoryAdapter(incomeTransactions)
+
+                            rvTransactions.layoutManager = LinearLayoutManager(this@IncomeHistoryActivity)
+
+                            rvTransactions.adapter = adapter
+                        }
+
+                        dialog.dismiss()
+                        Toast.makeText(
+                            this@IncomeHistoryActivity,
+                            "Filter Cleared",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@launch
+                    }
+
+                }
+            }
         }
     }
 
     // region Transaction Helper Methods
 
-    private suspend fun getIncomeAllTransactions(db: AppDatabase, userId: String): List<Income>
+    // Calculate total income from a list of Income transactions
+    @SuppressLint("DefaultLocale")
+    private fun calculateTotalIncome(list: List<Income>): Double
+    {
+        val totalIncome = list.sumOf { it.amount }
+        return String.format("%.2f", totalIncome).toDouble()
+    }
+
+
+    // Method to filter only Income transactions by date range
+    private fun filterIncomeByDateRange(list: List<Income>, startDate: Date, endDate: Date): List<Income> {
+        return list
+            .filter { it.date in startDate..endDate }
+            .sortedByDescending { it.date }
+    }
+
+
+    private suspend fun getAllIncomeTransactions(db: AppDatabase, userId: String): List<Income>
     {
          // get all the incomes for the current user
             val userWithIncomes = db.userDao.getUserWithIncomes(userId)
