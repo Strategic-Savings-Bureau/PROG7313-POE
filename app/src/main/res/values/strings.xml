@@ -5,8 +5,8 @@
     <string name="login_title">Login</string>
     <string name="email_hint">Email Address</string>
     <string name="password_hint">Password</string>
-    <string name="login_button">Login</string>
     <string name="register_text">Don\'t have an account? Register</string>
+    <string name="logout_title">Logout</string>
 
     <!-- Register -->
     <string name="register_title">Register</string>
@@ -15,7 +15,6 @@
     <string name="username_hint">Username</string>
     <string name="full_name_hint">Full name</string>
     <string name="confirm_password_hint">Confirm Password</string>
-    <string name="bio_hint">Bio</string>
     <string name="create_account">Create Account</string>
     <string name="login_prompt_text">Already have an account? Login Here</string>
     <string name="desc_groceries_category">Groceries Category</string>
@@ -33,4 +32,56 @@
     <string name="nav_transactions">Transactions</string>
     <string name="nav_savings">Savings</string>
     <string name="nav_profile">Profile</string>
+
+    <!-- Profile Settings -->
+    <string name="profile_title">Profile</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="change_password">Change Password</string>
+    <string name="update_password">Update Password</string>
+
+    <!-- Expense -->
+    <string name="enter_date">Date</string>
+    <string name="amount">Amount</string>
+
+    <!-- Home -->
+    <string name="tv_welcome_back">Welcome Back,</string>
+    <string name="tv_place_holder_name">Place Holder Name</string>
+    <string name="cd_rewards_button">Rewards Button</string>
+    <string name="tv_quick_actions">Quick Actions</string>
+    <string name="cd_add_income_button">Add Income Button</string>
+    <string name="tv_add_income">Add Income</string>
+    <string name="cd_add_expense_button">Add Expense Button</string>
+    <string name="tv_add_expense">Add Expense</string>
+    <string name="cd_add_savings_button">Add Savings Button</string>
+    <string name="tv_add_savings">Add Savings</string>
+    <string name="tv_recent_transactions">Recent Transactions</string>
+    <string name="cd_list_of_recent_transactions">List of recent transactions</string>
+    <string name="tv_no_transactions_to_display">No Transactions to display</string>
+
+    <!-- Item: Recent Transaction -->
+    <string name="cd_transaction_icon">Transaction Icon</string>
+    <string name="tv_transaction_title">Transaction Title</string>
+    <string name="tv_transaction_date">Transaction Date</string>
+    <string name="tv_transaction_type">Transaction Type</string>
+    <string name="tv_transaction_amount">Amount</string>
+
+    <!-- Recent Transactions Adapter -->
+    <string name="tv_transaction_type_expense">Expense</string>
+    <string name="tv_transaction_type_income">Income</string>
+    <string name="settings_title">Settings</string>
+
+    <!-- Shared Budget -->
+    <string name="shared_budget_title">Shared Budget</string>
+
+    <!-- Currency Converter -->
+    <string name="currency_converter_title">Currency Converter</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+
+    <!-- Budgeting -->
+    <string name="budgeting_title">Budgeting</string>
+
+    <!-- Your Data -->
+    <string name="your_data_title">Your Data</string>
 </resources>

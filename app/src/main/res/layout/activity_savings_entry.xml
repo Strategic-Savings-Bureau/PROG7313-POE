@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.ssba.strategic_savings_budget_app.models.SavingsEntryViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_teal"
+        android:padding="16dp"
+        tools:context=".budget.SavingsEntryActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/rounded_card"
+            android:padding="24dp"
+            android:elevation="4dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Add A Saving"
+                    android:textSize="24sp"
+                    android:textColor="#000000" />
+
+
+                <ImageButton
+                    android:id="@+id/btnRewards"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="@drawable/btn_rewards_background_round"
+                    android:contentDescription="@string/cd_rewards_button"
+                    android:padding="8dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_gift_unfilled"
+                    tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
+            </FrameLayout>
+
+            <!-- Saving Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Saving Title"
+                android:textSize="16sp"
+                android:textColor="#000000" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSavingsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_input"
+                android:padding="12dp"
+                android:hint="Holiday Fund"
+                android:text="@={viewmodel.titleOrName}" />
+
+            <!-- Amount -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Amount"
+                android:textSize="16sp"
+                android:textColor="#000000" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSavingsAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_input"
+                android:padding="12dp"
+                android:hint="R500,00"
+                android:inputType="numberDecimal"
+                android:text="@={viewmodel.amount}" />
+
+            <!-- Date Picker -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Date"
+                android:textSize="16sp"
+                android:textColor="#000000" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                android:background="@drawable/rounded_input"
+                android:padding="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSavingsDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select date"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:text="@={viewmodel.date}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+           <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Savings Goal"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+            <Spinner
+                android:id="@+id/spinnerSavingsGoal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_input"
+                android:padding="18dp"
+                android:spinnerMode="dropdown"
+
+                android:selectedItemPosition="@={viewmodel.selectedGoalId}"/>
+            <!-- Description -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Description"
+                android:textSize="16sp"
+                android:textColor="#000000" />
+            <EditText
+                android:id="@+id/etSavingsDescription"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@drawable/rounded_input"
+                android:gravity="top|start"
+                android:hint="Enter details about your savings"
+                android:padding="12dp"
+                android:text="@={viewmodel.description}" />
+
+            <!-- Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnSaveSavings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#4CD7A9"
+                    android:text="Save"
+                    android:textColor="#000000" />
+
+                <Space
+                    android:layout_width="16dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btnCancelSavings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#000000"
+                    android:text="Cancel"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>
