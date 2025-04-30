@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Strategicsavingsbudgetapp"
         tools:targetApi="31">
         <activity
+            android:name=".IncomeHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".budget.CreateCategoryActivity"
             android:exported="false" />
         <activity
