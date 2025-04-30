@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvExpenseTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_expense_title"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvExpenseAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_expense_amount"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/expense_red"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvExpenseDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_expense_date"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvExpenseDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_expense_description"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvExpenseCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_expense_category"
+                android:layout_marginBottom="12dp" />
+
+            <ImageView
+                android:id="@+id/ivReceipt"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/cd_receipt_image"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/ic_default_image" />
+
+            <Button
+                android:id="@+id/btnCloseExpense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:backgroundTint="@color/bg_teal"
+                android:text="@string/btn_expense_close"
+                tools:ignore="TextContrastCheck" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.cardview.widget.CardView>

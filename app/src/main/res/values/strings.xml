@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Strategic Savings Budget App</string>
 
     <!--Login -->
@@ -102,5 +102,29 @@
     <string name="tv_hint_end_date">End Date</string>
     <string name="btn_filter">Filter</string>
     <string name="btn_text_clear_filter">Clear Filter</string>
+
+    <!-- Dialog: Income -->
+    <string name="tv_income_title">Income Title</string>
+    <string name="tv_income_amount">R 0.00</string>
+    <string name="tv_income_date">Date: 2024–01–01</string>
+    <string name="tv_income_description">Description goes here</string>
+    <string name="btn_income_close">Close</string>
+
+    <!-- Dialog: Savings -->
+    <string name="tv_saving_title">Saving Title</string>
+    <string name="tv_savings_amount">R 0.00</string>
+    <string name="tv_savings_date">Date: 2024–01–01</string>
+    <string name="tv_savings_description">Description goes here</string>
+    <string name="tv_savings_goal_name">Saving Goal Name goes here</string>
+    <string name="btn_savings_close">Close</string>
+
+    <!-- Dialog: Expense -->
+    <string name="tv_expense_title">Expense Title</string>
+    <string name="tv_expense_amount">R 0.00</string>
+    <string name="tv_expense_date">Date: 2024–01–01</string>
+    <string name="tv_expense_description">Description goes here</string>
+    <string name="tv_expense_category">Expense Category goes here</string>
+    <string name="cd_receipt_image">Receipt Image</string>
+    <string name="btn_expense_close">Close</string>
 
 </resources>
