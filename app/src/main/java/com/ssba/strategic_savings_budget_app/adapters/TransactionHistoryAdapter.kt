@@ -1,5 +1,6 @@
 package com.ssba.strategic_savings_budget_app.adapters
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
         return TransactionViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionHistoryAdapter.TransactionViewHolder, position: Int) {
         val transaction = transactions[position]
 
@@ -236,8 +238,4 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
 
     override fun getItemCount(): Int = transactions.size
 
-    fun updateTransactions(newTransactions: List<Any>) {
-        transactions = newTransactions
-        notifyDataSetChanged()
-    }
 }
