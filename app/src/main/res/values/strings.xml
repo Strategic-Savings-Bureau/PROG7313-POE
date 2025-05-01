@@ -54,6 +54,15 @@
     <string name="cd_list_of_recent_transactions">List of recent transactions</string>
     <string name="tv_no_transactions_to_display">No Transactions to display</string>
 
+    <!-- Dialogue: Budget Setup -->
+    <string name="budget_setup">Budget Setup</string>
+    <string name="minimum_monthly_income">Minimum Monthly Income</string>
+    <string name="minimum_monthly_income_hint">Minimum Monthly Income</string>
+    <string name="maximum_monthly_expenses">Maximum Monthly Expenses</string>
+    <string name="maximum_monthly_expenses_hint">Maximum Monthly Expenses</string>
+    <string name="welcome_title">Welcome to Budget Planner!</string>
+    <string name="description_title">Let\'s setup your budget to unlock the app\'s full potential. Create spending limits and income goals to stay on track!</string>
+
     <!-- Item: Recent Transaction -->
     <string name="cd_transaction_icon">Transaction Icon</string>
     <string name="tv_transaction_title">Transaction Title</string>
