@@ -26,6 +26,7 @@ import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseHistoryB
 import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -83,6 +84,8 @@ class ExpenseHistoryActivity : AppCompatActivity()
         tvProgressPercentage = binding.tvProgressPercentage
         // endregion
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         lifecycleScope.launch {
 
             // Get the current user's ID
@@ -99,13 +102,13 @@ class ExpenseHistoryActivity : AppCompatActivity()
             val totalExpense = getTotalExpenses(db, userId)
 
             // Set the text of the total expense
-            tvTotalExpense.text = "R $totalExpense"
+            tvTotalExpense.text = currencyFormat.format(totalExpense)
 
             // Get the maximum monthly expense limit for the current user
             val maximumExpenseLimit = getMaximumExpenseLimit(db, userId)
 
             // Set the text of the maximum monthly expense limit
-            tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: R $maximumExpenseLimit"
+            tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: ${currencyFormat.format(maximumExpenseLimit)}"
 
             // Get the total expense for the current month
             val totalExpensesForCurrentMonth = getTotalExpensesForCurrentMonth(db, userId)
@@ -244,11 +247,13 @@ class ExpenseHistoryActivity : AppCompatActivity()
                         }
                         else
                         {
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
                             binding.cardExpenseLimit.visibility = View.GONE
 
                             val totalExpense = calculateTotalExpense(filteredTransactions)
 
-                            tvTotalExpense.text = "R $totalExpense"
+                            tvTotalExpense.text = currencyFormat.format(totalExpense)
 
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
@@ -305,11 +310,13 @@ class ExpenseHistoryActivity : AppCompatActivity()
                     else
                     {
 
+                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
                         // Get the total expenses for the current user
                         val totalExpense = getTotalExpenses(db, userId)
 
                         // Set the text of the total income
-                        tvTotalExpense.text = "R $totalExpense"
+                        tvTotalExpense.text = currencyFormat.format(totalExpense)
 
                         // make expense limit card visible
                         binding.cardExpenseLimit.visibility = View.VISIBLE
@@ -318,7 +325,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
                         val maximumExpenseLimit = getMaximumExpenseLimit(db, userId)
 
                         // Set the text of the maximum monthly expense limit
-                        tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: R $maximumExpenseLimit"
+                        tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: ${currencyFormat.format(maximumExpenseLimit)}"
 
                         // Get the total expense for the current month
                         val totalExpensesForCurrentMonth = getTotalExpensesForCurrentMonth(db, userId)
@@ -375,7 +382,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
     private fun calculateTotalExpense(list: List<Expense>): Double
     {
         val totalExpense = list.sumOf { it.amount }
-        return String.format("%.2f", totalExpense).toDouble()
+        return totalExpense
     }
 
 
@@ -431,9 +438,6 @@ class ExpenseHistoryActivity : AppCompatActivity()
             totalExpenses += expense.amount
         }
 
-        // round to 2 decimal places
-        totalExpenses = String.format("%.2f", totalExpenses).toDouble()
-
         return totalExpenses
     }
 
@@ -474,9 +478,6 @@ class ExpenseHistoryActivity : AppCompatActivity()
                 totalExpenses += expense.amount
             }
         }
-
-        // Round to 2 decimal places
-        totalExpenses = String.format("%.2f", totalExpenses).toDouble()
 
         return totalExpenses
     }

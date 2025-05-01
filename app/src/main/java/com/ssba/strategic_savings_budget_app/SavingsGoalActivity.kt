@@ -27,6 +27,7 @@ import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsGoalBinding
 import com.ssba.strategic_savings_budget_app.entities.Saving
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -90,6 +91,8 @@ class SavingsGoalActivity : AppCompatActivity()
         btnAddSaving = binding.btnAddSaving
         // endregion
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         // get the title of the savings goal from the intent
         savingsGoalTitle = intent.getStringExtra("SAVINGS_GOAL_TITLE") ?: ""
 
@@ -111,7 +114,7 @@ class SavingsGoalActivity : AppCompatActivity()
             }
 
             tvSavingsGoalTitle.text = savingsGoal.title
-            tvTargetAmount.text = "R ${savingsGoal.targetAmount}"
+            tvTargetAmount.text = currencyFormat.format(savingsGoal.targetAmount)
 
             val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 

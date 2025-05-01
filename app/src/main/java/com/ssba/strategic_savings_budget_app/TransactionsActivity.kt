@@ -27,6 +27,7 @@ import com.ssba.strategic_savings_budget_app.entities.Income
 import com.ssba.strategic_savings_budget_app.entities.Saving
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -83,6 +84,8 @@ class TransactionsActivity : AppCompatActivity() {
         btnDateFilter = binding.btnDateFilter
         // endregion
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         lifecycleScope.launch {
 
             // Get the current user's ID
@@ -100,8 +103,8 @@ class TransactionsActivity : AppCompatActivity() {
             val totalExpenses = getTotalExpenses(db, userId)
 
             // Set the text of the total income and expenses
-            tvTotalIncome.text = "R $totalIncome"
-            tvTotalExpenses.text = "R $totalExpenses"
+            tvTotalIncome.text = currencyFormat.format(totalIncome)
+            tvTotalExpenses.text = currencyFormat.format(totalExpenses)
 
             // set up the recycler view
             val transactions = getAllTransactions(db, userId)
@@ -237,8 +240,10 @@ class TransactionsActivity : AppCompatActivity() {
 
                             val totalIncomeAndExpenses = calculateIncomeAndExpenseValues(filteredTransactions)
 
-                            tvTotalIncome.text = "R ${totalIncomeAndExpenses[0]}"
-                            tvTotalExpenses.text = "R ${totalIncomeAndExpenses[1]}"
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
+                            tvTotalIncome.text = currencyFormat.format(totalIncomeAndExpenses[0])
+                            tvTotalExpenses.text = currencyFormat.format(totalIncomeAndExpenses[1])
 
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
@@ -295,8 +300,10 @@ class TransactionsActivity : AppCompatActivity() {
 
                         val totalIncomeAndExpenses = calculateIncomeAndExpenseValues(transactions)
 
-                        tvTotalIncome.text = "R ${totalIncomeAndExpenses[0]}"
-                        tvTotalExpenses.text = "R ${totalIncomeAndExpenses[1]}"
+                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
+                        tvTotalIncome.text = currencyFormat.format(totalIncomeAndExpenses[0])
+                        tvTotalExpenses.text = currencyFormat.format(totalIncomeAndExpenses[1])
 
                         rvTransactions.visibility = View.VISIBLE
                         tvNoTransactions.visibility = View.GONE
@@ -457,8 +464,6 @@ class TransactionsActivity : AppCompatActivity() {
             totalIncome += income.amount
         }
 
-        // round to 2 decimal places
-        totalIncome = String.format("%.2f", totalIncome).toDouble()
 
         return totalIncome
     }
@@ -480,9 +485,6 @@ class TransactionsActivity : AppCompatActivity() {
         {
             totalExpenses += expense.amount
         }
-
-        // round to 2 decimal places
-        totalExpenses = String.format("%.2f", totalExpenses).toDouble()
 
         return totalExpenses
     }
@@ -536,10 +538,6 @@ class TransactionsActivity : AppCompatActivity() {
 
             }
         }
-
-        // round to 2 decimal places
-        totalIncome = String.format("%.2f", totalIncome).toDouble()
-        totalExpenses = String.format("%.2f", totalExpenses).toDouble()
 
         return listOf(totalIncome, totalExpenses)
     }
