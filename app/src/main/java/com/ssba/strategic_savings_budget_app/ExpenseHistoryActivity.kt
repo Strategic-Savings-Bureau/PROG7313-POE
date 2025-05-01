@@ -390,7 +390,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
     private fun filterExpensesByDateRange(list: List<Expense>, startDate: Date, endDate: Date): List<Expense> {
         return list
             .filter { it.date in startDate..endDate }
-            .sortedByDescending { it.date }
+            .sortedByDescending { it.date.time }
     }
 
     // Method to get all the expenses for the current user
@@ -418,7 +418,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
         }
 
         // Step 3: Return the list
-        return allExpenses.sortedByDescending { it.date }
+        return allExpenses.sortedByDescending { it.date.time }
     }
 
     @SuppressLint("DefaultLocale")

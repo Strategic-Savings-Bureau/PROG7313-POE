@@ -296,12 +296,12 @@ class MainActivity : AppCompatActivity() {
         combinedTransactions.addAll(incomes)
         combinedTransactions.addAll(expenses)
 
-        // Sort by date descending
+        // Sort by date and time descending
         val sortedList = combinedTransactions.sortedByDescending { item ->
             when (item) {
-                is Income -> item.date
-                is Expense -> item.date
-                else -> Date(0) // fallback
+                is Income -> item.date.time
+                is Expense -> item.date.time
+                else -> 0L // fallback
             }
         }
 
