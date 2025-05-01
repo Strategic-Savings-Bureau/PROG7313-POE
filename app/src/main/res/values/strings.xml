@@ -2,14 +2,16 @@
     <string name="app_name">Strategic Savings Budget App</string>
 
     <!--Login -->
-    <string name="login_title">Login</string>
+    <string name="login_title">Welcome Back</string>
     <string name="email_hint">Email Address</string>
     <string name="password_hint">Password</string>
     <string name="register_text">Don\'t have an account? Register</string>
     <string name="logout_title">Logout</string>
+    <string name="tv_enter_your_details_to_login">Enter Your Details To Login</string>
+    <string name="btn_login">Login</string>
 
     <!-- Register -->
-    <string name="register_title">Register</string>
+    <string name="register_title">Create an Account</string>
     <string name="profile_image_desc">Profile picture</string>
     <string name="add_profile_picture">Add Profile Picture</string>
     <string name="username_hint">Username</string>
@@ -17,6 +19,8 @@
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="create_account">Create Account</string>
     <string name="login_prompt_text">Already have an account? Login Here</string>
+    <string name="tv_enter_your_details_to_register">Enter your details to register</string>
+    <string name="btn_register">Register</string>
 
     <!-- NavBar -->
     <string name="nav_home">Home</string>
