@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
@@ -270,6 +271,8 @@ class MainActivity : AppCompatActivity() {
                             userId = userId
                         )
                         db.budgetDao.upsertBudget(newBudget)
+                        Toast.makeText(this@MainActivity, "Budget created successfully", Toast.LENGTH_SHORT).show()
+                        Log.i("MainActivity", "Budget created successfully")
                         dialog.dismiss()
                     }
                 } catch (e: NumberFormatException) {
@@ -296,12 +299,12 @@ class MainActivity : AppCompatActivity() {
         combinedTransactions.addAll(incomes)
         combinedTransactions.addAll(expenses)
 
-        // Sort by date descending
+        // Sort by date and time descending
         val sortedList = combinedTransactions.sortedByDescending { item ->
             when (item) {
-                is Income -> item.date
-                is Expense -> item.date
-                else -> Date(0) // fallback
+                is Income -> item.date.time
+                is Expense -> item.date.time
+                else -> 0L // fallback
             }
         }
 

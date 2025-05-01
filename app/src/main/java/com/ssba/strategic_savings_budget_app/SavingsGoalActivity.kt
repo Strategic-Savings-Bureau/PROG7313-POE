@@ -379,15 +379,15 @@ class SavingsGoalActivity : AppCompatActivity()
             return emptyList()
         }
 
-        // order the savings by most recent and return
-        return savingsGoalWithSavings[0].savings.sortedByDescending { it.date }
+        // Order the savings by most recent (including time) and return
+        return savingsGoalWithSavings[0].savings.sortedByDescending { it.date.time }
     }
 
     // Method to filter Savings transactions by date range
     private fun filterSavingsByDateRange(list: List<Saving>, startDate: Date, endDate: Date): List<Saving> {
         return list
             .filter { it.date in startDate..endDate }
-            .sortedByDescending { it.date }
+            .sortedByDescending { it.date.time }
     }
 
     // endregion

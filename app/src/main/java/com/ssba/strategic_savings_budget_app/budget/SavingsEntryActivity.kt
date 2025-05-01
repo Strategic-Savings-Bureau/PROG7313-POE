@@ -10,18 +10,15 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.ssba.strategic_savings_budget_app.MainActivity
-import com.ssba.strategic_savings_budget_app.R
+import com.ssba.strategic_savings_budget_app.SavingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsEntryBinding
-import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsGoalsBinding
 import com.ssba.strategic_savings_budget_app.entities.Saving
 import com.ssba.strategic_savings_budget_app.models.SavingsEntryViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,9 +32,15 @@ class SavingsEntryActivity : AppCompatActivity() {
     private val viewModel: SavingsEntryViewModel by viewModels()
     private lateinit var db: AppDatabase
     private val datePicker by lazy {
+
+        val constraints = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now()) // Allow only today or earlier
+            .build()
+
         MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select a date")
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setCalendarConstraints(constraints)
             .build()
     }
     private val auth = Firebase.auth
@@ -119,7 +122,7 @@ class SavingsEntryActivity : AppCompatActivity() {
     private fun setupButtons() {
         binding.btnSaveSavings.setOnClickListener {
             Log.w("check","Current value ${viewModel.typePosition.value}")
-            Log.w("check","Current goal id ${selectedSavingGoalId}")
+            Log.w("check","Current goal id $selectedSavingGoalId")
             if (viewModel.validateAll()) {
                 saveToDb()
             } else {
@@ -127,9 +130,6 @@ class SavingsEntryActivity : AppCompatActivity() {
             }
         }
         binding.btnCancelSavings.setOnClickListener { finish() }
-        binding.btnRewards.setOnClickListener {
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun saveToDb() {
@@ -152,8 +152,8 @@ class SavingsEntryActivity : AppCompatActivity() {
             Log.d("SavingsEntryActivity", "Saving successfully recorded.")
             Toast.makeText(this@SavingsEntryActivity, "Saving recorded!", Toast.LENGTH_SHORT).show()
 
-            // Send Intent to MainActivity
-            val intent = Intent(this@SavingsEntryActivity, MainActivity::class.java)
+            // Send Intent to SavingsActivity
+            val intent = Intent(this@SavingsEntryActivity, SavingsActivity::class.java)
             startActivity(intent)
             finish()
         }
