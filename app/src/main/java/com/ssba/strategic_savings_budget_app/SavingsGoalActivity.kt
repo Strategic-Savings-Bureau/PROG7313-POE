@@ -1,9 +1,12 @@
 package com.ssba.strategic_savings_budget_app
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -14,6 +17,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.adapters.SavingGoalTransactionHistoryAdapter
 import com.ssba.strategic_savings_budget_app.budget.SavingsEntryActivity
@@ -159,6 +165,7 @@ class SavingsGoalActivity : AppCompatActivity()
         setupOnClickListeners()
     }
 
+    @Suppress("LABEL_NAME_CLASH")
     private fun setupOnClickListeners()
     {
         btnRewards.setOnClickListener {
@@ -169,15 +176,167 @@ class SavingsGoalActivity : AppCompatActivity()
             finish()
         }
 
-        btnDateFilter.setOnClickListener {
-            Toast.makeText(this, "Date Filter Coming Soon", Toast.LENGTH_SHORT).show()
-        }
-
         btnAddSaving.setOnClickListener {
 
             // navigate to the add saving activity
             val intent = Intent(this, SavingsEntryActivity::class.java)
             startActivity(intent)
+        }
+
+        btnDateFilter.setOnClickListener {
+
+            // show date picker dialog
+            val dialogView = layoutInflater.inflate(R.layout.dialog_date_range_filter, null)
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create()
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.show()
+
+            // access view components in dialog
+            val etStartDate = dialogView.findViewById<EditText>(R.id.etStartDate)
+            val etEndDate = dialogView.findViewById<EditText>(R.id.etEndDate)
+            val btnApplyDateFilter = dialogView.findViewById<Button>(R.id.btnApplyDateFilter)
+            val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
+
+            etStartDate.setOnClickListener {
+                showDatePicker(true, etStartDate, etEndDate)
+            }
+
+            etEndDate.setOnClickListener {
+                showDatePicker(false, etStartDate, etEndDate)
+            }
+
+            btnApplyDateFilter.setOnClickListener {
+
+                // get the selected dates
+                val startDate = etStartDate.text.toString()
+                val endDate = etEndDate.text.toString()
+
+                // check if the dates are empty
+                if (startDate.isEmpty() || endDate.isEmpty())
+                {
+                    Toast.makeText(this, "Please select both dates", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // convert the dates to Date objects
+                val startDateObj =
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+                val endDateObj =
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+
+                // check if the dates are valid
+                if (startDateObj != null && endDateObj != null)
+                {
+                    lifecycleScope.launch {
+
+
+                        // set up the recycler view
+                        val transactions = getAllSavingsForGoal(savingsGoalTitle, db)
+
+                        if (transactions.isEmpty())
+                        {
+                            rvTransactions.visibility = View.GONE
+                            tvNoTransactions.visibility = View.VISIBLE
+
+                            dialog.dismiss()
+                            Toast.makeText(this@SavingsGoalActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+                        // filter the transactions by date
+                        val filteredTransactions = filterSavingsByDateRange(transactions, startDateObj, endDateObj)
+
+                        if (filteredTransactions.isEmpty())
+                        {
+                            rvTransactions.visibility = View.GONE
+                            tvNoTransactions.visibility = View.VISIBLE
+                            Toast.makeText(this@SavingsGoalActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                            return@launch
+                        }
+                        else
+                        {
+                            rvTransactions.visibility = View.VISIBLE
+                            tvNoTransactions.visibility = View.GONE
+
+                            // Set up the recycler view
+                            val adapter = SavingGoalTransactionHistoryAdapter(filteredTransactions)
+
+                            rvTransactions.layoutManager = LinearLayoutManager(this@SavingsGoalActivity)
+
+                            rvTransactions.adapter = adapter
+
+                            dialog.dismiss()
+                            Toast.makeText(this@SavingsGoalActivity, "Transactions Filtered Successfully", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+                    }
+                }
+                else
+                {
+                    Toast.makeText(this, "Invalid Date Range", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+            btnClearFilter.setOnClickListener {
+
+                lifecycleScope.launch {
+
+
+                    // set up the recycler view
+                    val transactions = getAllSavingsForGoal(savingsGoalTitle, db)
+
+                    if (transactions.isEmpty()) {
+                        rvTransactions.visibility = View.GONE
+                        tvNoTransactions.visibility = View.VISIBLE
+
+                        dialog.dismiss()
+                        Toast.makeText(
+                            this@SavingsGoalActivity,
+                            "No Transactions Found",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@launch
+                    }
+                    else
+                    {
+                        // region Set up RecyclerView
+
+                        // get all the savings for the goal
+                        val savingsTransactions = getAllSavingsForGoal(savingsGoalTitle, db)
+
+                        if (savingsTransactions.isEmpty())
+                        {
+                            tvNoTransactions.visibility = View.VISIBLE
+                            rvTransactions.visibility = View.GONE
+                        }
+                        else
+                        {
+                            rvTransactions.visibility = View.VISIBLE
+                            tvNoTransactions.visibility = View.GONE
+
+                            val adapter = SavingGoalTransactionHistoryAdapter(savingsTransactions)
+
+                            rvTransactions.layoutManager = LinearLayoutManager(this@SavingsGoalActivity)
+
+                            rvTransactions.adapter = adapter
+                        }
+
+                        dialog.dismiss()
+                        Toast.makeText(
+                            this@SavingsGoalActivity,
+                            "Filter Cleared",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@launch
+                    }
+
+                }
+            }
         }
     }
 
@@ -221,5 +380,44 @@ class SavingsGoalActivity : AppCompatActivity()
         return savingsGoalWithSavings[0].savings.sortedByDescending { it.date }
     }
 
+    // Method to filter Savings transactions by date range
+    private fun filterSavingsByDateRange(list: List<Saving>, startDate: Date, endDate: Date): List<Saving> {
+        return list
+            .filter { it.date in startDate..endDate }
+            .sortedByDescending { it.date }
+    }
+
     // endregion
+
+    // region Date picker Launcher
+    private fun showDatePicker(isStart: Boolean, etStartDate: EditText, etEndDate: EditText)
+    {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        val constraints = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now()) // Only allow today or earlier
+            .build()
+
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(if (isStart) "Select Start Date" else "Select End Date")
+            .setCalendarConstraints(constraints)
+            .build()
+
+        // Use supportFragmentManager instead of childFragmentManager
+        datePicker.show(supportFragmentManager, "DATE_PICKER")
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            val selectedDate = dateFormat.format(Date(selection))
+            if (isStart)
+            {
+                etStartDate.setText(selectedDate)
+            }
+            else
+            {
+                etEndDate.setText(selectedDate)
+            }
+        }
+    }
+    // endregion
+
 }
