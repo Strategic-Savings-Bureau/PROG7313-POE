@@ -224,10 +224,6 @@ class ExpenseEntryActivity : AppCompatActivity() {
             Log.d("ExpenseEntryActivity", "Cancel button clicked")
             finish()
         }
-        binding.btnRewards.setOnClickListener {
-            Log.d("ExpenseEntryActivity", "Rewards button clicked")
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
-        }
 
         Log.d("ExpenseEntryActivity", "setupActions completed")
     }

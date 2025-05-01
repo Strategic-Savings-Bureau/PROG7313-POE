@@ -126,9 +126,5 @@ class IncomeEntryActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnRewards.setOnClickListener {
-            Log.d("IncomeEntryActivity", "Rewards button clicked")
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
-        }
     }
 }

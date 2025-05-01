@@ -16,7 +16,7 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.ssba.strategic_savings_budget_app.MainActivity
+import com.ssba.strategic_savings_budget_app.SavingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Saving
@@ -130,9 +130,6 @@ class SavingsEntryActivity : AppCompatActivity() {
             }
         }
         binding.btnCancelSavings.setOnClickListener { finish() }
-        binding.btnRewards.setOnClickListener {
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun saveToDb() {
@@ -155,8 +152,8 @@ class SavingsEntryActivity : AppCompatActivity() {
             Log.d("SavingsEntryActivity", "Saving successfully recorded.")
             Toast.makeText(this@SavingsEntryActivity, "Saving recorded!", Toast.LENGTH_SHORT).show()
 
-            // Send Intent to MainActivity
-            val intent = Intent(this@SavingsEntryActivity, MainActivity::class.java)
+            // Send Intent to SavingsActivity
+            val intent = Intent(this@SavingsEntryActivity, SavingsActivity::class.java)
             startActivity(intent)
             finish()
         }

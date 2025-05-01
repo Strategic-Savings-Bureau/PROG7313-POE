@@ -47,17 +47,7 @@
                         android:textSize="24sp"
                         android:textColor="#000000" />
 
-                    <ImageButton
-                        android:id="@+id/btnRewards"
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:background="@drawable/btn_rewards_background_round"
-                        android:contentDescription="@string/cd_rewards_button"
-                        android:padding="8dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_gift_unfilled"
-                        tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
+
                 </FrameLayout>
                 <TextView
                     android:layout_width="wrap_content"
