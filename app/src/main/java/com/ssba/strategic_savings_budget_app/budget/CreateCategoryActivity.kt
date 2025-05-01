@@ -1,16 +1,19 @@
 package com.ssba.strategic_savings_budget_app.budget
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityCreateCategoryBinding
@@ -23,9 +26,11 @@ import kotlinx.coroutines.withContext
 class CreateCategoryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateCategoryBinding
-    private lateinit var viewModel: CreateCategoryViewModel
+
     private lateinit var db: AppDatabase
     private val auth = Firebase.auth
+    private val viewModel: CreateCategoryViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,7 +40,6 @@ class CreateCategoryActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         // Initialize ViewModel
-
         binding.viewmodel = viewModel
 
         // Initialize database
@@ -54,17 +58,26 @@ class CreateCategoryActivity : AppCompatActivity() {
     private fun setupButtons() {
         // Save button
         binding.btnSaveCategory.setOnClickListener {
+            Log.d("CreateCategoryActivity", "Save button clicked")
             if (viewModel.validateAll()) {
+                Log.d("CreateCategoryActivity", "Validation passed, saving category...")
                 saveCategoryToDb()
             } else {
-                Toast.makeText(this, "Please complete all required fields.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please complete all required fields.", Toast.LENGTH_SHORT)
+                    .show()
+                Log.d("CreateCategoryActivity", "Validation failed, fields missing")
             }
         }
 
         // Cancel button
-        binding.btnCancelCategory.setOnClickListener { finish() }
+        binding.btnCancelCategory.setOnClickListener {
+            Log.d("CreateCategoryActivity", "Cancel button clicked, finishing activity")
+            finish()
+        }
+
         binding.btnRewards.setOnClickListener {
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
+            Log.d("CreateCategoryActivity", "Rewards button clicked")
         }
     }
 
@@ -79,13 +92,21 @@ class CreateCategoryActivity : AppCompatActivity() {
             userId = auth.currentUser?.uid.toString()
         )
 
+        Log.d("CreateCategoryActivity", "Saving category: $newCategory")
+
         // Save to database
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 db.expenseCategoryDao.upsertExpenseCategory(newCategory)
             }
-            Toast.makeText(this@CreateCategoryActivity, "Category created!", Toast.LENGTH_SHORT).show()
-            finish() // Finish activity after saving
+            Toast.makeText(this@CreateCategoryActivity, "Category created!", Toast.LENGTH_SHORT)
+                .show()
+            Log.d("CreateCategoryActivity", "Category saved successfully")
+
+            // Intent to navigate to HomeActivity
+            val intent = Intent(this@CreateCategoryActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish() // Finish activity after saving and navigating
         }
     }
 }

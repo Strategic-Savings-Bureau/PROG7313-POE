@@ -2,8 +2,9 @@ package com.ssba.strategic_savings_budget_app.models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-class CreateCategoryViewModel {
+class CreateCategoryViewModel: ViewModel() {
 
     val categoryName = MutableLiveData("")
     val categoryDescription = MutableLiveData("")

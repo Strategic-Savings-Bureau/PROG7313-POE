@@ -1,7 +1,8 @@
 package com.ssba.strategic_savings_budget_app.budget
-
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -13,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.ssba.strategic_savings_budget_app.SavingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
@@ -45,6 +47,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        Log.d("ExpenseEntryActivity", "onCreate started")
+
         // Initialize database and DAOs
         db = AppDatabase.getInstance(this)
         expenseDao = db.expenseDao
@@ -55,6 +59,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
+
+        Log.d("ExpenseEntryActivity", "Binding initialized")
 
         // Apply window insets
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
@@ -68,29 +74,46 @@ class ExpenseEntryActivity : AppCompatActivity() {
         setupDatePicker()
         loadCategories()
         setupActions()
+
+        Log.d("ExpenseEntryActivity", "onCreate completed")
     }
 
     private fun setupImagePicker() {
+        Log.d("ExpenseEntryActivity", "setupImagePicker started")
+
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
                 receiptUri = it
                 Toast.makeText(this, "Receipt selected", Toast.LENGTH_SHORT).show()
+                Log.d("ExpenseEntryActivity", "Receipt selected: $uri")
             }
         }
+
+        Log.d("ExpenseEntryActivity", "setupImagePicker completed")
     }
 
     private fun setupValidationObservers() {
+        Log.d("ExpenseEntryActivity", "setupValidationObservers started")
+
         viewModel.titleError.observe(this) { binding.etTitle.error = it }
         viewModel.dateError.observe(this) { binding.etDate.error = it }
         viewModel.amountError.observe(this) { binding.etAmount.error = it }
         viewModel.categoryError.observe(this) {
-            it?.let { msg -> Toast.makeText(this, msg, Toast.LENGTH_SHORT).show() }
+            it?.let { msg ->
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                Log.d("ExpenseEntryActivity", "Category error: $msg")
+            }
         }
         viewModel.descriptionError.observe(this) { binding.etDescription.error = it }
+
+        Log.d("ExpenseEntryActivity", "setupValidationObservers completed")
     }
 
     private fun setupDatePicker() {
+        Log.d("ExpenseEntryActivity", "setupDatePicker started")
+
         binding.etDate.setOnClickListener {
+            Log.d("ExpenseEntryActivity", "Date picker clicked")
             datePicker.show(supportFragmentManager, "DATE_PICKER")
         }
         datePicker.addOnPositiveButtonClickListener { sel ->
@@ -98,10 +121,15 @@ class ExpenseEntryActivity : AppCompatActivity() {
             val dateStr = datePicker.headerText
             binding.etDate.setText(dateStr)
             viewModel.date.value = dateStr
+            Log.d("ExpenseEntryActivity", "Selected date: $dateStr")
         }
+
+        Log.d("ExpenseEntryActivity", "setupDatePicker completed")
     }
 
     private fun loadCategories() {
+        Log.d("ExpenseEntryActivity", "loadCategories started")
+
         lifecycleScope.launch {
             val categories = withContext(Dispatchers.IO) {
                 categoryDao.getAllExpenseCategories()
@@ -125,21 +153,31 @@ class ExpenseEntryActivity : AppCompatActivity() {
                         id: Long,
                     ) {
                         viewModel.categoryPosition.value = position
+                        Log.d("ExpenseEntryActivity", "Category selected: $position")
                     }
 
                     override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
                 }
+
+            Log.d("ExpenseEntryActivity", "Categories loaded: ${names.size}")
         }
+
+        Log.d("ExpenseEntryActivity", "loadCategories completed")
     }
 
     private fun setupActions() {
+        Log.d("ExpenseEntryActivity", "setupActions started")
+
         // Attach button
         binding.btnAttach.setOnClickListener {
+            Log.d("ExpenseEntryActivity", "Attach button clicked")
             pickImageLauncher.launch("image/*")
         }
 
         // Save button
+        // Save button
         binding.btnSave.setOnClickListener {
+            Log.d("ExpenseEntryActivity", "Save button clicked")
             if (viewModel.validateAll()) {
                 val title = viewModel.titleOrName.value.orEmpty()
                 val amount = viewModel.amount.value?.toDoubleOrNull() ?: 0.0
@@ -157,27 +195,39 @@ class ExpenseEntryActivity : AppCompatActivity() {
                     categoryId = categoryId
                 )
 
-                // Save expense in backg
-                // round
+                // Save expense in background
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
                         expenseDao.upsertExpense(expense)
                     }
-                    // Once saved, show Toast and close Activity on Main thread
+                    // Once saved, show Toast and navigate to SavingsActivity
                     Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT).show()
+                    Log.d("ExpenseEntryActivity", "Expense saved: $expense")
+
+                    // Intent to navigate to SavingsActivity
+                    val intent = Intent(this@ExpenseEntryActivity, SavingsActivity::class.java)
+                    startActivity(intent)
+
+                    // Optionally, you can finish this activity if you don't want the user to go back
                     finish()
                 }
             } else {
                 Toast.makeText(this, "Please fill in all required fields correctly.", Toast.LENGTH_SHORT).show()
+                Log.d("ExpenseEntryActivity", "Validation failed")
             }
         }
 
+
         // Cancel button
         binding.btnCancel.setOnClickListener {
+            Log.d("ExpenseEntryActivity", "Cancel button clicked")
             finish()
         }
         binding.btnRewards.setOnClickListener {
+            Log.d("ExpenseEntryActivity", "Rewards button clicked")
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
         }
+
+        Log.d("ExpenseEntryActivity", "setupActions completed")
     }
 }
