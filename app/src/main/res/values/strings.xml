@@ -143,4 +143,24 @@
     <string name="tv_maximum_expense_limit">Maximum Expense Limit: R30 000</string>
     <string name="tv_expense_progress_percentage">55% towards limit</string>
 
+    <!-- Savings Goals -->
+    <string name="tv_title_savings_goals">Savings</string>
+    <string name="tv_rv_title_goals">Goals</string>
+    <string name="cd_list_of_saving_goals_created_by_the_user">List of Saving Goals created by the user</string>
+    <string name="tv_no_savings_goals_created">No Savings Goals created yet</string>
+    <string name="cd_create_a_new_savings_goal">Create a new savings goal</string>
+
+    <!-- Item: Savings Goal -->
+    <string name="tv_goal_title">Emergency Fund</string>
+    <string name="tv_target_amount">Target: R5,000</string>
+    <string name="tv_end_date">Ends: 2025–12–31</string>
+    <string name="tv_savings_progress_percentage">65%% saved</string>
+
+    <!-- Savings Goal Activity -->
+    <string name="tv_title_savings_goal">Savings Goal</string>
+    <string name="tv_savings_goal_title">Title</string>
+    <string name="tv_savings_target_amount">Target Amount</string>
+    <string name="tv_savings_goal_end_date">End Date</string>
+    <string name="tv_description">Description</string>
+
 </resources>
