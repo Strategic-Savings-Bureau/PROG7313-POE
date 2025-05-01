@@ -1,6 +1,7 @@
 package com.ssba.strategic_savings_budget_app.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ssba.strategic_savings_budget_app.R
+import com.ssba.strategic_savings_budget_app.SavingsGoalActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.entities.SavingGoal
 import kotlinx.coroutines.CoroutineScope
@@ -68,6 +70,17 @@ class SavingsGoalAdapter(private var savingsGoals: List<SavingGoal>) :
 
             holder.pbGoal.progress = progressPercentage.toInt()
             holder.tvProgressPercentage.text = "${progressPercentage.toInt()}% saved"
+        }
+
+        holder.itemView.setOnClickListener {
+
+            // get the savings goal Title
+            val goalTitle = goal.title
+
+            // navigate to the savings goal activity and pass the title
+            val intent = Intent(context, SavingsGoalActivity::class.java)
+            intent.putExtra("SAVINGS_GOAL_TITLE", goalTitle)
+            context.startActivity(intent)
         }
     }
 

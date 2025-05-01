@@ -156,4 +156,11 @@
     <string name="tv_end_date">Ends: 2025–12–31</string>
     <string name="tv_savings_progress_percentage">65%% saved</string>
 
+    <!-- Savings Goal Activity -->
+    <string name="tv_title_savings_goal">Savings Goal</string>
+    <string name="tv_savings_goal_title">Title</string>
+    <string name="tv_savings_target_amount">Target Amount</string>
+    <string name="tv_savings_goal_end_date">End Date</string>
+    <string name="tv_description">Description</string>
+
 </resources>
