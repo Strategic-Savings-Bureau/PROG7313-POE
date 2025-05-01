@@ -1,18 +1,22 @@
 package com.ssba.strategic_savings_budget_app.budget
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.Toast
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.auth.ktx.auth
 
+import com.google.firebase.ktx.Firebase
+import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityBudgetSettingsBinding
@@ -27,6 +31,7 @@ class BudgetSettingsActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
     private lateinit var auth : FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -61,7 +66,11 @@ class BudgetSettingsActivity : AppCompatActivity() {
     private fun setupButtons() {
 
         binding.btnSaveBudget.setOnClickListener {
-            if (viewModel.validateAll() && auth.currentUser!=null) {
+            Log.d("BudgetSettingsActivity", "Save button clicked")
+
+            if (viewModel.validateAll() && auth.currentUser != null) {
+                Log.d("BudgetSettingsActivity", "Validation passed, saving budget")
+
                 val minIncome = viewModel.minimumMonthlyIncome.value!!.toDouble()
                 val maxExpenses = viewModel.maximumMonthlyExpenses.value!!.toDouble()
 
@@ -73,18 +82,31 @@ class BudgetSettingsActivity : AppCompatActivity() {
 
                 lifecycleScope.launch(Dispatchers.IO) {
                     db.budgetDao.upsertBudget(budget)
+                    Log.d("BudgetSettingsActivity", "Budget saved to database")
+
                     launch(Dispatchers.Main) {
                         Toast.makeText(this@BudgetSettingsActivity, "Budget saved", Toast.LENGTH_SHORT).show()
-                        finish()
+
+                        // Intent to navigate to HomeActivity
+                        val intent = Intent(this@BudgetSettingsActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish() // Finish this activity after navigating to the Home screen
+                        Log.d("BudgetSettingsActivity", "Navigating to HomeActivity")
                     }
                 }
+            } else {
+                Log.d("BudgetSettingsActivity", "Validation failed or user not authenticated")
+                Toast.makeText(this, "Please complete all required fields or log in.", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.btnCancelBudget.setOnClickListener {
+            Log.d("BudgetSettingsActivity", "Cancel button clicked, finishing activity")
             finish()
         }
+
         binding.btnRewards.setOnClickListener {
+            Log.d("BudgetSettingsActivity", "Rewards button clicked")
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
         }
     }
