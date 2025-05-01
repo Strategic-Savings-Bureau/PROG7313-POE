@@ -27,6 +27,7 @@ import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsGoalBinding
 import com.ssba.strategic_savings_budget_app.entities.Saving
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -90,6 +91,8 @@ class SavingsGoalActivity : AppCompatActivity()
         btnAddSaving = binding.btnAddSaving
         // endregion
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         // get the title of the savings goal from the intent
         savingsGoalTitle = intent.getStringExtra("SAVINGS_GOAL_TITLE") ?: ""
 
@@ -111,9 +114,9 @@ class SavingsGoalActivity : AppCompatActivity()
             }
 
             tvSavingsGoalTitle.text = savingsGoal.title
-            tvTargetAmount.text = "R ${savingsGoal.targetAmount}"
+            tvTargetAmount.text = currencyFormat.format(savingsGoal.targetAmount)
 
-            val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
             tvEndDate.text = "End Date: ${dateFormatter.format(savingsGoal.endDate)}"
 
@@ -222,9 +225,9 @@ class SavingsGoalActivity : AppCompatActivity()
 
                 // convert the dates to Date objects
                 val startDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(startDate)
                 val endDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(endDate)
 
                 // check if the dates are valid
                 if (startDateObj != null && endDateObj != null)
@@ -392,7 +395,7 @@ class SavingsGoalActivity : AppCompatActivity()
     // region Date picker Launcher
     private fun showDatePicker(isStart: Boolean, etStartDate: EditText, etEndDate: EditText)
     {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val constraints = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointBackward.now()) // Only allow today or earlier

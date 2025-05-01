@@ -33,7 +33,7 @@ import java.util.Date
 data class Expense(
 
     @PrimaryKey(autoGenerate = true)
-    val expenseId: Int? = 0, // Unique ID for the expense (auto-incremented)
+    val expenseId: Int? = null, // Unique ID for the expense (auto-incremented)
 
     val title: String, // Title or name of the expense (indexed for faster search)
 
