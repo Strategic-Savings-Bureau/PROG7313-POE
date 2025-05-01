@@ -7,8 +7,6 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
@@ -23,7 +21,6 @@ import com.ssba.strategic_savings_budget_app.models.IncomeEntryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
-import kotlin.jvm.java
 
 class IncomeEntryActivity : AppCompatActivity() {
 
@@ -59,13 +56,6 @@ class IncomeEntryActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
-
-        // edge-to-edge padding
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(sys.left, sys.top, sys.right, sys.bottom)
-            insets
-        }
 
         setupDatePicker()
         setupValidationObservers()
