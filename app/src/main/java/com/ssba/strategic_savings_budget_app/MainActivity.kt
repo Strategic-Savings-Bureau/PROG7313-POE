@@ -5,18 +5,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.adapters.RecentTransactionAdapter
 import com.ssba.strategic_savings_budget_app.budget.ExpenseEntryActivity
@@ -24,6 +26,7 @@ import com.ssba.strategic_savings_budget_app.budget.IncomeEntryActivity
 import com.ssba.strategic_savings_budget_app.budget.SavingsEntryActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityMainBinding
+import com.ssba.strategic_savings_budget_app.entities.Budget
 import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.entities.Income
 import com.ssba.strategic_savings_budget_app.entities.User
@@ -32,6 +35,7 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
+
     // region Declarations
     // View Binding
     private lateinit var binding: ActivityMainBinding
@@ -150,9 +154,16 @@ class MainActivity : AppCompatActivity() {
             tvUsername.text = user.username
         }
 
-
         // Method to Set Up onClickListeners
         setupOnClickListeners()
+
+        // Check if a budget is set up
+        lifecycleScope.launch {
+            val userID = auth.currentUser?.uid
+            if (db.budgetDao.getBudgetByUserId(userID!!) == null) {
+                showBudgetSetupDialog(userID)
+            }
+        }
     }
 
     private fun setupOnClickListeners() {
@@ -221,13 +232,61 @@ class MainActivity : AppCompatActivity() {
         return db.userDao.getUserById(userId)
     }
 
+    private fun showBudgetSetupDialog(userId: String) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_setup_budget, null)
+        val inputIncome = dialogView.findViewById<TextInputEditText>(R.id.input_min_income)
+        val inputExpenses = dialogView.findViewById<TextInputEditText>(R.id.input_max_expenses)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("Create Budget", null)
+            .setCancelable(false)
+            .create()
+
+        dialog.setOnShowListener {
+            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            positiveButton.setOnClickListener {
+                val incomeStr = inputIncome.text.toString().trim()
+                val expensesStr = inputExpenses.text.toString().trim()
+
+                if (incomeStr.isEmpty() || expensesStr.isEmpty()) {
+                    Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                try {
+                    val income = incomeStr.replace(',', '.').toDouble()
+                    val expenses = expensesStr.replace(',', '.').toDouble()
+
+                    if (income <= 0 || expenses <= 0) {
+                        Toast.makeText(this, "Values must be positive", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+
+                    lifecycleScope.launch {
+                        val newBudget = Budget(
+                            minimumMonthlyIncome = income,
+                            maximumMonthlyExpenses = expenses,
+                            userId = userId
+                        )
+                        db.budgetDao.upsertBudget(newBudget)
+                        dialog.dismiss()
+                    }
+                } catch (e: NumberFormatException) {
+                    Toast.makeText(this, "Invalid number format", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        dialog.show()
+    }
+
     // region Transaction Helper Methods
     // Method to get the recent transactions for the current user
     private suspend fun getRecentTransactions(db: AppDatabase, userId: String): List<Any>
     {
         // get all the incomes for the current user
-         val userWithIncomes = db.userDao.getUserWithIncomes(userId)
-         val incomes = userWithIncomes[0].incomes
+        val incomes = db.userDao.getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
 
         // get all the expenses for the current user
          val expenses = getAllExpensesForUser(db, userId)
@@ -281,5 +340,4 @@ class MainActivity : AppCompatActivity() {
     }
 
     // endregion
-
 }

@@ -2,6 +2,7 @@ package com.ssba.strategic_savings_budget_app
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -64,7 +65,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupOnClickListeners() {
         binding.btnRewards.setOnClickListener {
-
+            Toast.makeText(this, "Rewards Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnProfile.setOnClickListener {
@@ -73,23 +74,23 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.btnSharedBudget.setOnClickListener {
-
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnCurrencyConverter.setOnClickListener {
-
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnNotifications.setOnClickListener {
-
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnBudgeting.setOnClickListener {
-
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnYourData.setOnClickListener {
-
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnLogout.setOnClickListener {

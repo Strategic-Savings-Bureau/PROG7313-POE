@@ -412,8 +412,7 @@ class TransactionsActivity : AppCompatActivity() {
     private suspend fun getAllTransactions(db: AppDatabase, userId: String): List<Any>
     {
         // get all the incomes for the current user
-        val userWithIncomes = db.userDao.getUserWithIncomes(userId)
-        val incomes = userWithIncomes[0].incomes
+        val incomes = db.userDao.getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
 
         // get all the expenses for the current user
         val expenses = getAllExpensesForUser(db, userId)
