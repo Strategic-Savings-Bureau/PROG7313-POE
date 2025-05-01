@@ -21,7 +21,6 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.adapters.ExpenseHistoryAdapter
-import com.ssba.strategic_savings_budget_app.adapters.IncomeHistoryAdapter
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseHistoryBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
@@ -55,6 +54,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
     private lateinit var tvProgressPercentage: TextView
     // endregion
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?)
     {
         // Initialisation
@@ -117,7 +117,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
             pbExpenseLimit.progress = progressPercentage.toInt()
 
             // Set the text of the progress percentage
-            tvProgressPercentage.text = "${progressPercentage.toInt()}% towards limit"
+            tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly limit"
 
             // region Set up RecyclerView
 
@@ -148,6 +148,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
         setupOnClickListeners()
     }
 
+    @Suppress("LABEL_NAME_CLASH")
     @SuppressLint("SetTextI18n")
     private fun setupOnClickListeners()
     {
