@@ -139,11 +139,15 @@ class TransactionsActivity : AppCompatActivity() {
         }
 
         btnIncomeTransactions.setOnClickListener {
-            Toast.makeText(this, "Income Transactions Coming Soon", Toast.LENGTH_SHORT).show()
+
+            // Navigate to Income Transactions Activity
+            startActivity(Intent(this, IncomeHistoryActivity::class.java))
         }
 
         btnExpenseTransactions.setOnClickListener {
-            Toast.makeText(this, "Expense Transactions Coming Soon", Toast.LENGTH_SHORT).show()
+
+            // Navigate to Expense Transactions Activity
+            startActivity(Intent(this, ExpenseHistoryActivity::class.java))
         }
 
         btnDateFilter.setOnClickListener {
@@ -485,7 +489,7 @@ class TransactionsActivity : AppCompatActivity() {
     }
 
 
-    // Method to get all transactions for the current user
+    // Method to filter transactions by date range
     private fun filterTransactionsByDateRange(list: List<Any>, startDate: Date, endDate: Date): List<Any>
     {
         return list
