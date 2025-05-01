@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -32,10 +34,18 @@ class IncomeEntryActivity : AppCompatActivity() {
     private lateinit var incomeDao: com.ssba.strategic_savings_budget_app.daos.IncomeDao
 
     private var selectedDateMillis: Long? = null
-    private val datePicker = MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Select a date")
-        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-        .build()
+    private val datePicker by lazy {
+
+        val constraints = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now()) // Allow only today or earlier
+            .build()
+
+        MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select a date")
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setCalendarConstraints(constraints)
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
