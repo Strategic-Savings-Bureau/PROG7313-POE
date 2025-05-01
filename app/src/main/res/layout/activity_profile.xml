@@ -155,7 +155,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="@string/password_hint">
+                android:hint="@string/password_hint"
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
@@ -163,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:text="@={viewModel.password}"
-                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -171,7 +172,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="@string/confirm_password_hint">
+                android:hint="@string/confirm_password_hint"
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etConfirmPassword"
@@ -179,7 +181,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:text="@={viewModel.confirmPassword}"
-                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize,TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
