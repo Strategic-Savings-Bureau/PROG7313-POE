@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Strategicsavingsbudgetapp"
         tools:targetApi="31">
         <activity
+            android:name=".SavingsGoalActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExpenseHistoryActivity"
             android:exported="false" />
         <activity

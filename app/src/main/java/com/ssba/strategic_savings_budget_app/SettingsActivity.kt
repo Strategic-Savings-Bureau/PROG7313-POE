@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.entities.User
@@ -43,14 +44,16 @@ class SettingsActivity : AppCompatActivity() {
 
         // Load User Profile
         lifecycleScope.launch {
-            val userId = auth.currentUser?.uid
-            if (userId != null) {
-                val user = getCurrentUser(userId)
-                if (user != null) {
-                    binding.tvFullName.text = user.fullName
-                    binding.tvUsername.text = user.username
-                }
-            }
+            val user = db.userDao.getUserById(auth.currentUser?.uid ?: return@launch)
+
+            binding.tvFullName.text = user?.fullName
+            binding.tvUsername.text = user?.username
+
+            Picasso.get()
+                .load(user?.profilePictureUrl)
+                .placeholder(R.drawable.ic_default_profile)
+                .error(R.drawable.ic_default_profile)
+                .into(binding.ivProfilePic)
         }
 
         // Highlight the Menu Item
