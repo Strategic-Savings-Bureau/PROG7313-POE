@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -46,11 +47,13 @@ class SavingGoalTransactionHistoryAdapter(private var savings: List<Saving>) :
 
         val context = holder.itemView.context
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         holder.ivIcon.setImageResource(R.drawable.ic_transaction_savings)
         holder.tvTitle.text = savingsTransaction.title
         holder.tvDate.text = dateFormatter.format(savingsTransaction.date)
         holder.tvType.text = context.getString(R.string.tv_transaction_type_savings)
-        holder.tvAmount.text = "R ${savingsTransaction.amount}"
+        holder.tvAmount.text = currencyFormat.format(savingsTransaction.amount)
         holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.savings_blue))
 
         val db: AppDatabase = AppDatabase.getInstance(context)
@@ -92,7 +95,7 @@ class SavingGoalTransactionHistoryAdapter(private var savings: List<Saving>) :
 
                 tvTitle.text = savingsTransaction.title
                 tvDate.text = dateFormatter.format(savingsTransaction.date)
-                tvAmount.text = "R ${savingsTransaction.amount}"
+                tvAmount.text = currencyFormat.format(savingsTransaction.amount)
                 tvDescription.text = savingsTransaction.description
 
                 if (savingsGoal != null)

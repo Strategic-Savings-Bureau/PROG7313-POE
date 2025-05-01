@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -49,11 +50,13 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
 
         val context = holder.itemView.context
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         holder.ivIcon.setImageResource(R.drawable.ic_transaction_expense)
         holder.tvTitle.text = expenseTransaction.title
         holder.tvDate.text = dateFormatter.format(expenseTransaction.date)
         holder.tvType.text = context.getString(R.string.tv_transaction_type_expense)
-        holder.tvAmount.text = "R ${expenseTransaction.amount}"
+        holder.tvAmount.text = currencyFormat.format(expenseTransaction.amount)
         holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.expense_red))
 
         val db: AppDatabase = AppDatabase.getInstance(context)
@@ -96,7 +99,7 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
 
                 tvTitle.text = expenseTransaction.title
                 tvDate.text = dateFormatter.format(expenseTransaction.date)
-                tvAmount.text = "R ${expenseTransaction.amount}"
+                tvAmount.text = currencyFormat.format(expenseTransaction.amount)
                 tvDescription.text = expenseTransaction.description
 
                 if (category != null)

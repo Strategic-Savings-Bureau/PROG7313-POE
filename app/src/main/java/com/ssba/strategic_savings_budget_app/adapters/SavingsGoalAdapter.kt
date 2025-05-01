@@ -16,6 +16,7 @@ import com.ssba.strategic_savings_budget_app.entities.SavingGoal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,8 +48,10 @@ class SavingsGoalAdapter(private var savingsGoals: List<SavingGoal>) :
 
         val context = holder.itemView.context
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         holder.tvGoalTitle.text = goal.title
-        holder.tvTargetAmount.text = "R ${goal.targetAmount}"
+        holder.tvTargetAmount.text = currencyFormat.format(goal.targetAmount)
         holder.tvEndDate.text = "End Date: ${dateFormatter.format(goal.endDate)}"
 
         // if end date is in the past change color to red
