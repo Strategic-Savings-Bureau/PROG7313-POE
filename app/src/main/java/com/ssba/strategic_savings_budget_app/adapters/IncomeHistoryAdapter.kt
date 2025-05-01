@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.entities.Income
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -36,15 +37,17 @@ class IncomeHistoryAdapter(private var incomeTransactions: List<Income>) :
     override fun onBindViewHolder(holder: IncomeHistoryAdapter.IncomeTransactionViewHolder, position: Int) {
         val incomeTransaction = incomeTransactions[position]
 
-        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val context = holder.itemView.context
+
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
 
         holder.ivIcon.setImageResource(R.drawable.ic_transaction_income)
         holder.tvTitle.text = incomeTransaction.title
         holder.tvDate.text = dateFormatter.format(incomeTransaction.date)
         holder.tvType.text = context.getString(R.string.tv_transaction_type_income)
-        holder.tvAmount.text = "R ${incomeTransaction.amount}"
+        holder.tvAmount.text = currencyFormat.format(incomeTransaction.amount)
         holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.income_green))
         holder.tvTransactionCategory.visibility = View.GONE
 
@@ -67,7 +70,7 @@ class IncomeHistoryAdapter(private var incomeTransactions: List<Income>) :
 
             tvTitle.text = incomeTransaction.title
             tvDate.text = dateFormatter.format(incomeTransaction.date)
-            tvAmount.text = "R ${incomeTransaction.amount}"
+            tvAmount.text = currencyFormat.format(incomeTransaction.amount)
             tvDescription.text = incomeTransaction.description
 
             btnClose.setOnClickListener {

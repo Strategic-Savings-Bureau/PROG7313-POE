@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -44,9 +45,11 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
     override fun onBindViewHolder(holder: TransactionHistoryAdapter.TransactionViewHolder, position: Int) {
         val transaction = transactions[position]
 
-        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val context = holder.itemView.context
+
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
 
         when (transaction)
         {
@@ -56,7 +59,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
                 holder.tvTitle.text = transaction.title
                 holder.tvDate.text = dateFormatter.format(transaction.date)
                 holder.tvType.text = context.getString(R.string.tv_transaction_type_expense)
-                holder.tvAmount.text = "R ${transaction.amount}"
+                holder.tvAmount.text = currencyFormat.format(transaction.amount)
                 holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.expense_red))
 
                 val db: AppDatabase = AppDatabase.getInstance(context)
@@ -99,7 +102,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
 
                         tvTitle.text = transaction.title
                         tvDate.text = dateFormatter.format(transaction.date)
-                        tvAmount.text = "R ${transaction.amount}"
+                        tvAmount.text = currencyFormat.format(transaction.amount)
                         tvDescription.text = transaction.description
 
                         if (category != null)
@@ -135,7 +138,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
                 holder.tvTitle.text = transaction.title
                 holder.tvDate.text = dateFormatter.format(transaction.date)
                 holder.tvType.text = context.getString(R.string.tv_transaction_type_income)
-                holder.tvAmount.text = "R ${transaction.amount}"
+                holder.tvAmount.text = currencyFormat.format(transaction.amount)
                 holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.income_green))
                 holder.tvTransactionCategory.visibility = View.GONE
 
@@ -158,7 +161,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
 
                     tvTitle.text = transaction.title
                     tvDate.text = dateFormatter.format(transaction.date)
-                    tvAmount.text = "R ${transaction.amount}"
+                    tvAmount.text = currencyFormat.format(transaction.amount)
                     tvDescription.text = transaction.description
 
                     btnClose.setOnClickListener {
@@ -173,7 +176,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
                 holder.tvTitle.text = transaction.title
                 holder.tvDate.text = dateFormatter.format(transaction.date)
                 holder.tvType.text = context.getString(R.string.tv_transaction_type_savings)
-                holder.tvAmount.text = "R ${transaction.amount}"
+                holder.tvAmount.text = currencyFormat.format(transaction.amount)
                 holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.savings_blue))
 
                 val db: AppDatabase = AppDatabase.getInstance(context)
@@ -215,7 +218,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
 
                         tvTitle.text = transaction.title
                         tvDate.text = dateFormatter.format(transaction.date)
-                        tvAmount.text = "R ${transaction.amount}"
+                        tvAmount.text = currencyFormat.format(transaction.amount)
                         tvDescription.text = transaction.description
 
                         if (savingsGoal != null)

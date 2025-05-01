@@ -26,7 +26,7 @@ import androidx.room.PrimaryKey
 data class Budget(
 
     @PrimaryKey(autoGenerate = true)
-    val budgetId: Int? = 0, // Unique identifier for the budget (auto-incremented)
+    val budgetId: Int? = null, // Unique identifier for the budget (auto-incremented)
 
     val minimumMonthlyIncome: Double, // Minimum required income for the user each month
 

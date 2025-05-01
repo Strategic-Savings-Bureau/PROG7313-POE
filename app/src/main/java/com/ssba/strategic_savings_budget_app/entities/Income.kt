@@ -31,7 +31,7 @@ import java.util.Date
 data class Income(
 
     @PrimaryKey(autoGenerate = true)
-    val incomeId: Int? = 0, // Unique ID for the income entry (auto-incremented)
+    val incomeId: Int? = null, // Unique ID for the income entry (auto-incremented)
 
     val title: String, // Label or short title for the income entry
 

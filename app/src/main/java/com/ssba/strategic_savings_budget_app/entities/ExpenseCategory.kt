@@ -30,7 +30,7 @@ import androidx.room.PrimaryKey
 data class ExpenseCategory(
 
     @PrimaryKey(autoGenerate = true)
-    val categoryId: Int? = 0, // Unique ID for the expense category (auto-incremented)
+    val categoryId: Int? = null, // Unique ID for the expense category (auto-incremented)
 
     val name: String, // Name of the expense category (indexed for fast queries)
 

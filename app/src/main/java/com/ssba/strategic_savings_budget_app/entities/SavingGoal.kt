@@ -31,7 +31,7 @@ import java.util.Date
 data class SavingGoal(
 
     @PrimaryKey(autoGenerate = true)
-    val savingGoalId: Int? = 0, // Unique ID for the saving goal (auto-incremented)
+    val savingGoalId: Int? = null, // Unique ID for the saving goal (auto-incremented)
 
     val title: String, // Name of the saving goal
 
