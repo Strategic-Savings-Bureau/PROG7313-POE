@@ -162,5 +162,7 @@
     <string name="tv_savings_target_amount">Target Amount</string>
     <string name="tv_savings_goal_end_date">End Date</string>
     <string name="tv_description">Description</string>
+    <string name="cd_add_saving_button">Add Saving Button</string>
+    <string name="cd_list_of_savings_transactions_for_the_goal">List of savings transactions for the goal</string>
 
 </resources>

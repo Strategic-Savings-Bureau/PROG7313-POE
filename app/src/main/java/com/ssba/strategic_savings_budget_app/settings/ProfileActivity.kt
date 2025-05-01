@@ -217,6 +217,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     // Implementation for Button On Click Listeners
+    @Suppress("DEPRECATION")
     private fun setupButtonClickListeners() {
         // Back Button to Return to Menu On Click Listener
         binding.btnBackButton.setOnClickListener {
