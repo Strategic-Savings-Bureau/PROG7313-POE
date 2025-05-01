@@ -42,7 +42,7 @@ class SavingGoalTransactionHistoryAdapter(private var savings: List<Saving>) :
     {
         val savingsTransaction = savings[position]
 
-        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val context = holder.itemView.context
 

@@ -44,7 +44,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
     override fun onBindViewHolder(holder: TransactionHistoryAdapter.TransactionViewHolder, position: Int) {
         val transaction = transactions[position]
 
-        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val context = holder.itemView.context
 

@@ -43,7 +43,7 @@ class SavingsGoalAdapter(private var savingsGoals: List<SavingGoal>) :
     {
         val goal = savingsGoals[position]
 
-        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val context = holder.itemView.context
 

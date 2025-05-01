@@ -45,7 +45,7 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
 
         val expenseTransaction = expenseTransactions[position]
 
-        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val context = holder.itemView.context
 

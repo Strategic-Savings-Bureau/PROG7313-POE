@@ -36,7 +36,7 @@ class IncomeHistoryAdapter(private var incomeTransactions: List<Income>) :
     override fun onBindViewHolder(holder: IncomeHistoryAdapter.IncomeTransactionViewHolder, position: Int) {
         val incomeTransaction = incomeTransactions[position]
 
-        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val context = holder.itemView.context
 
