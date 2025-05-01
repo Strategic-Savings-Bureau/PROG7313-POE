@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
@@ -270,6 +271,8 @@ class MainActivity : AppCompatActivity() {
                             userId = userId
                         )
                         db.budgetDao.upsertBudget(newBudget)
+                        Toast.makeText(this@MainActivity, "Budget created successfully", Toast.LENGTH_SHORT).show()
+                        Log.i("MainActivity", "Budget created successfully")
                         dialog.dismiss()
                     }
                 } catch (e: NumberFormatException) {
