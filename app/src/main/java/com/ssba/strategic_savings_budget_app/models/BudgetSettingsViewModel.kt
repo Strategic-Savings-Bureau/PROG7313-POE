@@ -2,8 +2,9 @@ package com.ssba.strategic_savings_budget_app.models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-class BudgetSettingsViewModel {
+class BudgetSettingsViewModel:ViewModel() {
     val minimumMonthlyIncome = MutableLiveData("")
     val maximumMonthlyExpenses = MutableLiveData("")
 

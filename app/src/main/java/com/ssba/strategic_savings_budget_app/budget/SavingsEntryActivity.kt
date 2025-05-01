@@ -1,6 +1,8 @@
 package com.ssba.strategic_savings_budget_app.budget
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -14,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsEntryBinding
@@ -22,9 +25,7 @@ import com.ssba.strategic_savings_budget_app.models.SavingsEntryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 class SavingsEntryActivity : AppCompatActivity() {
 
@@ -41,6 +42,7 @@ class SavingsEntryActivity : AppCompatActivity() {
     private var selectedDateMillis: Long? = null
     private var savingGoalIds: List<Int> = emptyList()
     private var selectedSavingGoalId: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -78,13 +80,12 @@ class SavingsEntryActivity : AppCompatActivity() {
             viewModel.date.value = dateStr
         }
     }
+
     private fun loadSavingGoals() {
         lifecycleScope.launch {
-
             val goals = withContext(Dispatchers.IO) {
                 db.savingsGoalDao.getSavingGoalsByUserId(auth.currentUser?.uid.toString())
             }
-
 
             val titles = goals.map { it.title }
             savingGoalIds = goals.mapNotNull { it.savingGoalId }
@@ -97,11 +98,6 @@ class SavingsEntryActivity : AppCompatActivity() {
                 setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             }
             binding.spinnerSavingsGoal.adapter = adapter
-
-
-            val prevPos = titles.indexOfFirst { it == binding.viewmodel?.date?.value }
-            if (prevPos >= 0) binding.spinnerSavingsGoal.setSelection(prevPos)
-
 
             binding.spinnerSavingsGoal.setSelection(viewModel.typePosition.value ?: 0)
             binding.spinnerSavingsGoal.onItemSelectedListener =
@@ -122,6 +118,7 @@ class SavingsEntryActivity : AppCompatActivity() {
                 }
         }
     }
+
     private fun setupButtons() {
         binding.btnSaveSavings.setOnClickListener {
             if (viewModel.validateAll()) {
@@ -137,25 +134,28 @@ class SavingsEntryActivity : AppCompatActivity() {
     }
 
     private fun saveToDb() {
-      // remember to fetch the current clicked category to use the reference for the ID
-//        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-//        val formattedDate = simpleDateFormat.format(Date(selectedDateMillis ?: System.currentTimeMillis()))
-//        viewModel.date.value = formattedDate
-//        binding.etSavingsDate.setText(formattedDate)
+        Log.d("SavingsEntryActivity", "Starting save to DB...")
+
         val saving = Saving(
             date = Date(selectedDateMillis ?: System.currentTimeMillis()),
             title = viewModel.titleOrName.value.orEmpty(),
-
             amount = viewModel.amount.value?.toDoubleOrNull() ?: 0.0,
             description = viewModel.description.value.orEmpty(),
-            savingGoalId = selectedSavingGoalId
-                ?: 0
+            savingGoalId = selectedSavingGoalId ?: 0
         )
+
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
+                Log.d("SavingsEntryActivity", "Inserting saving into DB...")
                 db.savingDao.upsertSaving(saving)
             }
+
+            Log.d("SavingsEntryActivity", "Saving successfully recorded.")
             Toast.makeText(this@SavingsEntryActivity, "Saving recorded!", Toast.LENGTH_SHORT).show()
+
+            // Send Intent to MainActivity
+            val intent = Intent(this@SavingsEntryActivity, MainActivity::class.java)
+            startActivity(intent)
             finish()
         }
     }
