@@ -202,9 +202,9 @@ class IncomeHistoryActivity : AppCompatActivity()
 
                 // convert the dates to Date objects
                 val startDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(startDate)
                 val endDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(endDate)
 
                 // check if the dates are valid
                 if (startDateObj != null && endDateObj != null)
@@ -471,7 +471,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     // region Date picker Launcher
     private fun showDatePicker(isStart: Boolean, etStartDate: EditText, etEndDate: EditText)
     {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val constraints = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointBackward.now()) // Only allow today or earlier
