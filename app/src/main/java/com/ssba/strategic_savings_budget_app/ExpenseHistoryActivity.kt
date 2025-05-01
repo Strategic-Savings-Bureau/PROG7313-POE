@@ -330,7 +330,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
                         pbExpenseLimit.progress = progressPercentage.toInt()
 
                         // Set the text of the progress percentage
-                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards limit"
+                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly limit"
 
                         // region Set up RecyclerView
 

@@ -118,7 +118,7 @@ class IncomeHistoryActivity : AppCompatActivity()
             pbIncomeGoal.progress = progressPercentage.toInt()
 
             // Set the text of the progress percentage
-            tvProgressPercentage.text = "${progressPercentage.toInt()}% towards goal"
+            tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly goal"
 
             // region Set up RecyclerView
 
@@ -333,7 +333,7 @@ class IncomeHistoryActivity : AppCompatActivity()
                         pbIncomeGoal.progress = progressPercentage.toInt()
 
                         // Set the text of the progress percentage
-                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards goal"
+                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly goal"
 
                         // region Set up RecyclerView
 
