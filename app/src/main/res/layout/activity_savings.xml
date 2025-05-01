@@ -83,16 +83,16 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/btnDateFilter" />
+                    app:layout_constraintBaseline_toBaselineOf="@+id/btnAddGoal" />
 
                 <ImageButton
-                    android:id="@+id/btnDateFilter"
+                    android:id="@+id/btnAddGoal"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:background="@android:color/transparent"
-                    android:contentDescription="@string/cd_filter_by_date_range_button"
+                    android:contentDescription="@string/cd_create_a_new_savings_goal"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_calender_unfilled"
+                    android:src="@drawable/ic_plus_filled"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
