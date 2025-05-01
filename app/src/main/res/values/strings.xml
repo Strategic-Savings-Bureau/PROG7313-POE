@@ -162,5 +162,19 @@
     <string name="tv_savings_target_amount">Target Amount</string>
     <string name="tv_savings_goal_end_date">End Date</string>
     <string name="tv_description">Description</string>
+    <string name="desc_category_icon" />
+    <string name="desc_food_category" />
+    <string name="desc_transport_category" />
+    <string name="desc_groceries_category" />
+    <string name="desc_medicine_category" />
+    <string name="desc_rent_category" />
+    <string name="desc_gifts_category" />
+    <string name="desc_savings_category" />
+    <string name="desc_entertainment_category" />
+    <string name="desc_more_category" />
+    <string name="desc_transactions_list" />
+    <string name="check_icon" />
+    <string name="calendar_icon" />
+    <string name="search_icon" />
 
 </resources>

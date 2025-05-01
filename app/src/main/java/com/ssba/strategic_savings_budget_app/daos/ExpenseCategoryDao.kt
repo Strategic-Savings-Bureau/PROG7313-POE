@@ -108,5 +108,17 @@ interface ExpenseCategoryDao {
     @Query("SELECT * FROM expense_category WHERE categoryId = :categoryId")
     suspend fun getExpensesByCategoryId(categoryId: Int): List<ExpenseCategoryWithExpenses>
 
+    /**
+     * Return only those categories for which the user has at least one expense.
+     */
+    @Query("""
+    SELECT ec.* 
+      FROM expense_category ec
+      INNER JOIN expense e 
+        ON ec.categoryId = e.categoryId
+     WHERE ec.userId = :userId
+     GROUP BY ec.categoryId
+  """)
+    suspend fun getCategoriesWithTransactions(userId: String): List<ExpenseCategory>
     //endregion
 }

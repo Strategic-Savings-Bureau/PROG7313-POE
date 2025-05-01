@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.ssba.strategic_savings_budget_app.databinding.ActivityAnalysisBinding
 
+
 class AnalysisActivity : AppCompatActivity() {
 
     // region Declarations

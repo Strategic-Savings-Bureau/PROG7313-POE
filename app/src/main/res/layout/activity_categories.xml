@@ -3,10 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_categories"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#B2EBF2"
     android:fillViewport="true"
-    android:background="#B2EBF2" tools:context=".CategoriesActivity">
+    tools:context="com.ssba.strategic_savings_budget_app.categories.CategoriesActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,6 +16,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Summary Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,10 +44,11 @@
                     android:id="@+id/tvTotalBalance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="R7,783.00"
+                    android:text="R0.00"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="#4CAF50" app:layout_constraintStart_toStartOf="parent"
+                    android:textColor="#4CAF50"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvTotalBalanceLabel" />
 
                 <TextView
@@ -61,21 +65,23 @@
                     android:id="@+id/tvTotalExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="-R1,187.40"
+                    android:text="R0.00"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="#F44336" app:layout_constraintEnd_toEndOf="parent"
+                    android:textColor="#F44336"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvTotalExpenseLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Progress Bar & Percentage -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:layout_marginBottom="8dp">
 
             <ProgressBar
                 android:id="@+id/progressExpenses"
@@ -84,304 +90,35 @@
                 android:layout_height="8dp"
                 android:layout_weight="1"
                 android:max="100"
-                android:progress="30"
-                android:progressDrawable="@drawable/progress_drawable_white_green" /> <TextView
-            android:id="@+id/tvProgressPercentage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="30%"
-            android:textSize="12sp"
-            android:textColor="#4CAF50" android:layout_marginStart="8dp" />
+                android:progress="0"
+                android:progressDrawable="@drawable/progress_drawable_white_green" />
+
+            <TextView
+                android:id="@+id/tvProgressPercentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textSize="12sp"
+                android:textColor="#4CAF50"
+                android:layout_marginStart="8dp" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="30% Of Your Expenses, Looks Good."
+            android:text="0% of your budget used."
             android:textSize="14sp"
             android:textColor="@android:color/white"
             android:layout_marginBottom="16dp" />
 
-        <GridLayout
-            android:id="@+id/gridCategories"
+        <!-- Category List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCategories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:alignmentMode="alignMargins"
-            android:columnCount="3"
-            android:rowCount="3"
-            android:useDefaultMargins="true">
+            android:clipToPadding="false"
+            tools:listitem="@layout/item_category" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#FFB74D" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategoryFood"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_food_category" />
-                    <TextView
-                        android:id="@+id/tvCategoryFood"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Food"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#FFB74D" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategoryTransport"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_transport_category" />
-                    <TextView
-                        android:id="@+id/tvCategoryTransport"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Transport"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#FFB74D" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategoryMedicine"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_medicine_category" />
-                    <TextView
-                        android:id="@+id/tvCategoryMedicine"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Medicine"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#FFB74D" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategoryGroceries"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_groceries_category" />
-                    <TextView
-                        android:id="@+id/tvCategoryGroceries"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Groceries"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#FFB74D" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategoryRent"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_rent_category" />
-                    <TextView
-                        android:id="@+id/tvCategoryRent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rent"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#FFB74D" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategoryGifts"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_gifts_category" />
-                    <TextView
-                        android:id="@+id/tvCategoryGifts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gifts"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#64B5F6" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategorySavings"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_savings_category" />
-                    <TextView
-                        android:id="@+id/tvCategorySavings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Savings"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#FFB74D" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategoryEntertainment"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_entertainment_category" />
-                    <TextView
-                        android:id="@+id/tvCategoryEntertainment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Entertainment"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#FFB74D" app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-                    <ImageView
-                        android:id="@+id/ivCategoryMore"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/desc_more_category" />
-                    <TextView
-                        android:id="@+id/tvCategoryMore"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="More"
-                        android:textSize="14sp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-        </GridLayout>
     </LinearLayout>
 </ScrollView>

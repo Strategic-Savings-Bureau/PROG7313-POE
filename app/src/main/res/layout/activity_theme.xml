@@ -2,6 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scroll_theme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,27 +20,31 @@
             android:layout_height="wrap_content"
             android:text="Choose App Theme"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            tools:ignore="HardcodedText" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/checkbox_dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dark mode"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            tools:ignore="HardcodedText" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/checkbox_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Light mode"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            tools:ignore="HardcodedText" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/checkbox_system"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="System default"/>
+            android:text="System default"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 </ScrollView>

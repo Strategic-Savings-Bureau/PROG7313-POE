@@ -71,6 +71,7 @@ dependencies {
     // Add Supabase to App
     val kotlin_version = "3.1.4"
     val ktor_version = "3.1.2"
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     implementation(platform("io.github.jan-tennert.supabase:bom:$kotlin_version"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
