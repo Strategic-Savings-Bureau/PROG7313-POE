@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -37,6 +38,7 @@ class SavingGoalEntryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("SavingGoalEntryActivity", "onCreate called")
+        enableEdgeToEdge()
 
         binding = ActivitySavingsGoalsBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -76,6 +78,7 @@ class SavingGoalEntryActivity : AppCompatActivity() {
     private fun setupActions() {
         binding.btnSaveGoal.setOnClickListener {
             Log.d("SavingGoalEntryActivity", "Save button clicked")
+            Log.d("SavingGoalEntry", "Errors → title=${viewModel.titleError.value} ▸ amount=${viewModel.amountError.value} ▸ date=${viewModel.dateError.value} ▸ desc=${viewModel.descriptionError.value}")
             if (viewModel.validateAll()) {
                 val title = viewModel.titleOrName.value.orEmpty()
                 val amount = viewModel.amount.value?.toDouble() ?: 0.0

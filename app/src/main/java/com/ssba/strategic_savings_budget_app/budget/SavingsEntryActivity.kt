@@ -8,7 +8,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -18,6 +21,7 @@ import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsEntryBinding
+import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsGoalsBinding
 import com.ssba.strategic_savings_budget_app.entities.Saving
 import com.ssba.strategic_savings_budget_app.models.SavingsEntryViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +32,7 @@ import java.util.Date
 class SavingsEntryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySavingsEntryBinding
-    private lateinit var viewModel: SavingsEntryViewModel
+    private val viewModel: SavingsEntryViewModel by viewModels()
     private lateinit var db: AppDatabase
     private val datePicker by lazy {
         MaterialDatePicker.Builder.datePicker()
@@ -46,16 +50,14 @@ class SavingsEntryActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         // DataBinding setup
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_savings_entry)
-        binding.lifecycleOwner = this
+        binding = ActivitySavingsEntryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Initialize ViewModel with no types (unused here)
-        viewModel = SavingsEntryViewModel()
-        binding.viewmodel = viewModel
-
-        // Initialize database
         db = AppDatabase.getInstance(this)
 
+
+        binding.lifecycleOwner = this
+        binding.viewmodel = viewModel
         loadSavingGoals()
         setupDatePicker()
         setupButtons()
@@ -81,7 +83,7 @@ class SavingsEntryActivity : AppCompatActivity() {
 
             val titles = goals.map { it.title }
             savingGoalIds = goals.mapNotNull { it.savingGoalId }
-
+            viewModel.savingsGoals.value = titles
             val adapter = ArrayAdapter(
                 this@SavingsEntryActivity,
                 android.R.layout.simple_spinner_item,
@@ -100,8 +102,11 @@ class SavingsEntryActivity : AppCompatActivity() {
                         position: Int,
                         id: Long
                     ) {
+
                         viewModel.typePosition.value = position
+                        Log.w("SavingsEntry","Current value ${viewModel.typePosition.value}")
                         selectedSavingGoalId = savingGoalIds.getOrNull(position)
+
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>) {
@@ -113,6 +118,8 @@ class SavingsEntryActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         binding.btnSaveSavings.setOnClickListener {
+            Log.w("check","Current value ${viewModel.typePosition.value}")
+            Log.w("check","Current goal id ${selectedSavingGoalId}")
             if (viewModel.validateAll()) {
                 saveToDb()
             } else {
@@ -133,7 +140,7 @@ class SavingsEntryActivity : AppCompatActivity() {
             title = viewModel.titleOrName.value.orEmpty(),
             amount = viewModel.amount.value?.toDoubleOrNull() ?: 0.0,
             description = viewModel.description.value.orEmpty(),
-            savingGoalId = selectedSavingGoalId ?: 0
+            savingGoalId = selectedSavingGoalId!!
         )
 
         lifecycleScope.launch {
