@@ -53,22 +53,25 @@
             android:exported="true" />
         <activity
             android:name=".landing.RegisterActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".AnalysisActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".TransactionsActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".SavingsActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".settings.ProfileActivity"
-            android:exported="true" />
+            android:exported="false" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
