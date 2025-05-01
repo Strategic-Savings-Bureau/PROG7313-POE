@@ -13,7 +13,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -226,8 +225,7 @@ class MainActivity : AppCompatActivity() {
     private suspend fun getRecentTransactions(db: AppDatabase, userId: String): List<Any>
     {
         // get all the incomes for the current user
-         val userWithIncomes = db.userDao.getUserWithIncomes(userId)
-         val incomes = userWithIncomes[0].incomes
+        val incomes = db.userDao.getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
 
         // get all the expenses for the current user
          val expenses = getAllExpensesForUser(db, userId)
