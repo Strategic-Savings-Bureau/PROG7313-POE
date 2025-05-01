@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
+import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.entities.User
@@ -86,7 +87,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.btnBudgeting.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+
+            // Navigate to Budget Settings
+            startActivity(Intent(this, BudgetSettingsActivity::class.java))
         }
 
         binding.btnYourData.setOnClickListener {
