@@ -1,15 +1,17 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Strategic Savings Budget App</string>
 
     <!--Login -->
-    <string name="login_title">Login</string>
+    <string name="login_title">Welcome Back</string>
     <string name="email_hint">Email Address</string>
     <string name="password_hint">Password</string>
     <string name="register_text">Don\'t have an account? Register</string>
     <string name="logout_title">Logout</string>
+    <string name="tv_enter_your_details_to_login">Enter Your Details To Login</string>
+    <string name="btn_login">Login</string>
 
     <!-- Register -->
-    <string name="register_title">Register</string>
+    <string name="register_title">Create an Account</string>
     <string name="profile_image_desc">Profile picture</string>
     <string name="add_profile_picture">Add Profile Picture</string>
     <string name="username_hint">Username</string>
@@ -17,6 +19,8 @@
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="create_account">Create Account</string>
     <string name="login_prompt_text">Already have an account? Login Here</string>
+    <string name="tv_enter_your_details_to_register">Enter your details to register</string>
+    <string name="btn_register">Register</string>
 
     <!-- NavBar -->
     <string name="nav_home">Home</string>
@@ -76,4 +80,87 @@
 
     <!-- Your Data -->
     <string name="your_data_title">Your Data</string>
+
+    <!-- Transaction History -->
+    <string name="tv_title_transaction_history">Transaction History</string>
+    <string name="cd_income_arrow">Income Arrow</string>
+    <string name="tv_income">Income</string>
+    <string name="tv_total_income">Total Income</string>
+    <string name="cd_expense_arrow">Expense Arrow</string>
+    <string name="tv_expense">Expense</string>
+    <string name="tv_total_expense">Total Expense</string>
+    <string name="tv_transactions">Transactions</string>
+    <string name="cd_list_of_income_and_expense_transactions">List of income and expense transactions</string>
+    <string name="cd_filter_by_date_range_button">Filter by date range button</string>
+
+    <!-- Item: Transaction History -->
+    <string name="tv_transaction_category">Category</string>
+
+    <!-- Transaction History Adapter -->
+    <string name="content_no_category">No Category</string>
+    <string name="tv_transaction_type_savings">Savings</string>
+
+    <!-- Date Range Dialog -->
+    <string name="tv_title">Choose a date range to filter</string>
+    <string name="tv_hint_start_date">Start Date</string>
+    <string name="tv_hint_end_date">End Date</string>
+    <string name="btn_filter">Filter</string>
+    <string name="btn_text_clear_filter">Clear Filter</string>
+
+    <!-- Dialog: Income -->
+    <string name="tv_income_title">Income Title</string>
+    <string name="tv_income_amount">R 0.00</string>
+    <string name="tv_income_date">Date: 2024–01–01</string>
+    <string name="tv_income_description">Description goes here</string>
+    <string name="btn_income_close">Close</string>
+
+    <!-- Dialog: Savings -->
+    <string name="tv_saving_title">Saving Title</string>
+    <string name="tv_savings_amount">R 0.00</string>
+    <string name="tv_savings_date">Date: 2024–01–01</string>
+    <string name="tv_savings_description">Description goes here</string>
+    <string name="tv_savings_goal_name">Saving Goal Name goes here</string>
+    <string name="btn_savings_close">Close</string>
+
+    <!-- Dialog: Expense -->
+    <string name="tv_expense_title">Expense Title</string>
+    <string name="tv_expense_amount">R 0.00</string>
+    <string name="tv_expense_date">Date: 2024–01–01</string>
+    <string name="tv_expense_description">Description goes here</string>
+    <string name="tv_expense_category">Expense Category goes here</string>
+    <string name="cd_receipt_image">Receipt Image</string>
+    <string name="btn_expense_close">Close</string>
+
+    <!-- Income History -->
+    <string name="tv_title_income_history">Income History</string>
+    <string name="cd_back_button">Back Button</string>
+    <string name="cd_list_of_income_transactions">List of Income Transactions</string>
+    <string name="tv_minimum_income_goal">Minimum Income Goal: R5,000</string>
+    <string name="tv_progress_percentage">40% towards goal</string>
+
+    <!-- Expense History -->
+    <string name="tv_title_expense_history">Expense History</string>
+    <string name="tv_maximum_expense_limit">Maximum Expense Limit: R30 000</string>
+    <string name="tv_expense_progress_percentage">55% towards limit</string>
+
+    <!-- Savings Goals -->
+    <string name="tv_title_savings_goals">Savings</string>
+    <string name="tv_rv_title_goals">Goals</string>
+    <string name="cd_list_of_saving_goals_created_by_the_user">List of Saving Goals created by the user</string>
+    <string name="tv_no_savings_goals_created">No Savings Goals created yet</string>
+    <string name="cd_create_a_new_savings_goal">Create a new savings goal</string>
+
+    <!-- Item: Savings Goal -->
+    <string name="tv_goal_title">Emergency Fund</string>
+    <string name="tv_target_amount">Target: R5,000</string>
+    <string name="tv_end_date">Ends: 2025–12–31</string>
+    <string name="tv_savings_progress_percentage">65%% saved</string>
+
+    <!-- Savings Goal Activity -->
+    <string name="tv_title_savings_goal">Savings Goal</string>
+    <string name="tv_savings_goal_title">Title</string>
+    <string name="tv_savings_target_amount">Target Amount</string>
+    <string name="tv_savings_goal_end_date">End Date</string>
+    <string name="tv_description">Description</string>
+
 </resources>

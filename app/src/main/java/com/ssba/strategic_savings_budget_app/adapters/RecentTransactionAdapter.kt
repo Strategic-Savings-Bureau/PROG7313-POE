@@ -1,5 +1,6 @@
 package com.ssba.strategic_savings_budget_app.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class RecentTransactionAdapter(private var transactions: List<Any>) : RecyclerVi
         return TransactionViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         val transaction = transactions[position]
 
@@ -60,8 +62,4 @@ class RecentTransactionAdapter(private var transactions: List<Any>) : RecyclerVi
 
     override fun getItemCount(): Int = transactions.size
 
-    fun updateTransactions(newTransactions: List<Any>) {
-        transactions = newTransactions
-        notifyDataSetChanged()
-    }
 }

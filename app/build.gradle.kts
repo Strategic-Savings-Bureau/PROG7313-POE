@@ -76,4 +76,7 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.ktor:ktor-client-android:$ktor_version")
     implementation("io.github.jan-tennert.supabase:storage-kt:$ktor_version")
+
+    // Add Picasso to App (image loading library)
+    implementation("com.squareup.picasso:picasso:2.71828")
 }
