@@ -1,6 +1,8 @@
 package com.ssba.strategic_savings_budget_app.budget
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -11,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityIncomeEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Income
@@ -18,6 +21,7 @@ import com.ssba.strategic_savings_budget_app.models.IncomeEntryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
+import kotlin.jvm.java
 
 class IncomeEntryActivity : AppCompatActivity() {
 
@@ -79,8 +83,11 @@ class IncomeEntryActivity : AppCompatActivity() {
 
     private fun setupActions() {
         binding.btnSave.setOnClickListener {
-            // this will now also validate amount via viewModel.amountError
+            Log.d("IncomeEntryActivity", "Save button clicked")
+
             if (viewModel.validateAll()) {
+                Log.d("IncomeEntryActivity", "Validation passed, saving income")
+
                 val title       = viewModel.titleOrName.value!!.trim()
                 val description = viewModel.description.value!!.trim()
                 val date        = Date(selectedDateMillis ?: System.currentTimeMillis())
@@ -96,16 +103,31 @@ class IncomeEntryActivity : AppCompatActivity() {
 
                 lifecycleScope.launch(Dispatchers.IO) {
                     incomeDao.upsertIncome(income)
-                }
+                    Log.d("IncomeEntryActivity", "Income saved to database")
 
-                Toast.makeText(this, "Income Saved", Toast.LENGTH_SHORT).show()
-                finish()
+                    launch(Dispatchers.Main) {
+                        Toast.makeText(this@IncomeEntryActivity, "Income Saved", Toast.LENGTH_SHORT).show()
+
+                        // Intent to navigate to HomeActivity
+                        val intent = Intent(this@IncomeEntryActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish() // Finish this activity after navigating to the Home screen
+                        Log.d("IncomeEntryActivity", "Navigating to HomeActivity")
+                    }
+                }
+            } else {
+                Log.d("IncomeEntryActivity", "Validation failed")
+                Toast.makeText(this, "Please complete all required fields.", Toast.LENGTH_SHORT).show()
             }
         }
+
         binding.btnCancel.setOnClickListener {
+            Log.d("IncomeEntryActivity", "Cancel button clicked, finishing activity")
             finish()
         }
+
         binding.btnRewards.setOnClickListener {
+            Log.d("IncomeEntryActivity", "Rewards button clicked")
             Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
         }
     }
