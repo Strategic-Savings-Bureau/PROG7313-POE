@@ -73,6 +73,11 @@ class SavingsGoalAdapter(private var savingsGoals: List<SavingGoal>) :
 
             holder.pbGoal.progress = progressPercentage.toInt()
             holder.tvProgressPercentage.text = "${progressPercentage.toInt()}% saved"
+
+            // if progress percentage is 100% change color to green
+            if (progressPercentage >= 100.0) {
+                holder.tvProgressPercentage.setTextColor(ContextCompat.getColor(context, R.color.income_green))
+            }
         }
 
         holder.itemView.setOnClickListener {

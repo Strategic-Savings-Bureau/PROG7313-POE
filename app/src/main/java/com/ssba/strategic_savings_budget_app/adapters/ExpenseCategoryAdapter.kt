@@ -1,7 +1,6 @@
 package com.ssba.strategic_savings_budget_app.adapters
 
-import android.content.Intent
-import android.net.Uri
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,21 +9,18 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.ssba.strategic_savings_budget_app.R
-import com.ssba.strategic_savings_budget_app.SavingsGoalActivity
-import com.ssba.strategic_savings_budget_app.adapters.SavingsGoalAdapter.SavingsGoalViewHolder
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import androidx.core.net.toUri
 
 class ExpenseCategoryAdapter(private var expenseCategories: List<ExpenseCategory>) :
     RecyclerView.Adapter<ExpenseCategoryAdapter.CategoryViewHolder>()
@@ -44,6 +40,7 @@ class ExpenseCategoryAdapter(private var expenseCategories: List<ExpenseCategory
         return CategoryViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ExpenseCategoryAdapter.CategoryViewHolder, position: Int)
     {
         val category = expenseCategories[position]
