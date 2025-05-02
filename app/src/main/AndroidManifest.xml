@@ -18,7 +18,7 @@
         <activity
             android:name=".ExpenseCategoryAnalysisActivity"
             android:exported="false" />
-            android:name=".budget.AdvancedBudgetSettingsActivity"
+           <activity android:name=".budget.AdvancedBudgetSettingsActivity"
             android:exported="false" />
         <activity
             android:name=".SavingsGoalActivity"
