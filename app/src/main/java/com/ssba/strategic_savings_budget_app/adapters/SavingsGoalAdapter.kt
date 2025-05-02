@@ -51,7 +51,7 @@ class SavingsGoalAdapter(private var savingsGoals: List<SavingGoal>) :
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
 
         holder.tvGoalTitle.text = goal.title
-        holder.tvTargetAmount.text = currencyFormat.format(goal.targetAmount)
+        holder.tvTargetAmount.text = "Target: ${currencyFormat.format(goal.targetAmount)}"
         holder.tvEndDate.text = "End Date: ${dateFormatter.format(goal.endDate)}"
 
         // if end date is in the past change color to red
@@ -73,6 +73,11 @@ class SavingsGoalAdapter(private var savingsGoals: List<SavingGoal>) :
 
             holder.pbGoal.progress = progressPercentage.toInt()
             holder.tvProgressPercentage.text = "${progressPercentage.toInt()}% saved"
+
+            // if progress percentage is 100% change color to green
+            if (progressPercentage >= 100.0) {
+                holder.tvProgressPercentage.setTextColor(ContextCompat.getColor(context, R.color.income_green))
+            }
         }
 
         holder.itemView.setOnClickListener {

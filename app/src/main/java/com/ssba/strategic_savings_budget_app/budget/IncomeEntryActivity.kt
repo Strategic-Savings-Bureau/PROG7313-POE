@@ -13,7 +13,7 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.ssba.strategic_savings_budget_app.MainActivity
+import com.ssba.strategic_savings_budget_app.TransactionsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityIncomeEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Income
@@ -108,11 +108,11 @@ class IncomeEntryActivity : AppCompatActivity() {
                     launch(Dispatchers.Main) {
                         Toast.makeText(this@IncomeEntryActivity, "Income Saved", Toast.LENGTH_SHORT).show()
 
-                        // Intent to navigate to HomeActivity
-                        val intent = Intent(this@IncomeEntryActivity, MainActivity::class.java)
+                        // Intent to navigate to TransactionsActivity
+                        val intent = Intent(this@IncomeEntryActivity, TransactionsActivity::class.java)
                         startActivity(intent)
-                        finish() // Finish this activity after navigating to the Home screen
-                        Log.d("IncomeEntryActivity", "Navigating to HomeActivity")
+                        finish() // Finish this activity after navigating to the TransactionsActivity
+                        Log.d("IncomeEntryActivity", "Navigating to TransactionsActivity")
                     }
                 }
             } else {

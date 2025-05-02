@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:text="Category Icon (Name or URL)"
+                    android:text="Category Icon (URL)"
                     android:textSize="16sp"
                     android:textColor="#000" />
 
@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_input"
                     android:padding="12dp"
-                    android:hint="e.g., groceries_icon"
+                    android:hint="e.g., https://groceries.icon"
                     android:inputType="textUri"
                     android:text="@={viewmodel.categoryIcon}"
                     android:layout_marginTop="12dp" />
