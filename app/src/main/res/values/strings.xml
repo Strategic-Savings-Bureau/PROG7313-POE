@@ -174,4 +174,11 @@
     <string name="cd_add_saving_button">Add Saving Button</string>
     <string name="cd_list_of_savings_transactions_for_the_goal">List of savings transactions for the goal</string>
 
+    <!-- Analysis -->
+    <string name="tv_categories">Categories</string>
+    <string name="cd_create_a_new_expense_category">Create a new expense category</string>
+    <string name="cd_list_of_expense_categories_created_by_the_user">List of expense categories created by the user</string>
+    <string name="tv_no_expense_categories_created">No expense categories created</string>
+    <string name="tv_title_expense_categories">Expense Categories</string>
+
 </resources>
