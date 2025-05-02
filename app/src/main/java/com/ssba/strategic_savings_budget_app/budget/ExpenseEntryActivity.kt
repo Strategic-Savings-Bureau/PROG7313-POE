@@ -33,21 +33,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
-/*
- 	* Code Attribution
- 	* Purpose:
- 	*   - Setting up Supabase client in an Android app
- 	*   - Uploading an image to a Supabase bucket
- 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
- 	*   - Implementing the Material DatePicker for selecting dates in the app
- 	* Author: Supabase Community / Developers / Firebase Team / Android Developers
- 	* Sources:
- 	*   - Supabase Android Client: https://supabase.com/docs/guides/with-react-native/android
- 	*   - Uploading Files to Bucket: https://supabase.com/docs/guides/storage/upload-files
- 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
- 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
-*/
-
 class ExpenseEntryActivity : AppCompatActivity() {
 
     private val viewModel: ExpenseEntryViewModel by viewModels()
@@ -59,6 +44,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
     private lateinit var expenseDao: com.ssba.strategic_savings_budget_app.daos.ExpenseDao
     private lateinit var categoryDao: com.ssba.strategic_savings_budget_app.daos.ExpenseCategoryDao
+
+
     private val supabase = createSupabaseClient(
         supabaseUrl = "https://bxpptnwmvrqqvdwpzucp.supabase.co",
         supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4cHB0bndtdnJxcXZkd3B6dWNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxNDU0OTUsImV4cCI6MjA1OTcyMTQ5NX0.rl2dikHc7MA6ECiBUvgD5LnHctCujKq3AU9p-nh-1CI"
@@ -205,56 +192,44 @@ class ExpenseEntryActivity : AppCompatActivity() {
         }
 
         // Save button
-        // Save button
         binding.btnSave.setOnClickListener {
             Log.d("ExpenseEntryActivity", "Save button clicked")
-            if (viewModel.validateAll()) {
-                val title = viewModel.titleOrName.value.orEmpty()
-                val amount = viewModel.amount.value?.toDoubleOrNull() ?: 0.0
-                val description = viewModel.description.value.orEmpty()
-                val categoryId = binding.spinnerCategory.selectedItemPosition +1
-                val receiptUrl = receiptUri
-                val date = selectedDateMillis?.let { Date(it) } ?: Date()
 
+            if (!viewModel.validateAll()) {
+                Toast.makeText(this, "Please fill in all required fields correctly.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-                // Supabase Storage
-
-                val recieptSupabaseUrl = receiptUrl?.let { uri ->
-                    lifecycleScope.launch {
-                        uploadImageToSupabase(uri, "receipt_${System.currentTimeMillis()}.jpg")
-                    }
+            // Launch a coroutine so we can call your suspend upload function
+            lifecycleScope.launch {
+                // 1) upload to Supabase (if there's a receiptUri) and await the URL
+                val publicUrl = receiptUri?.let { uri ->
+                    uploadImageToSupabase(uri, "receipt_${System.currentTimeMillis()}.jpg")
                 } ?: ""
+
+                Log.d("ExpenseEntryActivity", "Received Supabase URL: $publicUrl")
+
+                // 2) build the Expense object
                 val expense = Expense(
-                    title = title,
-                    date = date,
-                    amount = amount,
-                    description = description,
-                    receiptPictureUrl = recieptSupabaseUrl.toString(),
-                    categoryId = categoryId
+                    title               = viewModel.titleOrName.value!!.trim(),
+                    date                = Date(selectedDateMillis ?: System.currentTimeMillis()),
+                    amount              = viewModel.amount.value!!.toDouble(),
+                    description         = viewModel.description.value!!.trim(),
+                    receiptPictureUrl   = publicUrl,
+                    categoryId          = binding.spinnerCategory.selectedItemPosition
                 )
 
-                // Save expense in background
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        expenseDao.upsertExpense(expense)
-                    }
-                    // Once saved, show Toast and navigate to SavingsActivity
-                    Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT).show()
-                    Log.d("ExpenseEntryActivity", "Expense saved: $expense")
-
-                    // Intent to navigate to SavingsActivity
-                    val intent = Intent(this@ExpenseEntryActivity, SavingsActivity::class.java)
-                    startActivity(intent)
-
-                    // Optionally, you can finish this activity if you don't want the user to go back
-                    finish()
+                // 3) write into Room on IO dispatcher
+                withContext(Dispatchers.IO) {
+                    expenseDao.upsertExpense(expense)
                 }
-            } else {
-                Toast.makeText(this, "Please fill in all required fields correctly.", Toast.LENGTH_SHORT).show()
-                Log.d("ExpenseEntryActivity", "Validation failed")
+
+                // 4) feedback + navigate away
+                Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@ExpenseEntryActivity, SavingsActivity::class.java))
+                finish()
             }
         }
-
 
         // Cancel button
         binding.btnCancel.setOnClickListener {

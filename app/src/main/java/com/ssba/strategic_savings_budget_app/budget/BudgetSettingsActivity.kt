@@ -103,13 +103,17 @@ class BudgetSettingsActivity : AppCompatActivity() {
             val currCategoryExpenses = viewModel.currExpenseTotal.value ?: "0" // Adjust if needed
 
             // Passing the data to the AdvancedBudgetSettingsActivity
-            val intent = Intent(this@BudgetSettingsActivity, AdvancedBudgetSettingsActivity::class.java).apply {
-                putExtra("maxExpenses", maxExpenses)
-                putExtra("currIncome", currIncome)
-                putExtra("currCategoryExpenses", currCategoryExpenses)
+//            val intent = Intent(this@BudgetSettingsActivity, AdvancedBudgetSettingsActivity::class.java).apply {
+//                putExtra("maxExpenses", maxExpenses)
+//                putExtra("currIncome", currIncome)
+//                putExtra("currCategoryExpenses", currCategoryExpenses)
+//            }
+//            startActivity(intent)
+//            finish()
+            binding.btnAdvancedSettings.setOnClickListener {
+                Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
             }
-            startActivity(intent)
-            finish()
+
         }
 
         binding.btnSaveBudget.setOnClickListener {
