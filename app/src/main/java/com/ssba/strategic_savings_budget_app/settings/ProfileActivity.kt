@@ -3,6 +3,7 @@ package com.ssba.strategic_savings_budget_app.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -233,6 +234,7 @@ class ProfileActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG
                             ).show()
                         }
+                        Log.e("ProfileActivity", "Failed to update email", e)
                         return@launch
                     }
                 }
@@ -306,6 +308,7 @@ class ProfileActivity : AppCompatActivity() {
                             "Failed to update password: ${e.message}",
                             Toast.LENGTH_LONG
                         ).show()
+                        Log.e("ProfileActivity", "Failed to update password", e)
                     }
                 }
             }
@@ -350,6 +353,7 @@ class ProfileActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             }
+            Log.e("ProfileActivity", "Failed to Upload Profile Picture", e)
             ""
         }
     }
