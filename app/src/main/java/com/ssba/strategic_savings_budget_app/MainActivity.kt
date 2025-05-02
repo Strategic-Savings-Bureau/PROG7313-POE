@@ -33,7 +33,6 @@ import com.ssba.strategic_savings_budget_app.entities.Income
 import com.ssba.strategic_savings_budget_app.entities.User
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
-import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
@@ -177,14 +176,62 @@ class MainActivity : AppCompatActivity() {
 
         btnAddExpense.setOnClickListener {
 
-            // Start Add Expense Intent Here
-            startActivity(Intent(this, ExpenseEntryActivity::class.java))
+            lifecycleScope.launch {
+                val userId = auth.currentUser?.uid
+
+                if (userId == null)
+                {
+                    startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                    finish()
+                    return@launch
+                }
+
+                val hasCategories = hasExpenseCategories(db, userId)
+
+                if (!hasCategories)
+                {
+                    // display toast
+                    Toast.makeText(this@MainActivity, "Please add expense categories first", Toast.LENGTH_SHORT).show()
+
+                    // redirect to analysis activity
+                    startActivity(Intent(this@MainActivity, AnalysisActivity::class.java))
+                }
+                else
+                {
+                    // Start Add Expense Intent Here
+                    startActivity(Intent(this@MainActivity, ExpenseEntryActivity::class.java))
+                }
+            }
         }
 
         btnAddSavings.setOnClickListener {
 
-            // Start Add Savings Intent Here
-            startActivity(Intent(this, SavingsEntryActivity::class.java))
+            lifecycleScope.launch {
+                val userId = auth.currentUser?.uid
+
+                if (userId == null)
+                {
+                    startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                    finish()
+                    return@launch
+                }
+
+                val hasSavingsGoals = hasSavingsGoals(db, userId)
+
+                if (!hasSavingsGoals)
+                {
+                    // display toast
+                    Toast.makeText(this@MainActivity, "Please add a savings goal first", Toast.LENGTH_SHORT).show()
+
+                    // redirect to savings activity
+                    startActivity(Intent(this@MainActivity, SavingsActivity::class.java))
+                }
+                else
+                {
+                    // Start Add Savings Intent Here
+                    startActivity(Intent(this@MainActivity, SavingsEntryActivity::class.java))
+                }
+            }
         }
 
         btnRewards.setOnClickListener {
@@ -340,6 +387,42 @@ class MainActivity : AppCompatActivity() {
 
         // Step 3: Return the combined list
         return allExpenses
+    }
+
+    // method to check if user has any expense categories return bool
+    private suspend fun hasExpenseCategories(db: AppDatabase, userId: String): Boolean
+    {
+        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
+
+        if (userWithCategories.isEmpty())
+        {
+            return false
+        }
+
+        if (userWithCategories[0].expenseCategories.isEmpty())
+        {
+            return false
+        }
+
+        return true
+    }
+
+    // method to check if user has any savings goals return bool
+    private suspend fun hasSavingsGoals(db: AppDatabase, userId: String): Boolean
+    {
+        val userWithGoals = db.userDao.getUserWithSavingGoals(userId)
+
+        if (userWithGoals.isEmpty())
+        {
+            return false
+        }
+
+        if (userWithGoals[0].savingGoals.isEmpty())
+        {
+            return false
+        }
+
+        return true
     }
 
     // endregion

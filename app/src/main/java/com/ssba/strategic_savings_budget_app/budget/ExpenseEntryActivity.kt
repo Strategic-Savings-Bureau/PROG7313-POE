@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.ssba.strategic_savings_budget_app.SavingsActivity
+import com.ssba.strategic_savings_budget_app.TransactionsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
@@ -183,7 +183,7 @@ class ExpenseEntryActivity : AppCompatActivity() {
                 val title = viewModel.titleOrName.value.orEmpty()
                 val amount = viewModel.amount.value?.toDoubleOrNull() ?: 0.0
                 val description = viewModel.description.value.orEmpty()
-                val categoryId = binding.spinnerCategory.selectedItemPosition
+                val categoryId = (binding.spinnerCategory.selectedItemPosition + 1)
                 val receiptUrl = receiptUri?.toString().orEmpty()
                 val date = selectedDateMillis?.let { Date(it) } ?: Date()
 
@@ -201,12 +201,12 @@ class ExpenseEntryActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO) {
                         expenseDao.upsertExpense(expense)
                     }
-                    // Once saved, show Toast and navigate to SavingsActivity
+                    // Once saved, show Toast and navigate to TransactionsActivity
                     Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT).show()
                     Log.d("ExpenseEntryActivity", "Expense saved: $expense")
 
-                    // Intent to navigate to SavingsActivity
-                    val intent = Intent(this@ExpenseEntryActivity, SavingsActivity::class.java)
+                    // Intent to navigate to TransactionsActivity
+                    val intent = Intent(this@ExpenseEntryActivity, TransactionsActivity::class.java)
                     startActivity(intent)
 
                     // Optionally, you can finish this activity if you don't want the user to go back
