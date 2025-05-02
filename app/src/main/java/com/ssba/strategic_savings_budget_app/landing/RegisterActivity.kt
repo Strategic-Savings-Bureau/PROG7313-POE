@@ -3,6 +3,7 @@ package com.ssba.strategic_savings_budget_app.landing
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -161,8 +162,8 @@ class RegisterActivity : AppCompatActivity() {
     // Method for Registration Logic
     private fun registerUser() {
         auth.createUserWithEmailAndPassword(
-            binding.etEmail.text.toString(),
-            binding.etPassword.text.toString()
+            binding.etEmail.text.toString().trim(),
+            binding.etPassword.text.toString().trim()
         ).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // Get User ID
@@ -196,33 +197,36 @@ class RegisterActivity : AppCompatActivity() {
             } else {
                 // Show error message if registration fails
                 Toast.makeText(this, "Registration Failed", Toast.LENGTH_SHORT).show()
+                Log.e("RegisterActivity", "Registration failed", task.exception)
             }
         }
     }
 
     // Method for Image Upload to Supabase
     private suspend fun uploadImageToSupabase(uri: Uri, fileName: String): String {
+        // Initialize the bucket ID
         val bucketId = "user-profile-pictures"
 
+        // Read the bytes of the image file
         val fileBytes = withContext(Dispatchers.IO) {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 inputStream.readBytes()
             }
         }
 
+        // Return an empty string if the file bytes are null
         if (fileBytes == null) {
             return ""
         }
 
         return try {
-
             // Initialize the storage bucket
             val bucket = supabase.storage.from(bucketId)
 
             // Upload the image to the specified file path within the bucket
             bucket.upload(fileName, fileBytes)
             {
-                upsert = false // Set to true to overwrite if the file already exists
+                upsert = false
                 contentType = ContentType.Image.JPEG // Set the content type to JPEG
             }
 
@@ -236,6 +240,7 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             }
+            Log.e("RegisterActivity", "Image upload failed", e)
             ""
         }
     }

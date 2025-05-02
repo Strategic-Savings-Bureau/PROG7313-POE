@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.ssba.strategic_savings_budget_app.AnalysisActivity
 import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
@@ -70,7 +71,6 @@ class CreateCategoryActivity : AppCompatActivity() {
     private fun saveCategoryToDb() {
         // Create the new category instance
         val newCategory = ExpenseCategory(
-            categoryId = 0, // Auto-generated in DB
             name = viewModel.categoryName.value.orEmpty(),
             description = viewModel.categoryDescription.value.orEmpty(),
             icon = viewModel.categoryIcon.value.orEmpty(),
@@ -89,8 +89,8 @@ class CreateCategoryActivity : AppCompatActivity() {
                 .show()
             Log.d("CreateCategoryActivity", "Category saved successfully")
 
-            // Intent to navigate to HomeActivity
-            val intent = Intent(this@CreateCategoryActivity, MainActivity::class.java)
+            // Intent to navigate to AnalysisActivity
+            val intent = Intent(this@CreateCategoryActivity, AnalysisActivity::class.java)
             startActivity(intent)
             finish() // Finish activity after saving and navigating
         }

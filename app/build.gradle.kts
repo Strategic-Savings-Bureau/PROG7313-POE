@@ -79,4 +79,7 @@ dependencies {
 
     // Add Picasso to App (image loading library)
     implementation("com.squareup.picasso:picasso:2.71828")
+
+    // Add SwipeRefreshLayout to App
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }
