@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -23,6 +22,19 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
+
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+ 	*   - Loading and displaying images using Picasso library
+ 	* Author: Android Developers / Square, Inc.
+ 	* Date Accessed: 30 April 2025
+ 	* Sources:
+ 	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
+ 	*   - Picasso: https://github.com/square/picasso
+*/
+
 
 class ExpenseCategoryAdapter(private var expenseCategories: List<ExpenseCategory>) :
     RecyclerView.Adapter<ExpenseCategoryAdapter.CategoryViewHolder>()

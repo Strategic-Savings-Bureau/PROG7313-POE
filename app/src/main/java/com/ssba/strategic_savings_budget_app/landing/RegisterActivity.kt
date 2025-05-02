@@ -26,6 +26,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Setting up Supabase client in an Android app
+ 	*   - Uploading an image to a Supabase bucket
+ 	* Author: Supabase Community / Developers
+ 	* Date Accessed: 2 May 2025
+ 	* Sources:
+ 	*   - Supabase Android Client: https://supabase.com/docs/guides/with-react-native/android
+ 	*   - Uploading Files to Bucket: https://supabase.com/docs/guides/storage/upload-files
+*/
+
 class RegisterActivity : AppCompatActivity() {
 
     // region Declarations

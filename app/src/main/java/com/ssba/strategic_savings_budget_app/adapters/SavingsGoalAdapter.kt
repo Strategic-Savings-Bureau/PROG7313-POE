@@ -21,6 +21,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/*
+ 	* Code Attribution
+ 	* Purpose: Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+ 	* Author: Android Developers
+ 	* Date Accessed: 30 April 2025
+ 	* Source: Developer Guide - Android Developers (Java Platform Standard Edition docs)
+ 	* URL: https://developer.android.com/reference/java/text/NumberFormat
+*/
+
 class SavingsGoalAdapter(private var savingsGoals: List<SavingGoal>) :
     RecyclerView.Adapter<SavingsGoalAdapter.SavingsGoalViewHolder>()
 {

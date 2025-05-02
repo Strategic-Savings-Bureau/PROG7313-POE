@@ -32,6 +32,21 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+ 	*   - Creating and displaying an AlertDialog in an Android app
+ 	*   - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
+ 	* Author: Android Developers
+ 	* Date Accessed: 2 May 2025
+ 	* Sources:
+ 	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
+ 	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
+ 	*   - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
+*/
+
+
 class TransactionsActivity : AppCompatActivity() {
 
     // region Declarations

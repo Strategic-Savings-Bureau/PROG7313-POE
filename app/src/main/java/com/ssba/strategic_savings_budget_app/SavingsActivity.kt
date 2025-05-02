@@ -20,6 +20,15 @@ import com.ssba.strategic_savings_budget_app.entities.SavingGoal
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
 
+/*
+ 	* Code Attribution
+ 	* Purpose: Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
+ 	* Author: Android Developers
+ 	* Source: Developer Guide - Android Developers (Navigation & UI Components)
+ 	* URL: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
+*/
+
+
 class SavingsActivity : AppCompatActivity() {
 
     // region Declarations

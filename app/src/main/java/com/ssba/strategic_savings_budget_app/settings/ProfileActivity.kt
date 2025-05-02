@@ -29,6 +29,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Setting up Supabase client in an Android app
+ 	*   - Uploading an image to a Supabase bucket
+ 	*   - Implementing Swipe to Refresh functionality in an Android app
+ 	*   - Loading and displaying images using Picasso library
+ 	* Author: Supabase Community / Android Developers / Square, Inc.
+ 	* Sources:
+ 	*   - Supabase Android Client: https://supabase.com/docs/guides/with-react-native/android
+ 	*   - Uploading Files to Bucket: https://supabase.com/docs/guides/storage/upload-files
+ 	*   - Swipe to Refresh: https://developer.android.com/reference/android/widget/SwipeRefreshLayout
+ 	*   - Picasso: https://github.com/square/picasso
+*/
+
+
 class ProfileActivity : AppCompatActivity() {
 
     // region Declarations

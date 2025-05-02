@@ -34,6 +34,19 @@ import com.ssba.strategic_savings_budget_app.entities.User
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Creating and displaying an AlertDialog in an Android app
+ 	*   - Requesting POST_NOTIFICATIONS permission on Android 13 (API level 33) and above
+ 	*   - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
+ 	* Author: Android Developers
+ 	* Sources:
+ 	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
+ 	*   - POST_NOTIFICATIONS Permission: https://developer.android.com/develop/ui/views/notifications/permission
+ 	*   - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
+*/
+
 class MainActivity : AppCompatActivity() {
 
     // region Declarations

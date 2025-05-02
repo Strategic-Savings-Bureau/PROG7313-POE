@@ -25,6 +25,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Setting up Supabase client in an Android app
+ 	*   - Uploading an image to a Supabase bucket
+ 	* Author: Supabase Community / Developers
+ 	* Sources:
+ 	*   - Supabase Android Client: https://supabase.com/docs/guides/with-react-native/android
+ 	*   - Uploading Files to Bucket: https://supabase.com/docs/guides/storage/upload-files
+*/
+
+
 class ExpenseEntryActivity : AppCompatActivity() {
 
     private val viewModel: ExpenseEntryViewModel by viewModels()

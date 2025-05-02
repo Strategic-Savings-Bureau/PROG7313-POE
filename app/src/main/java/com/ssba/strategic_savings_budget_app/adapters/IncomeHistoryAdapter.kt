@@ -15,6 +15,15 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/*
+ 	* Code Attribution
+ 	* Purpose: Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+ 	* Author: Android Developers
+ 	* Date Accessed: 30 April 2025
+ 	* Source: Developer Guide - Android Developers (Java Platform Standard Edition docs)
+ 	* URL: https://developer.android.com/reference/java/text/NumberFormat
+*/
+
 class IncomeHistoryAdapter(private var incomeTransactions: List<Income>) :
     RecyclerView.Adapter<IncomeHistoryAdapter.IncomeTransactionViewHolder>()
 {
@@ -52,6 +61,16 @@ class IncomeHistoryAdapter(private var incomeTransactions: List<Income>) :
         holder.tvTransactionCategory.visibility = View.GONE
 
         holder.itemView.setOnClickListener {
+
+
+            /*
+ 	                        * Code Attribution
+ 	                        * Purpose: Creating and displaying an AlertDialog in an Android app
+ 	                        * Author: Android Developers
+ 	                        * Date Accessed: 29 April 2025
+ 	                        * Source: Developer Guide - Android Developers
+ 	                        * URL: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
+             */
 
             val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_income_transaction, null)
             val dialog = AlertDialog.Builder(context)
