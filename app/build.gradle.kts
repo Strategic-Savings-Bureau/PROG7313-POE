@@ -60,6 +60,21 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    /*
+        * Code Attribution
+        * Purpose:
+        *   - Adding Room database support to the app for local storage and database operations
+        *   - Adding Supabase for backend integration with features like storage, authentication, and data handling
+        *   - Using Picasso for image loading and caching
+        *   - Implementing SwipeRefreshLayout for adding pull-to-refresh functionality to views
+        * Author: Various Open Source Communities
+        * Sources:
+        *   - Room Database: https://developer.android.com/jetpack/androidx/releases/room
+        *   - Supabase: https://supabase.com/docs
+        *   - Picasso: https://square.github.io/picasso/
+        *   - SwipeRefreshLayout: https://developer.android.com/reference/androidx/swiperefreshlayout/widget/SwipeRefreshLayout
+    */
+
     // Add Room to App
     val room_version = "2.6.1"
     implementation ("com.google.android.material:material:<version>")

@@ -25,13 +25,12 @@ import kotlinx.coroutines.launch
  	* Purpose:
  	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
  	*   - Creating and displaying an AlertDialog in an Android app
- 	*   - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
- 	* Author: Android Developers
- 	* Date Accessed: 30 April 2025
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	* Author: Android Developers / Firebase Team
  	* Sources:
  	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
  	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
- 	*   - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
 */
 
 class AnalysisActivity : AppCompatActivity() {

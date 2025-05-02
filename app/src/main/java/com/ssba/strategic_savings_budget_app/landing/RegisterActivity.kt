@@ -31,12 +31,14 @@ import kotlinx.coroutines.withContext
  	* Purpose:
  	*   - Setting up Supabase client in an Android app
  	*   - Uploading an image to a Supabase bucket
- 	* Author: Supabase Community / Developers
- 	* Date Accessed: 2 May 2025
+ 	*   - Implementing Firebase Authentication for user login and registration
+ 	* Author: Supabase Community / Developers / Firebase Team
  	* Sources:
  	*   - Supabase Android Client: https://supabase.com/docs/guides/with-react-native/android
  	*   - Uploading Files to Bucket: https://supabase.com/docs/guides/storage/upload-files
+ 	*   - Firebase Authentication for Android: https://firebase.google.com/docs/auth/android/start
 */
+
 
 class RegisterActivity : AppCompatActivity() {
 

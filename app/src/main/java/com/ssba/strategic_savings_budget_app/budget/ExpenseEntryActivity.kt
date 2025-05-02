@@ -30,12 +30,15 @@ import java.util.Date
  	* Purpose:
  	*   - Setting up Supabase client in an Android app
  	*   - Uploading an image to a Supabase bucket
- 	* Author: Supabase Community / Developers
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	*   - Implementing the Material DatePicker for selecting dates in the app
+ 	* Author: Supabase Community / Developers / Firebase Team / Android Developers
  	* Sources:
  	*   - Supabase Android Client: https://supabase.com/docs/guides/with-react-native/android
  	*   - Uploading Files to Bucket: https://supabase.com/docs/guides/storage/upload-files
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
 */
-
 
 class ExpenseEntryActivity : AppCompatActivity() {
 
