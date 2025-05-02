@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.SettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
@@ -26,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import com.squareup.picasso.Picasso
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -62,22 +62,14 @@ class ProfileActivity : AppCompatActivity() {
                 profilePictureUri = it
 
                 lifecycleScope.launch {
-                    val firebaseUser = auth.currentUser
-                    if (firebaseUser == null) {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                this@ProfileActivity,
-                                "Not logged in",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-                        return@launch
-                    }
+                    // Fetch UserID from Firebase
+                    val userID = auth.currentUser!!.uid
+                    // Fetch RoomDB user
+                    val user = db.userDao.getUserById(userID) ?: return@launch
 
                     // Upload to Supabase
                     val newUrl = try {
-                        uploadImageToSupabase(uri, firebaseUser.uid)
+                        uploadImageToSupabase(uri, userID)
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(
@@ -89,41 +81,17 @@ class ProfileActivity : AppCompatActivity() {
                         return@launch
                     }
 
-                    // Fetch existing user
-                    val existing = withContext(Dispatchers.IO) {
-                        db.userDao.getUserById(firebaseUser.uid)
-                    } ?: run {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                this@ProfileActivity,
-                                "User record not found",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        return@launch
+                    // Update the user profile picture in RoomDB
+                    val updated = user.copy(profilePictureUrl = newUrl)
+                    withContext(Dispatchers.IO) {
+                        db.userDao.upsertUser(updated)
                     }
-
-                    // Only update if it really changed
-                    if (newUrl != existing.profilePictureUrl) {
-                        val updated = existing.copy(profilePictureUrl = newUrl)
-                        withContext(Dispatchers.IO) {
-                            db.userDao.upsertUser(updated)
-                        }
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                this@ProfileActivity,
-                                "Profile picture updated",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                this@ProfileActivity,
-                                "Same picture, no update needed",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@ProfileActivity,
+                            "Profile picture updated (Please restart the app)",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -149,20 +117,17 @@ class ProfileActivity : AppCompatActivity() {
         // Room Database
         db = AppDatabase.getInstance(this)
 
-        // Populate User Profile
-        lifecycleScope.launch {
-            // Get user from database
-            val user = db.userDao.getUserById(auth.currentUser?.uid ?: return@launch)
+        // Set up SwipeRefreshLayout
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            lifecycleScope.launch {
+                loadUserData()
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+        }
 
-            // Assign values to views
-            binding.etUsername.setText(user?.username)
-            binding.etFullName.setText(user?.fullName)
-            binding.etEmail.setText(user?.email)
-            Picasso.get()
-                .load(user?.profilePictureUrl)
-                .placeholder(R.drawable.ic_default_profile)
-                .error(R.drawable.ic_default_profile)
-                .into(binding.ivProfilePic)
+        // Initial data load
+        lifecycleScope.launch {
+            loadUserData()
         }
 
         setupTextWatchers()
@@ -258,6 +223,7 @@ class ProfileActivity : AppCompatActivity() {
                 // Update Firebase Authentication
                 if (email.isNotEmpty() && email != current.email) {
                     try {
+                        @Suppress("DEPRECATION")
                         current.updateEmail(email).await()
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
@@ -385,6 +351,22 @@ class ProfileActivity : AppCompatActivity() {
                 ).show()
             }
             ""
+        }
+    }
+
+    // Extract data loading into a suspend function
+    private suspend fun loadUserData() {
+        val user = db.userDao.getUserById(auth.currentUser?.uid ?: return)
+        withContext(Dispatchers.Main) {
+            binding.etUsername.setText(user?.username)
+            binding.etFullName.setText(user?.fullName)
+            binding.etEmail.setText(user?.email)
+            val picUrl = user?.profilePictureUrl.takeUnless { it.isNullOrBlank() }
+            Picasso.get()
+                .load(picUrl)
+                .placeholder(R.drawable.ic_default_profile)
+                .error(R.drawable.ic_default_profile)
+                .into(binding.ivProfilePic)
         }
     }
 }

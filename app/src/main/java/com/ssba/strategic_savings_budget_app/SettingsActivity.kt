@@ -51,18 +51,14 @@ class SettingsActivity : AppCompatActivity() {
             // Assign values to views
             binding.tvFullName.text = user?.fullName
             binding.tvUsername.text = user?.username
-            // Load Profile Picture
-            if (user?.profilePictureUrl.isNullOrEmpty()) {
-                // Show default image if URL is empty or null
-                binding.ivProfilePic.setImageResource(R.drawable.ic_default_profile)
-            } else {
-                // Load image from URL
-                Picasso.get()
-                    .load(user.profilePictureUrl)
-                    .placeholder(R.drawable.ic_default_profile)
-                    .error(R.drawable.ic_default_profile)
-                    .into(binding.ivProfilePic)
-            }
+            // Null check if a URL is null or empty
+            val picUrl = user?.profilePictureUrl
+                .takeUnless { it.isNullOrBlank() }
+            Picasso.get()
+                .load(picUrl)
+                .placeholder(R.drawable.ic_default_profile)
+                .error(R.drawable.ic_default_profile)
+                .into(binding.ivProfilePic)
         }
 
         // Highlight the Menu Item
