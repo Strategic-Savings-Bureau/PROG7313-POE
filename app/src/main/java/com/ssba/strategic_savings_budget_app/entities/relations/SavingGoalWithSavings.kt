@@ -16,6 +16,16 @@ import com.ssba.strategic_savings_budget_app.entities.SavingGoal
  * @property savingGoal The saving goal entity representing the target the user is aiming to achieve.
  * @property savings A list of savings that are associated with the saving goal.
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Defining one-to-many and many-to-many relationships in Room Database
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room/relationships
+*/
+
 data class SavingGoalWithSavings(
 
     @Embedded

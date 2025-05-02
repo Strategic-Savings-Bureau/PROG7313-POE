@@ -23,6 +23,17 @@ import androidx.room.PrimaryKey
  * @property maximumMonthlyTotal The maximum allowable total for expenses in this category each month.
  * @property userId The ID of the associated user (foreign key referencing the user table).
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room
+*/
+
+
 @Entity(
     tableName = "expense_category",
     indices = [Index(value = ["name"]), Index(value = ["userId"])]

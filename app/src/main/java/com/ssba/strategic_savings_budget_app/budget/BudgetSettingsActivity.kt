@@ -21,6 +21,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	* Author: Firebase Team
+ 	* Sources:
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+*/
+
+
 class BudgetSettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBudgetSettingsBinding
     private val viewModel: BudgetSettingsViewModel by viewModels()

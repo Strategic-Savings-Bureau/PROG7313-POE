@@ -26,6 +26,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	*   - Implementing the Material DatePicker for selecting dates in the app
+ 	* Author: Firebase Team / Android Developers
+ 	* Sources:
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
+*/
+
 class SavingsEntryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySavingsEntryBinding

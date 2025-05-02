@@ -21,6 +21,17 @@ import androidx.room.PrimaryKey
  * @property username The app-specific username chosen by the user.
  * @property profilePictureUrl The URL to the user's profile picture, typically stored in Supabase Storage.
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room
+*/
+
+
 @Entity(
     tableName = "user",
     indices = [Index(value = ["fullName"]), Index(value = ["email"]), Index(value = ["username"])]

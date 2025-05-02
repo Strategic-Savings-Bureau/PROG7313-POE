@@ -32,6 +32,22 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+ 	*   - Creating and displaying an AlertDialog in an Android app
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	*   - Implementing the Material DatePicker for selecting dates in the app
+ 	* Author: Android Developers / Firebase Team
+ 	* Sources:
+ 	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
+ 	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
+*/
+
+
 class SavingsGoalActivity : AppCompatActivity()
 {
     // region Declarations
@@ -138,9 +154,12 @@ class SavingsGoalActivity : AppCompatActivity()
             pbGoal.progress = progressPercentage.toInt()
             tvProgressPercentage.text = "${progressPercentage.toInt()}% saved"
 
+            if (totalSavings >= target)
+                tvProgressPercentage.setTextColor(ContextCompat.getColor(this@SavingsGoalActivity, R.color.income_green))
+
             // region Set up RecyclerView
 
-            // get all the incomes for the current user
+            // get all the savings for the current goal
             val savingsTransactions = getAllSavingsForGoal(savingsGoal.title, db)
 
             if (savingsTransactions.isEmpty())

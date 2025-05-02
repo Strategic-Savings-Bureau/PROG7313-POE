@@ -10,6 +10,16 @@ import java.util.Date
  * This class provides the necessary type converters to convert Date objects to Long (epoch time)
  * and vice versa, allowing Room to persist Date values by storing them as timestamps.
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Creating a Type Converter to store java.util.Date in Room Database
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room/defining-data#type-converters
+*/
+
 class Converters {
 
     /**

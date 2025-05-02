@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ssba.strategic_savings_budget_app.AnalysisActivity
-import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityCreateCategoryBinding
@@ -21,6 +20,16 @@ import com.ssba.strategic_savings_budget_app.models.CreateCategoryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	* Author: Firebase Team
+ 	* Sources:
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+*/
+
 
 class CreateCategoryActivity : AppCompatActivity() {
 

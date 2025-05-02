@@ -1,6 +1,7 @@
 package com.ssba.strategic_savings_budget_app.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +9,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import com.ssba.strategic_savings_budget_app.ExpenseCategoryAnalysisActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
@@ -21,6 +22,19 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
+
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+ 	*   - Loading and displaying images using Picasso library
+ 	* Author: Android Developers / Square, Inc.
+ 	* Date Accessed: 30 April 2025
+ 	* Sources:
+ 	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
+ 	*   - Picasso: https://github.com/square/picasso
+*/
+
 
 class ExpenseCategoryAdapter(private var expenseCategories: List<ExpenseCategory>) :
     RecyclerView.Adapter<ExpenseCategoryAdapter.CategoryViewHolder>()
@@ -106,13 +120,13 @@ class ExpenseCategoryAdapter(private var expenseCategories: List<ExpenseCategory
             // get the expense category title
             val categoryTitle = category.name
 
-            // navigate to the expense category activity and pass the title
-            //val intent = Intent(context, ExpenseCategoryActivity::class.java)
-            //intent.putExtra("EXPENSE_CATEGORY_NAME", categoryTitle)
-            //context.startActivity(intent)
+            // log the click
+            Log.d("ExpenseCategoryAdapter", "Clicked on category: $categoryTitle")
 
-            // display a toast for now
-            Toast.makeText(context, "Clicked on $categoryTitle", Toast.LENGTH_SHORT).show()
+            // navigate to the expense category activity and pass the title
+            val intent = Intent(context, ExpenseCategoryAnalysisActivity::class.java)
+            intent.putExtra("EXPENSE_CATEGORY_NAME", categoryTitle)
+            context.startActivity(intent)
         }
     }
 

@@ -16,6 +16,15 @@ import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
 
+/*
+ 	* Code Attribution
+ 	* Purpose: Implementing Firebase Authentication for user login and registration in an Android app
+ 	* Author: Firebase Team
+ 	* Source: Firebase Documentation - Firebase Authentication for Android
+ 	* URL: https://firebase.google.com/docs/auth/android/start
+*/
+
+
 class LoginActivity : AppCompatActivity() {
 
     // region Declarations

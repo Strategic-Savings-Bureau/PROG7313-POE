@@ -1,6 +1,5 @@
 package com.ssba.strategic_savings_budget_app.adapters
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -33,11 +32,10 @@ import java.util.Locale
  	*   - Picasso: https://github.com/square/picasso
 */
 
-
-class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
-    RecyclerView.Adapter<ExpenseHistoryAdapter.ExpenseTransactionViewHolder>()
+class ExpenseCategoryTransactionHistoryAdapter(private var expenses: List<Expense>) :
+    RecyclerView.Adapter<ExpenseCategoryTransactionHistoryAdapter.ExpenseCategoryTransactionViewHolder>()
 {
-    inner class ExpenseTransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class ExpenseCategoryTransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
         val ivIcon: ImageView = itemView.findViewById(R.id.ivTransactionType)
         val tvTitle: TextView = itemView.findViewById(R.id.tvTransactionTitle)
@@ -47,17 +45,14 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
         val tvTransactionCategory: TextView = itemView.findViewById(R.id.tvTransactionCategory)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseTransactionViewHolder
-    {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseCategoryTransactionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_transaction, parent, false)
-        return ExpenseTransactionViewHolder(view)
+        return ExpenseCategoryTransactionViewHolder(view)
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ExpenseHistoryAdapter.ExpenseTransactionViewHolder, position: Int)
+    override fun onBindViewHolder(holder: ExpenseCategoryTransactionHistoryAdapter.ExpenseCategoryTransactionViewHolder, position: Int)
     {
-
-        val expenseTransaction = expenseTransactions[position]
+        val transaction = expenses[position]
 
         val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
@@ -66,10 +61,10 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
 
         holder.ivIcon.setImageResource(R.drawable.ic_transaction_expense)
-        holder.tvTitle.text = expenseTransaction.title
-        holder.tvDate.text = dateFormatter.format(expenseTransaction.date)
+        holder.tvTitle.text = transaction.title
+        holder.tvDate.text = dateFormatter.format(transaction.date)
         holder.tvType.text = context.getString(R.string.tv_transaction_type_expense)
-        holder.tvAmount.text = currencyFormat.format(expenseTransaction.amount)
+        holder.tvAmount.text = currencyFormat.format(transaction.amount)
         holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.expense_red))
 
         val db: AppDatabase = AppDatabase.getInstance(context)
@@ -78,7 +73,7 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
 
             val category = withContext(Dispatchers.IO) {
 
-                db.expenseCategoryDao.getExpenseCategoryById(expenseTransaction.categoryId)
+                db.expenseCategoryDao.getExpenseCategoryById(transaction.categoryId)
             }
 
             if (category != null)
@@ -92,6 +87,7 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
             }
 
             holder.itemView.setOnClickListener {
+
 
                 /*
  	                        * Code Attribution
@@ -119,10 +115,10 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
                 val ivReceipt = dialogView.findViewById<ImageView>(R.id.ivReceipt)
                 val btnClose = dialogView.findViewById<Button>(R.id.btnCloseExpense)
 
-                tvTitle.text = expenseTransaction.title
-                tvDate.text = dateFormatter.format(expenseTransaction.date)
-                tvAmount.text = currencyFormat.format(expenseTransaction.amount)
-                tvDescription.text = expenseTransaction.description
+                tvTitle.text = transaction.title
+                tvDate.text = dateFormatter.format(transaction.date)
+                tvAmount.text = currencyFormat.format(transaction.amount)
+                tvDescription.text = transaction.description
 
                 if (category != null)
                 {
@@ -133,10 +129,10 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
                     tvCategory.text = context.getString(R.string.content_no_category)
                 }
 
-                if (expenseTransaction.receiptPictureUrl.isNotBlank())
+                if (transaction.receiptPictureUrl.isNotBlank())
                 {
                     Picasso.get()
-                        .load(expenseTransaction.receiptPictureUrl)
+                        .load(transaction.receiptPictureUrl)
                         .placeholder(R.drawable.ic_default_image)
                         .into(ivReceipt)
                 }
@@ -152,5 +148,5 @@ class ExpenseHistoryAdapter(private var expenseTransactions: List<Expense>) :
         }
     }
 
-    override fun getItemCount(): Int = expenseTransactions.size
+    override fun getItemCount(): Int = expenses.size
 }

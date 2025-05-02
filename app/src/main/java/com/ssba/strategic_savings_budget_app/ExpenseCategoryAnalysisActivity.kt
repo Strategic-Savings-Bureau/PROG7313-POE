@@ -20,11 +20,11 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.adapters.ExpenseHistoryAdapter
+import com.ssba.strategic_savings_budget_app.adapters.ExpenseCategoryTransactionHistoryAdapter
+import com.ssba.strategic_savings_budget_app.budget.ExpenseEntryActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
-import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseHistoryBinding
+import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseCategoryAnalysisBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
-import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -40,6 +40,7 @@ import java.util.Locale
  	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
  	*   - Implementing the Material DatePicker for selecting dates in the app
  	* Author: Android Developers / Firebase Team
+ 	* Date Accessed: 30 April 2025
  	* Sources:
  	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
  	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
@@ -47,38 +48,43 @@ import java.util.Locale
  	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
 */
 
-class ExpenseHistoryActivity : AppCompatActivity()
+class ExpenseCategoryAnalysisActivity : AppCompatActivity()
 {
+
     // region Declarations
     // View Binding
-    private lateinit var binding: ActivityExpenseHistoryBinding
+    private lateinit var binding: ActivityExpenseCategoryAnalysisBinding
     // endregion
 
     private lateinit var db: AppDatabase
 
     private lateinit var auth: FirebaseAuth
 
+    private lateinit var categoryName: String
+
     // region View Components
     private lateinit var btnRewards: ImageButton
-    private lateinit var tvTotalExpense: TextView
     private lateinit var rvTransactions: RecyclerView
     private lateinit var tvNoTransactions: TextView
     private lateinit var btnDateFilter: ImageButton
     private lateinit var btnBack: ImageButton
-    private lateinit var tvMaxExpenseLimit: TextView
-    private lateinit var pbExpenseLimit: ProgressBar
+    private lateinit var btnAddExpense: ImageButton
+    private lateinit var tvCategoryTotal: TextView
+    private lateinit var tvMaxMonthlyLimit: TextView
+    private lateinit var tvDescription: TextView
+    private lateinit var pbLimit: ProgressBar
     private lateinit var tvProgressPercentage: TextView
+    private lateinit var tvTitle: TextView
     // endregion
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?)
     {
-        // Initialisation
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // View Binding
-        binding = ActivityExpenseHistoryBinding.inflate(layoutInflater)
+        // Initialize View Binding
+        binding = ActivityExpenseCategoryAnalysisBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Firebase Authentication
@@ -89,58 +95,81 @@ class ExpenseHistoryActivity : AppCompatActivity()
 
         // region Initialise View Components
         btnRewards = binding.btnRewards
-        tvTotalExpense = binding.tvTotalExpense
         rvTransactions = binding.rvExpenseTransactions
         tvNoTransactions = binding.tvNoTransactions
         btnDateFilter = binding.btnDateFilter
         btnBack = binding.btnBack
-        tvMaxExpenseLimit = binding.tvMaxExpenseLimit
-        pbExpenseLimit = binding.progressExpenseLimit
+        btnAddExpense = binding.btnAddExpense
+        tvCategoryTotal = binding.tvCategoryTotal
+        tvMaxMonthlyLimit = binding.tvMaxMonthlyLimit
+        tvDescription = binding.tvDescription
+        pbLimit = binding.progressLimit
         tvProgressPercentage = binding.tvProgressPercentage
+        tvTitle = binding.tvTitle
         // endregion
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
 
+        // get the title of the savings goal from the intent
+        categoryName = intent.getStringExtra("EXPENSE_CATEGORY_NAME") ?: ""
+
+        if (categoryName.isEmpty())
+        {
+            finish()
+            return
+        }
+
         lifecycleScope.launch {
 
-            // Get the current user's ID
-            val userId = auth.currentUser?.uid
+            // get the expense category from the database
+            val expenseCategory = db.expenseCategoryDao.getExpenseCategoryByName(categoryName)
 
-            if (userId == null)
+            if (expenseCategory == null)
             {
-                startActivity(Intent(this@ExpenseHistoryActivity, LoginActivity::class.java))
                 finish()
                 return@launch
             }
 
-            // Get the total expense for the current user
-            val totalExpense = getTotalExpenses(db, userId)
+            // set the expense category name
+            tvTitle.text = "${expenseCategory.name} Analysis"
 
-            // Set the text of the total expense
-            tvTotalExpense.text = currencyFormat.format(totalExpense)
+            // get the total of all expenses for the current category
+            val totalExpenses = getTotalExpensesForCategory(categoryName, db)
 
-            // Get the maximum monthly expense limit for the current user
-            val maximumExpenseLimit = getMaximumExpenseLimit(db, userId)
+            // set the total of all expenses for the current category
+            tvCategoryTotal.text = "Total Expenses: ${currencyFormat.format(totalExpenses)}"
 
-            // Set the text of the maximum monthly expense limit
-            tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: ${currencyFormat.format(maximumExpenseLimit)}"
+            // set the max monthly limit
+            tvMaxMonthlyLimit.text = "Monthly Limit: ${currencyFormat.format(expenseCategory.maximumMonthlyTotal)}"
 
-            // Get the total expense for the current month
-            val totalExpensesForCurrentMonth = getTotalExpensesForCurrentMonth(db, userId)
+            // set the description
+            tvDescription.text = expenseCategory.description
 
-            // Calculate the progress percentage
-            val progressPercentage = (totalExpensesForCurrentMonth / maximumExpenseLimit) * 100
+            // get the total of all expenses for the current category in the current month
+            val totalMonthlyExpenses = getTotalMonthlyExpensesForCategory(categoryName, db)
 
-            // Set the progress of the progress bar
-            pbExpenseLimit.progress = progressPercentage.toInt()
+            val monthlyLimit = expenseCategory.maximumMonthlyTotal
 
-            // Set the text of the progress percentage
+            // calculate the progress percentage
+            val progressPercentage = (totalMonthlyExpenses / monthlyLimit) * 100
+
+            // set the progress bar progress
+            pbLimit.progress = progressPercentage.toInt()
+
+            // set the progress percentage text
             tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly limit"
+
+            // if the total monthly expenses is greater than the monthly limit, set the text color to red
+            if (totalMonthlyExpenses >= monthlyLimit)
+            {
+                tvProgressPercentage.setTextColor(getColor(R.color.expense_red))
+                tvProgressPercentage.text = "${progressPercentage.toInt()}% past monthly limit"
+            }
 
             // region Set up RecyclerView
 
-            // get all the incomes for the current user
-            val expenseTransactions = getAllExpensesForUser(db, userId)
+            // get all the expenses for the current goal
+            val expenseTransactions = getAllExpensesForCategory(expenseCategory.name, db)
 
             if (expenseTransactions.isEmpty())
             {
@@ -152,10 +181,13 @@ class ExpenseHistoryActivity : AppCompatActivity()
                 rvTransactions.visibility = View.VISIBLE
                 tvNoTransactions.visibility = View.GONE
 
-                val adapter = ExpenseHistoryAdapter(expenseTransactions)
+                // set up adapter
+                val adapter = ExpenseCategoryTransactionHistoryAdapter(expenseTransactions)
 
-                rvTransactions.layoutManager = LinearLayoutManager(this@ExpenseHistoryActivity)
+                // set up layout manager
+                rvTransactions.layoutManager = LinearLayoutManager(this@ExpenseCategoryAnalysisActivity)
 
+                // set adapter in rv
                 rvTransactions.adapter = adapter
             }
 
@@ -166,8 +198,8 @@ class ExpenseHistoryActivity : AppCompatActivity()
         setupOnClickListeners()
     }
 
-    @Suppress("LABEL_NAME_CLASH")
     @SuppressLint("SetTextI18n")
+    @Suppress("LABEL_NAME_CLASH")
     private fun setupOnClickListeners()
     {
         btnRewards.setOnClickListener {
@@ -176,6 +208,13 @@ class ExpenseHistoryActivity : AppCompatActivity()
 
         btnBack.setOnClickListener {
             finish()
+        }
+
+        btnAddExpense.setOnClickListener {
+
+            // navigate to the add saving activity
+            val intent = Intent(this, ExpenseEntryActivity::class.java)
+            startActivity(intent)
         }
 
         btnDateFilter.setOnClickListener {
@@ -226,18 +265,8 @@ class ExpenseHistoryActivity : AppCompatActivity()
                 {
                     lifecycleScope.launch {
 
-                        // Get the current user's ID
-                        val userId = auth.currentUser?.uid
-
-                        if (userId == null)
-                        {
-                            startActivity(Intent(this@ExpenseHistoryActivity, LoginActivity::class.java))
-                            finish()
-                            return@launch
-                        }
-
                         // set up the recycler view
-                        val transactions = getAllExpensesForUser(db, userId)
+                        val transactions = getAllExpensesForCategory(categoryName, db)
 
                         if (transactions.isEmpty())
                         {
@@ -245,7 +274,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
                             tvNoTransactions.visibility = View.VISIBLE
 
                             dialog.dismiss()
-                            Toast.makeText(this@ExpenseHistoryActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ExpenseCategoryAnalysisActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
                             return@launch
                         }
 
@@ -256,32 +285,36 @@ class ExpenseHistoryActivity : AppCompatActivity()
                         {
                             rvTransactions.visibility = View.GONE
                             tvNoTransactions.visibility = View.VISIBLE
-                            Toast.makeText(this@ExpenseHistoryActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ExpenseCategoryAnalysisActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
                             dialog.dismiss()
                             return@launch
                         }
                         else
                         {
-                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
-
-                            binding.cardExpenseLimit.visibility = View.GONE
-
-                            val totalExpense = calculateTotalExpense(filteredTransactions)
-
-                            tvTotalExpense.text = currencyFormat.format(totalExpense)
-
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
 
-                            // Set up the recycler view
-                            val adapter = ExpenseHistoryAdapter(filteredTransactions)
+                            tvMaxMonthlyLimit.visibility = View.GONE
+                            pbLimit.visibility = View.GONE
+                            tvProgressPercentage.visibility = View.GONE
 
-                            rvTransactions.layoutManager = LinearLayoutManager(this@ExpenseHistoryActivity)
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
+                            // re-calculate transaction total based on filtered transactions
+                            val totalExpenses = calculateTotalExpensesForCategory(filteredTransactions)
+
+                            // set the total of all expenses for the current category
+                            tvCategoryTotal.text = "Total Expenses: ${currencyFormat.format(totalExpenses)}"
+
+                            // Set up the recycler view
+                            val adapter = ExpenseCategoryTransactionHistoryAdapter(filteredTransactions)
+
+                            rvTransactions.layoutManager = LinearLayoutManager(this@ExpenseCategoryAnalysisActivity)
 
                             rvTransactions.adapter = adapter
 
                             dialog.dismiss()
-                            Toast.makeText(this@ExpenseHistoryActivity, "Transactions Filtered Successfully", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ExpenseCategoryAnalysisActivity, "Transactions Filtered Successfully", Toast.LENGTH_SHORT).show()
                             return@launch
                         }
 
@@ -298,17 +331,53 @@ class ExpenseHistoryActivity : AppCompatActivity()
 
                 lifecycleScope.launch {
 
-                    // Get the current user's ID
-                    val userId = auth.currentUser?.uid
+                    // get the expense category from the database
+                    val expenseCategory = db.expenseCategoryDao.getExpenseCategoryByName(categoryName)
 
-                    if (userId == null) {
-                        startActivity(Intent(this@ExpenseHistoryActivity, LoginActivity::class.java))
+                    if (expenseCategory == null)
+                    {
                         finish()
                         return@launch
                     }
 
+                    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
+                    // get the total of all expenses for the current category
+                    val totalExpenses = getTotalExpensesForCategory(categoryName, db)
+
+                    // set the total of all expenses for the current category
+                    tvCategoryTotal.text = "Total Expenses: ${currencyFormat.format(totalExpenses)}"
+
+                    // set the max monthly limit
+                    tvMaxMonthlyLimit.text = "Monthly Limit: ${currencyFormat.format(expenseCategory.maximumMonthlyTotal)}"
+
+                    // get the total of all expenses for the current category in the current month
+                    val totalMonthlyExpenses = getTotalMonthlyExpensesForCategory(categoryName, db)
+
+                    val monthlyLimit = expenseCategory.maximumMonthlyTotal
+
+                    // calculate the progress percentage
+                    val progressPercentage = (totalMonthlyExpenses / monthlyLimit) * 100
+
+                    // set the progress bar progress
+                    pbLimit.progress = progressPercentage.toInt()
+
+                    // set the progress percentage text
+                    tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly limit"
+
+                    // if the total monthly expenses is greater than the monthly limit, set the text color to red
+                    if (totalMonthlyExpenses >= monthlyLimit)
+                    {
+                        tvProgressPercentage.setTextColor(getColor(R.color.expense_red))
+                        tvProgressPercentage.text = "${progressPercentage.toInt()}% past monthly limit"
+                    }
+
+                    tvMaxMonthlyLimit.visibility = View.VISIBLE
+                    pbLimit.visibility = View.VISIBLE
+                    tvProgressPercentage.visibility = View.VISIBLE
+
                     // set up the recycler view
-                    val transactions = getAllExpensesForUser(db, userId)
+                    val transactions = getAllExpensesForCategory(categoryName, db)
 
                     if (transactions.isEmpty()) {
                         rvTransactions.visibility = View.GONE
@@ -316,7 +385,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
 
                         dialog.dismiss()
                         Toast.makeText(
-                            this@ExpenseHistoryActivity,
+                            this@ExpenseCategoryAnalysisActivity,
                             "No Transactions Found",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -324,40 +393,10 @@ class ExpenseHistoryActivity : AppCompatActivity()
                     }
                     else
                     {
-
-                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
-
-                        // Get the total expenses for the current user
-                        val totalExpense = getTotalExpenses(db, userId)
-
-                        // Set the text of the total income
-                        tvTotalExpense.text = currencyFormat.format(totalExpense)
-
-                        // make expense limit card visible
-                        binding.cardExpenseLimit.visibility = View.VISIBLE
-
-                        // Get the maximum monthly expense limit for the current user
-                        val maximumExpenseLimit = getMaximumExpenseLimit(db, userId)
-
-                        // Set the text of the maximum monthly expense limit
-                        tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: ${currencyFormat.format(maximumExpenseLimit)}"
-
-                        // Get the total expense for the current month
-                        val totalExpensesForCurrentMonth = getTotalExpensesForCurrentMonth(db, userId)
-
-                        // Calculate the progress percentage
-                        val progressPercentage = (totalExpensesForCurrentMonth / maximumExpenseLimit) * 100
-
-                        // Set the progress of the progress bar
-                        pbExpenseLimit.progress = progressPercentage.toInt()
-
-                        // Set the text of the progress percentage
-                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly limit"
-
                         // region Set up RecyclerView
 
-                        // get all the expenses for the current user
-                        val expenseTransactions = getAllExpensesForUser(db, userId)
+                        // get all the expenses for the category
+                        val expenseTransactions = getAllExpensesForCategory(expenseCategory.name, db)
 
                         if (expenseTransactions.isEmpty())
                         {
@@ -369,16 +408,16 @@ class ExpenseHistoryActivity : AppCompatActivity()
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
 
-                            val adapter = ExpenseHistoryAdapter(expenseTransactions)
+                            val adapter = ExpenseCategoryTransactionHistoryAdapter(expenseTransactions)
 
-                            rvTransactions.layoutManager = LinearLayoutManager(this@ExpenseHistoryActivity)
+                            rvTransactions.layoutManager = LinearLayoutManager(this@ExpenseCategoryAnalysisActivity)
 
                             rvTransactions.adapter = adapter
                         }
 
                         dialog.dismiss()
                         Toast.makeText(
-                            this@ExpenseHistoryActivity,
+                            this@ExpenseCategoryAnalysisActivity,
                             "Filter Cleared",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -392,88 +431,56 @@ class ExpenseHistoryActivity : AppCompatActivity()
 
     // region Transaction Helper Methods
 
-    // Calculate total expense from a list of Expense transactions
-    @SuppressLint("DefaultLocale")
-    private fun calculateTotalExpense(list: List<Expense>): Double
-    {
-        val totalExpense = list.sumOf { it.amount }
-        return totalExpense
-    }
-
-
-    // Method to filter only Expense transactions by date range
+    // Method to filter expense transactions by date range
     private fun filterExpensesByDateRange(list: List<Expense>, startDate: Date, endDate: Date): List<Expense> {
         return list
             .filter { it.date in startDate..endDate }
             .sortedByDescending { it.date.time }
     }
 
-    // Method to get all the expenses for the current user
-    private suspend fun getAllExpensesForUser(db: AppDatabase, userId: String): List<Expense>
+    // get the total of all expenses for the current category
+    private suspend fun getTotalExpensesForCategory(categoryName: String, db: AppDatabase): Double
     {
-        val allExpenses = mutableListOf<Expense>()
+        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryName)
 
-        // Step 1: Get the user's expense categories
-        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
-
-        if (userWithCategories.isNotEmpty())
-        {
-            val expenseCategories = userWithCategories[0].expenseCategories
-
-            // Step 2: For each category, get the expenses
-            for (category in expenseCategories)
-            {
-                val expensesWithCategory = db.expenseCategoryDao.getExpensesByCategoryName(category.name)
-
-                if (expensesWithCategory.isNotEmpty())
-                {
-                    allExpenses.addAll(expensesWithCategory[0].expenses)
-                }
-            }
+        if (categoryWithExpenses.isEmpty()) {
+            return 0.0
         }
 
-        // Step 3: Return the list
-        return allExpenses.sortedByDescending { it.date.time }
-    }
+        val expensesList = categoryWithExpenses[0].expenses
 
-    @SuppressLint("DefaultLocale")
-    private suspend fun getTotalExpenses(db: AppDatabase, userId: String): Double
-    {
-        var totalExpenses = 0.00
-
-        val expenses = getAllExpensesForUser(db, userId)
-
-        if (expenses.isEmpty())
-        {
-            return totalExpenses
+        if (expensesList.isEmpty()) {
+            return 0.0
         }
 
-        for (expense in expenses)
-        {
-            totalExpenses += expense.amount
+        var expenses = 0.0
+
+        for (expense in expensesList) {
+            expenses += expense.amount
         }
 
-        return totalExpenses
+        return expenses
     }
 
-    // method to get the users budget
-    private suspend fun getMaximumExpenseLimit(db: AppDatabase, userId: String): Double
-    {
-        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
-
-        return budget.maximumMonthlyExpenses
+    // get the total of all expenses for the current category (filtered)
+    private fun calculateTotalExpensesForCategory(expenses: List<Expense>): Double {
+        return expenses.sumOf { it.amount }
     }
 
-    // method to get total Expenses for current month
-    @SuppressLint("DefaultLocale")
-    private suspend fun getTotalExpensesForCurrentMonth(db: AppDatabase, userId: String): Double
+
+    // get the total of all expenses for the current category in the current month
+    private suspend fun getTotalMonthlyExpensesForCategory(categoryTitle: String, db: AppDatabase): Double
     {
-        val expenses = getAllExpensesForUser(db, userId)
+        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryTitle)
 
-        var totalExpenses = 0.00
+        if (categoryWithExpenses.isEmpty()) {
+            return 0.0
+        }
 
-        if (expenses.isEmpty()) {
-            return totalExpenses
+        val expensesList = categoryWithExpenses[0].expenses
+
+        if (expensesList.isEmpty()) {
+            return 0.0
         }
 
         // Get current month and year
@@ -481,7 +488,9 @@ class ExpenseHistoryActivity : AppCompatActivity()
         val currentMonth = calendar.get(Calendar.MONTH)
         val currentYear = calendar.get(Calendar.YEAR)
 
-        for (expense in expenses)
+        var monthlyExpenses = 0.0
+
+        for (expense in expensesList)
         {
             val expenseCalendar = Calendar.getInstance()
             expenseCalendar.time = expense.date
@@ -490,11 +499,25 @@ class ExpenseHistoryActivity : AppCompatActivity()
             val expenseYear = expenseCalendar.get(Calendar.YEAR)
 
             if (expenseMonth == currentMonth && expenseYear == currentYear) {
-                totalExpenses += expense.amount
+                monthlyExpenses += expense.amount
             }
         }
 
-        return totalExpenses
+        return monthlyExpenses
+    }
+
+    // get all expenses for the current category
+    private suspend fun getAllExpensesForCategory(categoryName: String, db: AppDatabase): List<Expense>
+    {
+        // get the expense category from the database
+        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryName)
+
+        if (categoryWithExpenses.isEmpty()) {
+            return emptyList()
+        }
+
+        // Order the expenses by most recent (including time) and return
+        return categoryWithExpenses[0].expenses.sortedByDescending { it.date.time }
     }
 
     // endregion

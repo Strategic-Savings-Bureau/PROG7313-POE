@@ -16,6 +16,16 @@ import com.ssba.strategic_savings_budget_app.entities.User
  * @property user The user entity representing an individual user in the system.
  * @property budget The budget entity associated with the user.
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Defining one-to-many and many-to-many relationships in Room Database
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room/relationships
+*/
+
 data class UserAndBudget(
 
     @Embedded
