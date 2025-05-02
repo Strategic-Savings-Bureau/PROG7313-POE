@@ -87,10 +87,10 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                android:id="@+id/tvCategoryName"
+                android:id="@+id/tvCategoryTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_category_name"
+                android:text="@string/tv_category_total"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
                 android:textSize="18sp"

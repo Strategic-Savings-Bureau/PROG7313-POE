@@ -189,7 +189,7 @@
 
     <!-- Expense Category Analysis -->
     <string name="tv_title_category_analysis">Category Analysis</string>
-    <string name="tv_category_name">Category Name</string>
+    <string name="tv_category_total">Category Total</string>
     <string name="tv_max_monthly_limit">Max Monthly Limit</string>
     <string name="tv_expense_limit_percentage">65% towards montly limit</string>
     <string name="cd_add_expense_button_category_analysis">Add Expense Button</string>

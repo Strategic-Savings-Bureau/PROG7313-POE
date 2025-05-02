@@ -138,9 +138,12 @@ class SavingsGoalActivity : AppCompatActivity()
             pbGoal.progress = progressPercentage.toInt()
             tvProgressPercentage.text = "${progressPercentage.toInt()}% saved"
 
+            if (totalSavings >= target)
+                tvProgressPercentage.setTextColor(ContextCompat.getColor(this@SavingsGoalActivity, R.color.income_green))
+
             // region Set up RecyclerView
 
-            // get all the incomes for the current user
+            // get all the savings for the current goal
             val savingsTransactions = getAllSavingsForGoal(savingsGoal.title, db)
 
             if (savingsTransactions.isEmpty())
