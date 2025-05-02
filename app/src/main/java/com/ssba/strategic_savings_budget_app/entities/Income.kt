@@ -24,6 +24,17 @@ import java.util.Date
  * @property description Optional notes or explanation for the income entry (e.g., "Freelance project payment").
  * @property userId The ID of the associated user (foreign key referencing the user table).
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room
+*/
+
+
 @Entity(
     tableName = "income",
     indices = [Index(value = ["title"]), Index(value = ["date"]), Index(value = ["userId"])]

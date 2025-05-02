@@ -24,6 +24,17 @@ import java.util.Date
  * @property description A detailed explanation or motivation behind the saving goal.
  * @property userId The unique identifier (from Firebase Auth) of the user who owns this goal.
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room
+*/
+
+
 @Entity(
     tableName = "saving_goal",
     indices = [Index(value = ["title"]), Index(value = ["endDate"]), Index(value = ["userId"])]
