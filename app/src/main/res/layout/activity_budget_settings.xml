@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -17,7 +18,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/budgetCard"
@@ -29,35 +30,27 @@
                 android:elevation="4dp"
                 android:gravity="center_horizontal"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <!-- Screen Title -->
-                <FrameLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp">
+                    android:text="Budget Settings"
+                    android:textSize="24sp"
+                    android:textColor="#000000"
+                    android:layout_marginBottom="24dp"/>
 
-                    <TextView
-                        android:id="@+id/tvTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Budget Settings"
-                        android:textSize="24sp"
-                        android:textColor="#000000" />
-
-                </FrameLayout>
                 <!-- Min. Monthly Income -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Minimum Monthly Income"
-                    android:layout_marginTop="50dp"
                     android:textSize="16sp"
-                    android:textColor="#000" />
-
+                    android:textColor="#000"
+                    android:layout_marginTop="16dp"/>
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMinIncome"
                     android:layout_width="match_parent"
@@ -66,17 +59,16 @@
                     android:padding="12dp"
                     android:hint="R0.00"
                     android:inputType="numberDecimal"
-                    android:text="@={viewmodel.minimumMonthlyIncome}" />
+                    android:text="@={viewmodel.minimumMonthlyIncome}"/>
 
                 <!-- Max. Monthly Expenses -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="100dp"
                     android:text="Maximum Monthly Expenses"
                     android:textSize="16sp"
-                    android:textColor="#000" />
-
+                    android:textColor="#000"
+                    android:layout_marginTop="24dp"/>
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMaxExpenses"
                     android:layout_width="match_parent"
@@ -85,15 +77,28 @@
                     android:padding="12dp"
                     android:hint="R0.00"
                     android:inputType="numberDecimal"
-                    android:text="@={viewmodel.maximumMonthlyExpenses}" />
+                    android:text="@={viewmodel.maximumMonthlyExpenses}"/>
 
-                <!-- Buttons -->
+                <!-- Advanced Settings Button -->
+                <Button
+                    android:id="@+id/btnAdvancedSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Advanced Settings"
+                    android:layout_marginTop="32dp"
+                    android:backgroundTint="@color/white"
+                    android:textColor="@color/black"
+
+                    android:padding="12dp"
+                    android:drawablePadding="8dp"/>
+
+                <!-- Action Buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="200dp"
                     android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:layout_marginTop="200dp">
 
                     <Button
                         android:id="@+id/btnSaveBudget"
@@ -102,11 +107,9 @@
                         android:layout_weight="1"
                         android:backgroundTint="#4CD7A9"
                         android:text="Save"
-                        android:textColor="#000000" />
+                        android:textColor="#000"/>
 
-                    <Space
-                        android:layout_width="16dp"
-                        android:layout_height="wrap_content" />
+                    <Space android:layout_width="16dp" android:layout_height="wrap_content"/>
 
                     <Button
                         android:id="@+id/btnCancelBudget"
@@ -115,13 +118,10 @@
                         android:layout_weight="1"
                         android:backgroundTint="#000"
                         android:text="Cancel"
-                        android:textColor="#FFF" />
+                        android:textColor="#FFF"/>
                 </LinearLayout>
 
             </LinearLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
-
 </layout>
