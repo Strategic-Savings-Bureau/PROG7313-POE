@@ -356,6 +356,10 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
                         tvProgressPercentage.text = "${progressPercentage.toInt()}% past monthly limit"
                     }
 
+                    tvMaxMonthlyLimit.visibility = View.VISIBLE
+                    pbLimit.visibility = View.VISIBLE
+                    tvProgressPercentage.visibility = View.VISIBLE
+
                     // set up the recycler view
                     val transactions = getAllExpensesForCategory(categoryName, db)
 
