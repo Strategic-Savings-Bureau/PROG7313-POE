@@ -34,7 +34,7 @@ class SplashScreenActivity : AppCompatActivity() {
         // Keep splash screen on-screen until auth state is checked
         splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
 
-        // Hybrid approach: Wait for both persistence load AND minimal delay
+        // Wait for both persistence load AND minimal delay
         Handler(Looper.getMainLooper()).postDelayed({
             checkAuthState()
         }, 300)

@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
+import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
-import com.ssba.strategic_savings_budget_app.entities.User
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
 import kotlinx.coroutines.launch
@@ -45,21 +45,30 @@ class SettingsActivity : AppCompatActivity() {
 
         // Load User Profile
         lifecycleScope.launch {
+            // Get user from database
             val user = db.userDao.getUserById(auth.currentUser?.uid ?: return@launch)
 
+            // Assign values to views
             binding.tvFullName.text = user?.fullName
             binding.tvUsername.text = user?.username
-
-            Picasso.get()
-                .load(user?.profilePictureUrl)
-                .placeholder(R.drawable.ic_default_profile)
-                .error(R.drawable.ic_default_profile)
-                .into(binding.ivProfilePic)
+            // Load Profile Picture
+            if (user?.profilePictureUrl.isNullOrEmpty()) {
+                // Show default image if URL is empty or null
+                binding.ivProfilePic.setImageResource(R.drawable.ic_default_profile)
+            } else {
+                // Load image from URL
+                Picasso.get()
+                    .load(user.profilePictureUrl)
+                    .placeholder(R.drawable.ic_default_profile)
+                    .error(R.drawable.ic_default_profile)
+                    .into(binding.ivProfilePic)
+            }
         }
 
         // Highlight the Menu Item
         binding.bottomNav.selectedItemId = R.id.miSettings
 
+        // Set up On Click Listeners
         setupOnClickListeners()
     }
 
@@ -68,6 +77,7 @@ class SettingsActivity : AppCompatActivity() {
             Toast.makeText(this, "Rewards Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
+        // Navigate to update user profile
         binding.btnProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()
@@ -85,23 +95,20 @@ class SettingsActivity : AppCompatActivity() {
             Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
+        // Navigate to Budget Settings
         binding.btnBudgeting.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, BudgetSettingsActivity::class.java))
         }
 
         binding.btnYourData.setOnClickListener {
             Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
-        binding.btnLogout.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }
-
         // Button to Log Out the Current User
         binding.btnLogout.setOnClickListener {
             auth.signOut()
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
         // Set up Bottom Navigation View onClickListener
@@ -137,9 +144,5 @@ class SettingsActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-
-    private suspend fun getCurrentUser(userId: String): User? {
-        return db.userDao.getUserById(userId)
     }
 }

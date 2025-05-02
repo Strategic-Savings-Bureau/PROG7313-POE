@@ -151,8 +151,10 @@ class ProfileActivity : AppCompatActivity() {
 
         // Populate User Profile
         lifecycleScope.launch {
+            // Get user from database
             val user = db.userDao.getUserById(auth.currentUser?.uid ?: return@launch)
 
+            // Assign values to views
             binding.etUsername.setText(user?.username)
             binding.etFullName.setText(user?.fullName)
             binding.etEmail.setText(user?.email)
@@ -217,7 +219,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     // Implementation for Button On Click Listeners
-    @Suppress("DEPRECATION")
     private fun setupButtonClickListeners() {
         // Back Button to Return to Menu On Click Listener
         binding.btnBackButton.setOnClickListener {
@@ -295,9 +296,6 @@ class ProfileActivity : AppCompatActivity() {
                 // Display message and clear inputs
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@ProfileActivity, "Profile saved", Toast.LENGTH_SHORT).show()
-                    binding.etUsername.text?.clear()
-                    binding.etFullName.text?.clear()
-                    binding.etEmail.text?.clear()
                 }
             }
         }
@@ -350,14 +348,17 @@ class ProfileActivity : AppCompatActivity() {
 
     // Method for Image Upload to Supabase
     private suspend fun uploadImageToSupabase(uri: Uri, fileName: String): String {
+        // Initialize the storage bucket name
         val bucketId = "user-profile-pictures"
 
+        // Read the image data from the URI
         val fileBytes = withContext(Dispatchers.IO) {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 inputStream.readBytes()
             }
         }
 
+        // Check if the file bytes are null
         if (fileBytes == null) {
             return ""
         }

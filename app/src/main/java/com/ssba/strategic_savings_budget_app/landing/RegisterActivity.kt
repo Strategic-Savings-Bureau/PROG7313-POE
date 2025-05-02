@@ -161,8 +161,8 @@ class RegisterActivity : AppCompatActivity() {
     // Method for Registration Logic
     private fun registerUser() {
         auth.createUserWithEmailAndPassword(
-            binding.etEmail.text.toString(),
-            binding.etPassword.text.toString()
+            binding.etEmail.text.toString().trim(),
+            binding.etPassword.text.toString().trim()
         ).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // Get User ID
@@ -202,27 +202,29 @@ class RegisterActivity : AppCompatActivity() {
 
     // Method for Image Upload to Supabase
     private suspend fun uploadImageToSupabase(uri: Uri, fileName: String): String {
+        // Initialize the bucket ID
         val bucketId = "user-profile-pictures"
 
+        // Read the bytes of the image file
         val fileBytes = withContext(Dispatchers.IO) {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 inputStream.readBytes()
             }
         }
 
+        // Return an empty string if the file bytes are null
         if (fileBytes == null) {
             return ""
         }
 
         return try {
-
             // Initialize the storage bucket
             val bucket = supabase.storage.from(bucketId)
 
             // Upload the image to the specified file path within the bucket
             bucket.upload(fileName, fileBytes)
             {
-                upsert = false // Set to true to overwrite if the file already exists
+                upsert = false
                 contentType = ContentType.Image.JPEG // Set the content type to JPEG
             }
 
