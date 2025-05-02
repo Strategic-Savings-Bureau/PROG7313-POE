@@ -16,6 +16,17 @@ import com.ssba.strategic_savings_budget_app.entities.User
  * @property user The user entity, which can have multiple saving goals.
  * @property savingGoals The list of saving goals associated with the user.
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Defining relationships in Room Database
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room/relationships
+*/
+
+
 data class UserWithSavingGoals(
 
     @Embedded

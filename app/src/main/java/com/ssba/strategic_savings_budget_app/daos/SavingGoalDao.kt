@@ -9,6 +9,15 @@ import com.ssba.strategic_savings_budget_app.entities.SavingGoal
 import com.ssba.strategic_savings_budget_app.entities.relations.SavingGoalWithSavings
 import java.util.Date
 
+/*
+ 	* Code Attribution
+ 	* Purpose: Creating DAO interfaces to define SQL queries for Room Database operations
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room/accessing-data
+*/
+
 @Dao
 interface SavingGoalDao {
 

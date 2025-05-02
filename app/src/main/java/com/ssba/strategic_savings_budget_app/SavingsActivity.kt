@@ -20,6 +20,17 @@ import com.ssba.strategic_savings_budget_app.entities.SavingGoal
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
 
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	* Author: Android Developers / Firebase Team
+ 	* Sources:
+ 	*   - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+*/
+
 class SavingsActivity : AppCompatActivity() {
 
     // region Declarations

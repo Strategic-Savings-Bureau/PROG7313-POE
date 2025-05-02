@@ -25,6 +25,17 @@ import com.ssba.strategic_savings_budget_app.entities.*
  * @see ExpenseCategoryDao
  * @see ExpenseDao
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Setting up the RoomDatabase class to provide access to DAOs
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room#database
+*/
+
+
 @Database(
     entities = [
         User::class,
@@ -79,7 +90,7 @@ abstract class AppDatabase : RoomDatabase() {
                     .fallbackToDestructiveMigration()
                     // Setting the journal mode to WRITE_AHEAD_LOGGING (WAL)
                     // This improves performance and concurrency for write-heavy operations
-                    .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
+                    .setJournalMode(JournalMode.WRITE_AHEAD_LOGGING)
                     .build()
                     .also {
                         INSTANCE = it

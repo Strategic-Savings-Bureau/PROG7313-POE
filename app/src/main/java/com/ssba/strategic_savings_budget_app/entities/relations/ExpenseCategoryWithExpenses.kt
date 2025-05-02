@@ -16,6 +16,16 @@ import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
  * @property expenseCategory The expense category entity that categorizes the expenses.
  * @property expenses A list of expenses associated with the expense category.
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Defining one-to-many and many-to-many relationships in Room Database
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room/relationships
+*/
+
 data class ExpenseCategoryWithExpenses(
 
     @Embedded

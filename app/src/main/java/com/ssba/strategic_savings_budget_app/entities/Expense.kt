@@ -26,6 +26,17 @@ import java.util.Date
  * @property receiptPictureUrl URL to the receipt image stored in Supabase Storage (optional).
  * @property categoryId The ID of the category to which this expense belongs (foreign key referencing the expense_category table).
  */
+
+/*
+ 	* Code Attribution
+ 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
+ 	* Author: Android Developers
+ 	* Date Accessed: 10 April 2025
+ 	* Source: Developer Guide - Android Developers
+ 	* URL: https://developer.android.com/training/data-storage/room
+*/
+
+
 @Entity(
     tableName = "expense",
     indices = [Index(value = ["title"]), Index(value = ["date"]), Index(value = ["categoryId"])]

@@ -12,9 +12,7 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.SavingsActivity
-import com.ssba.strategic_savings_budget_app.SavingsGoalActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsGoalsBinding
 import com.ssba.strategic_savings_budget_app.entities.SavingGoal
@@ -22,6 +20,17 @@ import com.ssba.strategic_savings_budget_app.models.SavingsGoalViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
+
+/*
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	*   - Implementing the Material DatePicker for selecting dates in the app
+ 	* Author: Firebase Team / Android Developers
+ 	* Sources:
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
+*/
 
 class SavingGoalEntryActivity : AppCompatActivity() {
 
