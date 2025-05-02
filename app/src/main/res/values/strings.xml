@@ -181,4 +181,10 @@
     <string name="tv_no_expense_categories_created">No expense categories created</string>
     <string name="tv_title_expense_categories">Expense Categories</string>
 
+    <!-- Item: Expense Category -->
+    <string name="cd_category_icon">Category Icon</string>
+    <string name="tv_expense_category_title">Groceries</string>
+    <string name="tv_maximum_monthly_limit">Maximum Monthly Limit: R5600</string>
+    <string name="tv_progress_limit">65% towards limit</string>
+
 </resources>

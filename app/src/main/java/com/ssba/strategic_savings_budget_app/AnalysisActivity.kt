@@ -5,11 +5,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.ssba.strategic_savings_budget_app.adapters.ExpenseCategoryAdapter
+import com.ssba.strategic_savings_budget_app.budget.CreateCategoryActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityAnalysisBinding
 import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
@@ -86,12 +90,13 @@ class AnalysisActivity : AppCompatActivity() {
                 rvCategories.visibility = View.VISIBLE
 
                 // set up the adapter
-
+                val adapter = ExpenseCategoryAdapter(expenseCategories)
 
                 // set up the layout manager
-
+                rvCategories.layoutManager = LinearLayoutManager(this@AnalysisActivity)
 
                 // set rv adapter
+                rvCategories.adapter = adapter
             }
 
             // endregion
@@ -103,6 +108,17 @@ class AnalysisActivity : AppCompatActivity() {
     }
 
     private fun setupOnClickListeners() {
+
+        btnRewards.setOnClickListener {
+            Toast.makeText(this, "Rewards Coming Soon", Toast.LENGTH_SHORT).show()
+        }
+
+        btnAddCategory.setOnClickListener {
+
+            // Navigate to Add Saving Goal Activity
+            startActivity(Intent(this, CreateCategoryActivity::class.java))
+        }
+
         // Set up Bottom Navigation View onClickListener
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {

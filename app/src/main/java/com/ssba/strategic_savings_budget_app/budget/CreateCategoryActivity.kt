@@ -70,7 +70,6 @@ class CreateCategoryActivity : AppCompatActivity() {
     private fun saveCategoryToDb() {
         // Create the new category instance
         val newCategory = ExpenseCategory(
-            categoryId = 0, // Auto-generated in DB
             name = viewModel.categoryName.value.orEmpty(),
             description = viewModel.categoryDescription.value.orEmpty(),
             icon = viewModel.categoryIcon.value.orEmpty(),
