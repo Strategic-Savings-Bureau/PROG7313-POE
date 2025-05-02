@@ -6,16 +6,16 @@ Welcome to the Strategic Savings App, your go-to Android budgeting solution! Man
 
 ## 📋 Table of Contents
 
-1. [🚀 Overview](#🚀-overview)  
-2. [✨ Key Features](#✨-key-features)   
-3. [⚙️ Requirements & Configuration](#⚙️-Requirements-&-Configuration)   
-4. [🛠 Tech Stack](#🛠-tech-stack)  
-5. [🗂️ Project Structure](#🗂️-project-structure)  
-6. [⚡ Quick Start](#⚡-quick-start)  
-7. [💡 Usage Guide](#💡-usage-guide)   
-8. [📦 Releases & APK Download](#📦-Releases-&-APK-Download)   
-9. [👥 Team Members](#👥-team-members)   
-10. [🎥 Demo Video](#🎥-Demo-Video)   
+1. [🚀 Overview](#overview)  
+2. [✨ Key Features](#key-features)  
+3. [⚙️ Requirements & Configuration](#requirements-configuration)  
+4. [🛠 Tech Stack](#tech-stack)  
+5. [🗂️ Project Structure](#project-structure)  
+6. [⚡ Quick Start](#quick-start)  
+7. [💡 Usage Guide](#usage-guide)  
+8. [📦 Releases & APK Download](#releases--apk-download)  
+9. [👥 Team Members](#team-members)  
+10. [🎥 Demo Video](#demo-video)    
 
 ---
 
