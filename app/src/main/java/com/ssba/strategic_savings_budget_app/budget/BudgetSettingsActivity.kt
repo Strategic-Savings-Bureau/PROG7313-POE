@@ -26,7 +26,7 @@ class BudgetSettingsActivity : AppCompatActivity() {
     private val viewModel: BudgetSettingsViewModel by viewModels()
 
     private lateinit var db: AppDatabase
-    private lateinit var auth : FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,15 +45,12 @@ class BudgetSettingsActivity : AppCompatActivity() {
     }
 
     private fun loadCurrentBudget() {
-        // get the current user's id
+        // Get the current user's ID
         val userId = auth.currentUser?.uid
 
-        if (userId == null)
-        {
-            // log the error
+        if (userId == null) {
+            // Log the error and redirect to login
             Log.e("BudgetSettingsActivity", "User ID is null")
-
-            // redirect to login
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
@@ -61,19 +58,18 @@ class BudgetSettingsActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch(Dispatchers.IO) {
-
-            val userWithBudget = db.userDao.getUserWithBudget(userId.toString())
+            val userWithBudget = db.userDao.getUserWithBudget(userId)
 
             if (userWithBudget.isNotEmpty()) {
-                // get the budget
+                // Get the budget details
                 val budget = userWithBudget[0].budget
 
                 withContext(Dispatchers.Main) {
+                    // Set current values in the ViewModel
                     viewModel.minimumMonthlyIncome.value = budget.minimumMonthlyIncome.toString()
                     viewModel.maximumMonthlyExpenses.value = budget.maximumMonthlyExpenses.toString()
                 }
-            }
-            else {
+            } else {
                 Log.e("BudgetSettingsActivity", "User with ID $userId not found")
             }
         }
@@ -89,6 +85,22 @@ class BudgetSettingsActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
+        binding.btnAdvancedSettings.setOnClickListener {
+            Log.d("BudgetSettingsActivity", "Advanced settings button clicked")
+
+            val maxExpenses = viewModel.maximumMonthlyExpenses.value ?: "0"
+            val currIncome = viewModel.minimumMonthlyIncome.value ?: "0"
+            val currCategoryExpenses = viewModel.currExpenseTotal.value ?: "0" // Adjust if needed
+
+            // Passing the data to the AdvancedBudgetSettingsActivity
+            val intent = Intent(this@BudgetSettingsActivity, AdvancedBudgetSettingsActivity::class.java).apply {
+                putExtra("maxExpenses", maxExpenses)
+                putExtra("currIncome", currIncome)
+                putExtra("currCategoryExpenses", currCategoryExpenses)
+            }
+            startActivity(intent)
+            finish()
+        }
 
         binding.btnSaveBudget.setOnClickListener {
             Log.d("BudgetSettingsActivity", "Save button clicked")
@@ -98,30 +110,53 @@ class BudgetSettingsActivity : AppCompatActivity() {
 
                 val minIncome = viewModel.minimumMonthlyIncome.value!!.toDouble()
                 val maxExpenses = viewModel.maximumMonthlyExpenses.value!!.toDouble()
+                val userId = auth.currentUser?.uid.toString()
 
-                val budget = Budget(
+                // Create or update budget entry
+                var budget = Budget(
                     minimumMonthlyIncome = minIncome,
                     maximumMonthlyExpenses = maxExpenses,
-                    userId = auth.currentUser?.uid.toString()
+                    userId = userId
                 )
 
-                lifecycleScope.launch(Dispatchers.IO) {
+                lifecycleScope.launch {
+                    // Check if budget already exists for the user
+                    val existingBudget = db.budgetDao.getBudgetByUserId(userId)
+                    if (existingBudget != null) {
+                        // If a budget already exists, update it
+                        budget = Budget(
+                            budgetId =    existingBudget.budgetId,
+                            minimumMonthlyIncome = minIncome,
+                            maximumMonthlyExpenses = maxExpenses,
+                            userId = userId
+                        )
+
+                    }
+
                     db.budgetDao.upsertBudget(budget)
                     Log.d("BudgetSettingsActivity", "Budget saved to database")
 
                     launch(Dispatchers.Main) {
-                        Toast.makeText(this@BudgetSettingsActivity, "Budget saved", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@BudgetSettingsActivity,
+                            "Budget saved",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
-                        // Intent to navigate to HomeActivity
+                        // Navigate to the MainActivity after saving
                         val intent = Intent(this@BudgetSettingsActivity, MainActivity::class.java)
                         startActivity(intent)
-                        finish() // Finish this activity after navigating to the Home screen
+                        finish() // Finish this activity after navigating
                         Log.d("BudgetSettingsActivity", "Navigating to HomeActivity")
                     }
                 }
             } else {
                 Log.d("BudgetSettingsActivity", "Validation failed or user not authenticated")
-                Toast.makeText(this, "Please complete all required fields or log in.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Please complete all required fields or log in.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 

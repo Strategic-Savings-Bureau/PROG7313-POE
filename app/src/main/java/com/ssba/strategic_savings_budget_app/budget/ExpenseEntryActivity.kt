@@ -14,12 +14,20 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.ssba.strategic_savings_budget_app.TransactionsActivity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.ssba.strategic_savings_budget_app.SavingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
+import com.ssba.strategic_savings_budget_app.landing.RegisterActivity
 import com.ssba.strategic_savings_budget_app.models.ExpenseEntryViewModel
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.storage
+import io.ktor.http.ContentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,11 +40,17 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
     private var receiptUri: Uri? = null
-
+   private lateinit var auth: FirebaseAuth
     private lateinit var db: AppDatabase
     private lateinit var expenseDao: com.ssba.strategic_savings_budget_app.daos.ExpenseDao
     private lateinit var categoryDao: com.ssba.strategic_savings_budget_app.daos.ExpenseCategoryDao
-
+    private val supabase = createSupabaseClient(
+        supabaseUrl = "https://bxpptnwmvrqqvdwpzucp.supabase.co",
+        supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4cHB0bndtdnJxcXZkd3B6dWNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxNDU0OTUsImV4cCI6MjA1OTcyMTQ5NX0.rl2dikHc7MA6ECiBUvgD5LnHctCujKq3AU9p-nh-1CI"
+    ) {
+        install(Postgrest)
+        install(Storage)
+    }
     private var selectedDateMillis: Long? = null
     private val datePicker by lazy {
 
@@ -183,16 +197,24 @@ class ExpenseEntryActivity : AppCompatActivity() {
                 val title = viewModel.titleOrName.value.orEmpty()
                 val amount = viewModel.amount.value?.toDoubleOrNull() ?: 0.0
                 val description = viewModel.description.value.orEmpty()
-                val categoryId = (binding.spinnerCategory.selectedItemPosition + 1)
-                val receiptUrl = receiptUri?.toString().orEmpty()
+                val categoryId = binding.spinnerCategory.selectedItemPosition +1
+                val receiptUrl = receiptUri
                 val date = selectedDateMillis?.let { Date(it) } ?: Date()
 
+
+                // Supabase Storage
+
+                val recieptSupabaseUrl = receiptUrl?.let { uri ->
+                    lifecycleScope.launch {
+                        uploadImageToSupabase(uri, "receipt_${System.currentTimeMillis()}.jpg")
+                    }
+                } ?: ""
                 val expense = Expense(
                     title = title,
                     date = date,
                     amount = amount,
                     description = description,
-                    receiptPictureUrl = receiptUrl,
+                    receiptPictureUrl = recieptSupabaseUrl.toString(),
                     categoryId = categoryId
                 )
 
@@ -201,12 +223,12 @@ class ExpenseEntryActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO) {
                         expenseDao.upsertExpense(expense)
                     }
-                    // Once saved, show Toast and navigate to TransactionsActivity
+                    // Once saved, show Toast and navigate to SavingsActivity
                     Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT).show()
                     Log.d("ExpenseEntryActivity", "Expense saved: $expense")
 
-                    // Intent to navigate to TransactionsActivity
-                    val intent = Intent(this@ExpenseEntryActivity, TransactionsActivity::class.java)
+                    // Intent to navigate to SavingsActivity
+                    val intent = Intent(this@ExpenseEntryActivity, SavingsActivity::class.java)
                     startActivity(intent)
 
                     // Optionally, you can finish this activity if you don't want the user to go back
@@ -226,5 +248,29 @@ class ExpenseEntryActivity : AppCompatActivity() {
         }
 
         Log.d("ExpenseEntryActivity", "setupActions completed")
+    }
+    private suspend fun uploadImageToSupabase(uri: Uri, fileName: String): String {
+        val bucketId = "expense-reciepts"
+        // Read the image bytes
+        val fileBytes = withContext(Dispatchers.IO) {
+            contentResolver.openInputStream(uri)?.use { it.readBytes() }
+        } ?: return ""
+
+        return try {
+            val bucket = supabase.storage.from(bucketId)
+
+            bucket.upload(fileName, fileBytes)
+            bucket.publicUrl(fileName).toString()
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    this@ExpenseEntryActivity,
+                    "Upload failed: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            Log.e("ExpenseEntry", "upload failed", e)
+            ""
+        }
     }
 }
