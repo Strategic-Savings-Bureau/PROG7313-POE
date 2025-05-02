@@ -1,6 +1,7 @@
 package com.ssba.strategic_savings_budget_app.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import com.ssba.strategic_savings_budget_app.ExpenseCategoryAnalysisActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
@@ -106,13 +108,13 @@ class ExpenseCategoryAdapter(private var expenseCategories: List<ExpenseCategory
             // get the expense category title
             val categoryTitle = category.name
 
-            // navigate to the expense category activity and pass the title
-            //val intent = Intent(context, ExpenseCategoryActivity::class.java)
-            //intent.putExtra("EXPENSE_CATEGORY_NAME", categoryTitle)
-            //context.startActivity(intent)
+            // log the click
+            Log.d("ExpenseCategoryAdapter", "Clicked on category: $categoryTitle")
 
-            // display a toast for now
-            Toast.makeText(context, "Clicked on $categoryTitle", Toast.LENGTH_SHORT).show()
+            // navigate to the expense category activity and pass the title
+            val intent = Intent(context, ExpenseCategoryAnalysisActivity::class.java)
+            intent.putExtra("EXPENSE_CATEGORY_NAME", categoryTitle)
+            context.startActivity(intent)
         }
     }
 

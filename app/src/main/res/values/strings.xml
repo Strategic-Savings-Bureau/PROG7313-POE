@@ -187,4 +187,12 @@
     <string name="tv_maximum_monthly_limit">Maximum Monthly Limit: R5600</string>
     <string name="tv_progress_limit">65% towards limit</string>
 
+    <!-- Expense Category Analysis -->
+    <string name="tv_title_category_analysis">Category Analysis</string>
+    <string name="tv_category_total">Category Total</string>
+    <string name="tv_max_monthly_limit">Max Monthly Limit</string>
+    <string name="tv_expense_limit_percentage">65% towards montly limit</string>
+    <string name="cd_add_expense_button_category_analysis">Add Expense Button</string>
+    <string name="cd_list_of_expenses_for_the_given_category">list of expenses for the given category</string>
+
 </resources>

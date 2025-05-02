@@ -15,7 +15,7 @@
         android:layout_height="0dp"
         android:contentDescription="@string/cd_category_icon"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_default_expense_category"
+        android:src="@drawable/ic_default_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
