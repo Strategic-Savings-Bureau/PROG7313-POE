@@ -163,6 +163,6 @@ Under each release, download the APK asset (e.g., 'app-debug.apk') to install on
 ## 🎥 Demo Video
 
 Check out a walkthrough of the Strategic Savings App here:  
-Demo Video: [Link to be appended]
+Demo Video: https://youtu.be/Kt6-eqFk7GM
 
 ---
