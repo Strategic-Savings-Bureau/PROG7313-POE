@@ -31,7 +31,7 @@ import java.util.Date
 data class Saving(
 
     @PrimaryKey(autoGenerate = true)
-    val savingId: Int? = 0, // Unique ID for the saving entry (auto-incremented)
+    val savingId: Int? = null, // Unique ID for the saving entry (auto-incremented)
 
     val title: String, // Label or short title for the saving entry
 

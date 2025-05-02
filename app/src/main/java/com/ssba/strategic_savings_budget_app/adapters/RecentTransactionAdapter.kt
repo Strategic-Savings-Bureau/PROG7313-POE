@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.entities.Income
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -33,9 +34,11 @@ class RecentTransactionAdapter(private var transactions: List<Any>) : RecyclerVi
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         val transaction = transactions[position]
 
-        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val context = holder.itemView.context
+
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
 
         when (transaction)
         {
@@ -45,7 +48,7 @@ class RecentTransactionAdapter(private var transactions: List<Any>) : RecyclerVi
                 holder.tvTitle.text = transaction.title
                 holder.tvDate.text = dateFormatter.format(transaction.date)
                 holder.tvType.text = context.getString(R.string.tv_transaction_type_expense)
-                holder.tvAmount.text = "R ${transaction.amount}"
+                holder.tvAmount.text = currencyFormat.format(transaction.amount)
                 holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.expense_red))
             }
             is Income -> {
@@ -54,7 +57,7 @@ class RecentTransactionAdapter(private var transactions: List<Any>) : RecyclerVi
                 holder.tvTitle.text = transaction.title
                 holder.tvDate.text = dateFormatter.format(transaction.date)
                 holder.tvType.text = context.getString(R.string.tv_transaction_type_income)
-                holder.tvAmount.text = "R ${transaction.amount}"
+                holder.tvAmount.text = currencyFormat.format(transaction.amount)
                 holder.tvAmount.setTextColor(holder.itemView.context.getColor(R.color.income_green))
             }
         }

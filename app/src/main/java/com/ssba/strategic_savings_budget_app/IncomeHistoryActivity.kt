@@ -26,6 +26,7 @@ import com.ssba.strategic_savings_budget_app.databinding.ActivityIncomeHistoryBi
 import com.ssba.strategic_savings_budget_app.entities.Income
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -84,6 +85,8 @@ class IncomeHistoryActivity : AppCompatActivity()
         tvProgressPercentage = binding.tvProgressPercentage
         // endregion
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         lifecycleScope.launch {
 
             // Get the current user's ID
@@ -100,13 +103,13 @@ class IncomeHistoryActivity : AppCompatActivity()
             val totalIncome = getTotalIncome(db, userId)
 
             // Set the text of the total income
-            tvTotalIncome.text = "R $totalIncome"
+            tvTotalIncome.text = currencyFormat.format(totalIncome)
 
             // Get the minimum monthly income goal for the current user
             val minimumIncome = getMinimumIncome(db, userId)
 
             // Set the text of the minimum monthly income goal
-            tvMinIncomeGoal.text = "Minimum Monthly Income: R $minimumIncome"
+            tvMinIncomeGoal.text = "Minimum Monthly Income: ${currencyFormat.format(totalIncome)}"
 
             // Get the total income for the current month
             val totalIncomeForCurrentMonth = getTotalIncomeForCurrentMonth(db, userId)
@@ -118,7 +121,7 @@ class IncomeHistoryActivity : AppCompatActivity()
             pbIncomeGoal.progress = progressPercentage.toInt()
 
             // Set the text of the progress percentage
-            tvProgressPercentage.text = "${progressPercentage.toInt()}% towards goal"
+            tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly goal"
 
             // region Set up RecyclerView
 
@@ -202,9 +205,9 @@ class IncomeHistoryActivity : AppCompatActivity()
 
                 // convert the dates to Date objects
                 val startDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(startDate)
                 val endDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(endDate)
 
                 // check if the dates are valid
                 if (startDateObj != null && endDateObj != null)
@@ -247,11 +250,13 @@ class IncomeHistoryActivity : AppCompatActivity()
                         }
                         else
                         {
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
                             binding.cardIncomeGoal.visibility = View.GONE
 
                             val totalIncome = calculateTotalIncome(filteredTransactions)
 
-                            tvTotalIncome.text = "R $totalIncome"
+                            tvTotalIncome.text = currencyFormat.format(totalIncome)
 
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
@@ -308,11 +313,13 @@ class IncomeHistoryActivity : AppCompatActivity()
                     else
                     {
 
+                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
                         // Get the total income for the current user
                         val totalIncome = getTotalIncome(db, userId)
 
                         // Set the text of the total income
-                        tvTotalIncome.text = "R $totalIncome"
+                        tvTotalIncome.text = currencyFormat.format(totalIncome)
 
                         // make income goal card visible
                         binding.cardIncomeGoal.visibility = View.VISIBLE
@@ -321,7 +328,7 @@ class IncomeHistoryActivity : AppCompatActivity()
                         val minimumIncome = getMinimumIncome(db, userId)
 
                         // Set the text of the minimum monthly income goal
-                        tvMinIncomeGoal.text = "Minimum Monthly Income: R $minimumIncome"
+                        tvMinIncomeGoal.text = "Minimum Monthly Income: ${currencyFormat.format(minimumIncome)}"
 
                         // Get the total income for the current month
                         val totalIncomeForCurrentMonth = getTotalIncomeForCurrentMonth(db, userId)
@@ -333,7 +340,7 @@ class IncomeHistoryActivity : AppCompatActivity()
                         pbIncomeGoal.progress = progressPercentage.toInt()
 
                         // Set the text of the progress percentage
-                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards goal"
+                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly goal"
 
                         // region Set up RecyclerView
 
@@ -378,7 +385,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     private fun calculateTotalIncome(list: List<Income>): Double
     {
         val totalIncome = list.sumOf { it.amount }
-        return String.format("%.2f", totalIncome).toDouble()
+        return totalIncome
     }
 
 
@@ -386,7 +393,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     private fun filterIncomeByDateRange(list: List<Income>, startDate: Date, endDate: Date): List<Income> {
         return list
             .filter { it.date in startDate..endDate }
-            .sortedByDescending { it.date }
+            .sortedByDescending { it.date.time }
     }
 
 
@@ -396,8 +403,8 @@ class IncomeHistoryActivity : AppCompatActivity()
             val userWithIncomes = db.userDao.getUserWithIncomes(userId)
             val incomeTransactions = userWithIncomes[0].incomes
 
-        // sort the incomes by date in descending order
-        return incomeTransactions.sortedByDescending { it.date }
+        // sort the incomes by date and time in descending order
+        return incomeTransactions.sortedByDescending { it.date.time }
     }
 
     @SuppressLint("DefaultLocale")
@@ -416,9 +423,6 @@ class IncomeHistoryActivity : AppCompatActivity()
         {
             totalIncome += income.amount
         }
-
-        // round to 2 decimal places
-        totalIncome = String.format("%.2f", totalIncome).toDouble()
 
         return totalIncome
     }
@@ -459,9 +463,6 @@ class IncomeHistoryActivity : AppCompatActivity()
             }
         }
 
-        // Round to 2 decimal places
-        totalIncome = String.format("%.2f", totalIncome).toDouble()
-
         return totalIncome
     }
 
@@ -471,7 +472,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     // region Date picker Launcher
     private fun showDatePicker(isStart: Boolean, etStartDate: EditText, etEndDate: EditText)
     {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val constraints = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointBackward.now()) // Only allow today or earlier

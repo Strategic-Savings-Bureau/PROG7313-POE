@@ -27,6 +27,7 @@ import com.ssba.strategic_savings_budget_app.entities.Income
 import com.ssba.strategic_savings_budget_app.entities.Saving
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -83,6 +84,8 @@ class TransactionsActivity : AppCompatActivity() {
         btnDateFilter = binding.btnDateFilter
         // endregion
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         lifecycleScope.launch {
 
             // Get the current user's ID
@@ -100,8 +103,8 @@ class TransactionsActivity : AppCompatActivity() {
             val totalExpenses = getTotalExpenses(db, userId)
 
             // Set the text of the total income and expenses
-            tvTotalIncome.text = "R $totalIncome"
-            tvTotalExpenses.text = "R $totalExpenses"
+            tvTotalIncome.text = currencyFormat.format(totalIncome)
+            tvTotalExpenses.text = currencyFormat.format(totalExpenses)
 
             // set up the recycler view
             val transactions = getAllTransactions(db, userId)
@@ -189,9 +192,9 @@ class TransactionsActivity : AppCompatActivity() {
 
                 // convert the dates to Date objects
                 val startDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(startDate)
                 val endDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(endDate)
 
                 // check if the dates are valid
                 if (startDateObj != null && endDateObj != null)
@@ -237,8 +240,10 @@ class TransactionsActivity : AppCompatActivity() {
 
                             val totalIncomeAndExpenses = calculateIncomeAndExpenseValues(filteredTransactions)
 
-                            tvTotalIncome.text = "R ${totalIncomeAndExpenses[0]}"
-                            tvTotalExpenses.text = "R ${totalIncomeAndExpenses[1]}"
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
+                            tvTotalIncome.text = currencyFormat.format(totalIncomeAndExpenses[0])
+                            tvTotalExpenses.text = currencyFormat.format(totalIncomeAndExpenses[1])
 
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
@@ -295,8 +300,10 @@ class TransactionsActivity : AppCompatActivity() {
 
                         val totalIncomeAndExpenses = calculateIncomeAndExpenseValues(transactions)
 
-                        tvTotalIncome.text = "R ${totalIncomeAndExpenses[0]}"
-                        tvTotalExpenses.text = "R ${totalIncomeAndExpenses[1]}"
+                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
+                        tvTotalIncome.text = currencyFormat.format(totalIncomeAndExpenses[0])
+                        tvTotalExpenses.text = currencyFormat.format(totalIncomeAndExpenses[1])
 
                         rvTransactions.visibility = View.VISIBLE
                         tvNoTransactions.visibility = View.GONE
@@ -427,14 +434,24 @@ class TransactionsActivity : AppCompatActivity() {
         combinedTransactions.addAll(savings)
 
         // Sort by date descending
-        val sortedList = combinedTransactions.sortedByDescending { item ->
-            when (item) {
-                is Income -> item.date
-                is Expense -> item.date
-                is Saving -> item.date
-                else -> Date(0) // fallback
+        val sortedList = combinedTransactions.sortedWith(
+            compareByDescending<Any> { item ->
+                when (item) {
+                    is Income -> item.date
+                    is Expense -> item.date
+                    is Saving -> item.date
+                    else -> Date(0)
+                }
+            }.thenByDescending { item ->
+                when (item) {
+                    is Income -> item.date.time
+                    is Expense -> item.date.time
+                    is Saving -> item.date.time
+                    else -> 0L
+                }
             }
-        }
+        )
+
 
         // return the sorted list
         return sortedList
@@ -457,8 +474,6 @@ class TransactionsActivity : AppCompatActivity() {
             totalIncome += income.amount
         }
 
-        // round to 2 decimal places
-        totalIncome = String.format("%.2f", totalIncome).toDouble()
 
         return totalIncome
     }
@@ -481,9 +496,6 @@ class TransactionsActivity : AppCompatActivity() {
             totalExpenses += expense.amount
         }
 
-        // round to 2 decimal places
-        totalExpenses = String.format("%.2f", totalExpenses).toDouble()
-
         return totalExpenses
     }
 
@@ -501,14 +513,23 @@ class TransactionsActivity : AppCompatActivity() {
                 }
                 date != null && date in startDate..endDate
             }
-            .sortedByDescending { item ->
-                when (item) {
-                    is Income -> item.date
-                    is Expense -> item.date
-                    is Saving -> item.date
-                    else -> Date(0)
+            .sortedWith(
+                compareByDescending<Any> { item ->
+                    when (item) {
+                        is Income -> item.date
+                        is Expense -> item.date
+                        is Saving -> item.date
+                        else -> Date(0)
+                    }
+                }.thenByDescending { item ->
+                    when (item) {
+                        is Income -> item.date.time
+                        is Expense -> item.date.time
+                        is Saving -> item.date.time
+                        else -> 0L
+                    }
                 }
-            }
+            )
     }
 
     // calculate income and expense values from a list of transactions
@@ -537,10 +558,6 @@ class TransactionsActivity : AppCompatActivity() {
             }
         }
 
-        // round to 2 decimal places
-        totalIncome = String.format("%.2f", totalIncome).toDouble()
-        totalExpenses = String.format("%.2f", totalExpenses).toDouble()
-
         return listOf(totalIncome, totalExpenses)
     }
 
@@ -549,7 +566,7 @@ class TransactionsActivity : AppCompatActivity() {
     // region Date picker Launcher
     private fun showDatePicker(isStart: Boolean, etStartDate: EditText, etEndDate: EditText)
     {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val constraints = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointBackward.now()) // Only allow today or earlier

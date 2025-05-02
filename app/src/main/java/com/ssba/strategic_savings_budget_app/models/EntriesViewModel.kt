@@ -127,19 +127,5 @@ class SavingsEntryViewModel() : BaseEntryViewModel() {
  * Renames title -> name, amount -> goal amount, adds deadline
  */
 class SavingsGoalViewModel : BaseEntryViewModel() {
-    val deadline = MutableLiveData("")
-    private val _deadlineError = MutableLiveData<String?>()
-    val deadlineError: LiveData<String?> = _deadlineError
 
-    override fun fieldLabelTitleOrName() = "name"
-
-    override fun validateAll(): Boolean {
-        var valid = super.validateAll()
-        // deadline must be set
-        if (deadline.value.isNullOrBlank()) {
-            _deadlineError.value = "Please set a deadline"
-            valid = false
-        } else _deadlineError.value = null
-        return valid
-    }
 }

@@ -185,14 +185,14 @@ class RegisterActivity : AppCompatActivity() {
 
                     // Insert user into RoomDB.
                     db.userDao.upsertUser(user)
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@RegisterActivity, "Registration Successful", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
+                        finish()
+                    }
                 }
 
-                // Navigate to Login Activity
-                startActivity(Intent(this, MainActivity::class.java))
-
-                // Display success message
-                Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show()
-                finish()
             } else {
                 // Show error message if registration fails
                 Toast.makeText(this, "Registration Failed", Toast.LENGTH_SHORT).show()

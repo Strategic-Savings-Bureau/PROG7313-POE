@@ -2,28 +2,24 @@ package com.ssba.strategic_savings_budget_app.budget
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.Toast
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
-
 import com.google.firebase.ktx.Firebase
 import com.ssba.strategic_savings_budget_app.MainActivity
-import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityBudgetSettingsBinding
 import com.ssba.strategic_savings_budget_app.entities.Budget
+import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import com.ssba.strategic_savings_budget_app.models.BudgetSettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BudgetSettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBudgetSettingsBinding
@@ -43,15 +39,44 @@ class BudgetSettingsActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
 
-        // edge-to-edge inset support
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(sys.left, sys.top, sys.right, sys.bottom)
-            insets
-        }
-
         setupValidationObservers()
         setupButtons()
+        loadCurrentBudget()
+    }
+
+    private fun loadCurrentBudget() {
+        // get the current user's id
+        val userId = auth.currentUser?.uid
+
+        if (userId == null)
+        {
+            // log the error
+            Log.e("BudgetSettingsActivity", "User ID is null")
+
+            // redirect to login
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+
+            val userWithBudget = db.userDao.getUserWithBudget(userId.toString())
+
+            if (userWithBudget.isNotEmpty()) {
+                // get the budget
+                val budget = userWithBudget[0].budget
+
+                withContext(Dispatchers.Main) {
+                    viewModel.minimumMonthlyIncome.value = budget.minimumMonthlyIncome.toString()
+                    viewModel.maximumMonthlyExpenses.value = budget.maximumMonthlyExpenses.toString()
+                }
+            }
+            else {
+                Log.e("BudgetSettingsActivity", "User with ID $userId not found")
+            }
+        }
     }
 
     private fun setupValidationObservers() {
@@ -103,11 +128,6 @@ class BudgetSettingsActivity : AppCompatActivity() {
         binding.btnCancelBudget.setOnClickListener {
             Log.d("BudgetSettingsActivity", "Cancel button clicked, finishing activity")
             finish()
-        }
-
-        binding.btnRewards.setOnClickListener {
-            Log.d("BudgetSettingsActivity", "Rewards button clicked")
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
         }
     }
 }

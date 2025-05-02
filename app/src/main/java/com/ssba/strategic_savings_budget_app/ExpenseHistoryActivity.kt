@@ -21,12 +21,12 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.adapters.ExpenseHistoryAdapter
-import com.ssba.strategic_savings_budget_app.adapters.IncomeHistoryAdapter
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseHistoryBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -55,6 +55,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
     private lateinit var tvProgressPercentage: TextView
     // endregion
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?)
     {
         // Initialisation
@@ -83,6 +84,8 @@ class ExpenseHistoryActivity : AppCompatActivity()
         tvProgressPercentage = binding.tvProgressPercentage
         // endregion
 
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
         lifecycleScope.launch {
 
             // Get the current user's ID
@@ -99,13 +102,13 @@ class ExpenseHistoryActivity : AppCompatActivity()
             val totalExpense = getTotalExpenses(db, userId)
 
             // Set the text of the total expense
-            tvTotalExpense.text = "R $totalExpense"
+            tvTotalExpense.text = currencyFormat.format(totalExpense)
 
             // Get the maximum monthly expense limit for the current user
             val maximumExpenseLimit = getMaximumExpenseLimit(db, userId)
 
             // Set the text of the maximum monthly expense limit
-            tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: R $maximumExpenseLimit"
+            tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: ${currencyFormat.format(maximumExpenseLimit)}"
 
             // Get the total expense for the current month
             val totalExpensesForCurrentMonth = getTotalExpensesForCurrentMonth(db, userId)
@@ -117,7 +120,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
             pbExpenseLimit.progress = progressPercentage.toInt()
 
             // Set the text of the progress percentage
-            tvProgressPercentage.text = "${progressPercentage.toInt()}% towards limit"
+            tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly limit"
 
             // region Set up RecyclerView
 
@@ -148,6 +151,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
         setupOnClickListeners()
     }
 
+    @Suppress("LABEL_NAME_CLASH")
     @SuppressLint("SetTextI18n")
     private fun setupOnClickListeners()
     {
@@ -198,9 +202,9 @@ class ExpenseHistoryActivity : AppCompatActivity()
 
                 // convert the dates to Date objects
                 val startDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(startDate)
                 val endDateObj =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)
+                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(endDate)
 
                 // check if the dates are valid
                 if (startDateObj != null && endDateObj != null)
@@ -243,11 +247,13 @@ class ExpenseHistoryActivity : AppCompatActivity()
                         }
                         else
                         {
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
                             binding.cardExpenseLimit.visibility = View.GONE
 
                             val totalExpense = calculateTotalExpense(filteredTransactions)
 
-                            tvTotalExpense.text = "R $totalExpense"
+                            tvTotalExpense.text = currencyFormat.format(totalExpense)
 
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
@@ -304,11 +310,13 @@ class ExpenseHistoryActivity : AppCompatActivity()
                     else
                     {
 
+                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
+
                         // Get the total expenses for the current user
                         val totalExpense = getTotalExpenses(db, userId)
 
                         // Set the text of the total income
-                        tvTotalExpense.text = "R $totalExpense"
+                        tvTotalExpense.text = currencyFormat.format(totalExpense)
 
                         // make expense limit card visible
                         binding.cardExpenseLimit.visibility = View.VISIBLE
@@ -317,7 +325,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
                         val maximumExpenseLimit = getMaximumExpenseLimit(db, userId)
 
                         // Set the text of the maximum monthly expense limit
-                        tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: R $maximumExpenseLimit"
+                        tvMaxExpenseLimit.text = "Maximum Monthly Expense Limit: ${currencyFormat.format(maximumExpenseLimit)}"
 
                         // Get the total expense for the current month
                         val totalExpensesForCurrentMonth = getTotalExpensesForCurrentMonth(db, userId)
@@ -329,7 +337,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
                         pbExpenseLimit.progress = progressPercentage.toInt()
 
                         // Set the text of the progress percentage
-                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards limit"
+                        tvProgressPercentage.text = "${progressPercentage.toInt()}% towards monthly limit"
 
                         // region Set up RecyclerView
 
@@ -374,7 +382,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
     private fun calculateTotalExpense(list: List<Expense>): Double
     {
         val totalExpense = list.sumOf { it.amount }
-        return String.format("%.2f", totalExpense).toDouble()
+        return totalExpense
     }
 
 
@@ -382,7 +390,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
     private fun filterExpensesByDateRange(list: List<Expense>, startDate: Date, endDate: Date): List<Expense> {
         return list
             .filter { it.date in startDate..endDate }
-            .sortedByDescending { it.date }
+            .sortedByDescending { it.date.time }
     }
 
     // Method to get all the expenses for the current user
@@ -410,7 +418,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
         }
 
         // Step 3: Return the list
-        return allExpenses.sortedByDescending { it.date }
+        return allExpenses.sortedByDescending { it.date.time }
     }
 
     @SuppressLint("DefaultLocale")
@@ -429,9 +437,6 @@ class ExpenseHistoryActivity : AppCompatActivity()
         {
             totalExpenses += expense.amount
         }
-
-        // round to 2 decimal places
-        totalExpenses = String.format("%.2f", totalExpenses).toDouble()
 
         return totalExpenses
     }
@@ -474,9 +479,6 @@ class ExpenseHistoryActivity : AppCompatActivity()
             }
         }
 
-        // Round to 2 decimal places
-        totalExpenses = String.format("%.2f", totalExpenses).toDouble()
-
         return totalExpenses
     }
 
@@ -485,7 +487,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
     // region Date picker Launcher
     private fun showDatePicker(isStart: Boolean, etStartDate: EditText, etEndDate: EditText)
     {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
         val constraints = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointBackward.now()) // Only allow today or earlier

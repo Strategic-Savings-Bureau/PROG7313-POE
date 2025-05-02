@@ -7,9 +7,9 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -21,7 +21,6 @@ import com.ssba.strategic_savings_budget_app.models.IncomeEntryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
-import kotlin.jvm.java
 
 class IncomeEntryActivity : AppCompatActivity() {
 
@@ -32,10 +31,18 @@ class IncomeEntryActivity : AppCompatActivity() {
     private lateinit var incomeDao: com.ssba.strategic_savings_budget_app.daos.IncomeDao
 
     private var selectedDateMillis: Long? = null
-    private val datePicker = MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Select a date")
-        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-        .build()
+    private val datePicker by lazy {
+
+        val constraints = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now()) // Allow only today or earlier
+            .build()
+
+        MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select a date")
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setCalendarConstraints(constraints)
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +56,6 @@ class IncomeEntryActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
-
-        // edge-to-edge padding
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(sys.left, sys.top, sys.right, sys.bottom)
-            insets
-        }
 
         setupDatePicker()
         setupValidationObservers()
@@ -126,9 +126,5 @@ class IncomeEntryActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnRewards.setOnClickListener {
-            Log.d("IncomeEntryActivity", "Rewards button clicked")
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
-        }
     }
 }

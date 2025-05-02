@@ -8,14 +8,15 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.ssba.strategic_savings_budget_app.MainActivity
-import com.ssba.strategic_savings_budget_app.R
+import com.ssba.strategic_savings_budget_app.SavingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Saving
@@ -28,12 +29,18 @@ import java.util.Date
 class SavingsEntryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySavingsEntryBinding
-    private lateinit var viewModel: SavingsEntryViewModel
+    private val viewModel: SavingsEntryViewModel by viewModels()
     private lateinit var db: AppDatabase
     private val datePicker by lazy {
+
+        val constraints = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now()) // Allow only today or earlier
+            .build()
+
         MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select a date")
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setCalendarConstraints(constraints)
             .build()
     }
     private val auth = Firebase.auth
@@ -46,16 +53,14 @@ class SavingsEntryActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         // DataBinding setup
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_savings_entry)
-        binding.lifecycleOwner = this
+        binding = ActivitySavingsEntryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Initialize ViewModel with no types (unused here)
-        viewModel = SavingsEntryViewModel()
-        binding.viewmodel = viewModel
-
-        // Initialize database
         db = AppDatabase.getInstance(this)
 
+
+        binding.lifecycleOwner = this
+        binding.viewmodel = viewModel
         loadSavingGoals()
         setupDatePicker()
         setupButtons()
@@ -81,7 +86,7 @@ class SavingsEntryActivity : AppCompatActivity() {
 
             val titles = goals.map { it.title }
             savingGoalIds = goals.mapNotNull { it.savingGoalId }
-
+            viewModel.savingsGoals.value = titles
             val adapter = ArrayAdapter(
                 this@SavingsEntryActivity,
                 android.R.layout.simple_spinner_item,
@@ -100,8 +105,11 @@ class SavingsEntryActivity : AppCompatActivity() {
                         position: Int,
                         id: Long
                     ) {
+
                         viewModel.typePosition.value = position
+                        Log.w("SavingsEntry","Current value ${viewModel.typePosition.value}")
                         selectedSavingGoalId = savingGoalIds.getOrNull(position)
+
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>) {
@@ -113,6 +121,8 @@ class SavingsEntryActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         binding.btnSaveSavings.setOnClickListener {
+            Log.w("check","Current value ${viewModel.typePosition.value}")
+            Log.w("check","Current goal id $selectedSavingGoalId")
             if (viewModel.validateAll()) {
                 saveToDb()
             } else {
@@ -120,9 +130,6 @@ class SavingsEntryActivity : AppCompatActivity() {
             }
         }
         binding.btnCancelSavings.setOnClickListener { finish() }
-        binding.btnRewards.setOnClickListener {
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun saveToDb() {
@@ -133,7 +140,7 @@ class SavingsEntryActivity : AppCompatActivity() {
             title = viewModel.titleOrName.value.orEmpty(),
             amount = viewModel.amount.value?.toDoubleOrNull() ?: 0.0,
             description = viewModel.description.value.orEmpty(),
-            savingGoalId = selectedSavingGoalId ?: 0
+            savingGoalId = selectedSavingGoalId!!
         )
 
         lifecycleScope.launch {
@@ -145,8 +152,8 @@ class SavingsEntryActivity : AppCompatActivity() {
             Log.d("SavingsEntryActivity", "Saving successfully recorded.")
             Toast.makeText(this@SavingsEntryActivity, "Saving recorded!", Toast.LENGTH_SHORT).show()
 
-            // Send Intent to MainActivity
-            val intent = Intent(this@SavingsEntryActivity, MainActivity::class.java)
+            // Send Intent to SavingsActivity
+            val intent = Intent(this@SavingsEntryActivity, SavingsActivity::class.java)
             startActivity(intent)
             finish()
         }
