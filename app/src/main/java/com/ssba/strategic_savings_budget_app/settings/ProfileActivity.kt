@@ -54,7 +54,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private var profilePictureUri: Uri? = null
 
-    // Image Picker
+    // region Image Picker
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
@@ -298,7 +298,11 @@ class ProfileActivity : AppCompatActivity() {
                     binding.etUsername.text?.clear()
                     binding.etFullName.text?.clear()
                     binding.etEmail.text?.clear()
+
+                    // Reload the activity to reflect changes
+                    recreate()
                 }
+
             }
         }
 

@@ -393,7 +393,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     private fun filterIncomeByDateRange(list: List<Income>, startDate: Date, endDate: Date): List<Income> {
         return list
             .filter { it.date in startDate..endDate }
-            .sortedByDescending { it.date }
+            .sortedByDescending { it.date.time }
     }
 
 
@@ -403,8 +403,8 @@ class IncomeHistoryActivity : AppCompatActivity()
             val userWithIncomes = db.userDao.getUserWithIncomes(userId)
             val incomeTransactions = userWithIncomes[0].incomes
 
-        // sort the incomes by date in descending order
-        return incomeTransactions.sortedByDescending { it.date }
+        // sort the incomes by date and time in descending order
+        return incomeTransactions.sortedByDescending { it.date.time }
     }
 
     @SuppressLint("DefaultLocale")

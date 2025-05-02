@@ -434,14 +434,24 @@ class TransactionsActivity : AppCompatActivity() {
         combinedTransactions.addAll(savings)
 
         // Sort by date descending
-        val sortedList = combinedTransactions.sortedByDescending { item ->
-            when (item) {
-                is Income -> item.date
-                is Expense -> item.date
-                is Saving -> item.date
-                else -> Date(0) // fallback
+        val sortedList = combinedTransactions.sortedWith(
+            compareByDescending<Any> { item ->
+                when (item) {
+                    is Income -> item.date
+                    is Expense -> item.date
+                    is Saving -> item.date
+                    else -> Date(0)
+                }
+            }.thenByDescending { item ->
+                when (item) {
+                    is Income -> item.date.time
+                    is Expense -> item.date.time
+                    is Saving -> item.date.time
+                    else -> 0L
+                }
             }
-        }
+        )
+
 
         // return the sorted list
         return sortedList
@@ -503,14 +513,23 @@ class TransactionsActivity : AppCompatActivity() {
                 }
                 date != null && date in startDate..endDate
             }
-            .sortedByDescending { item ->
-                when (item) {
-                    is Income -> item.date
-                    is Expense -> item.date
-                    is Saving -> item.date
-                    else -> Date(0)
+            .sortedWith(
+                compareByDescending<Any> { item ->
+                    when (item) {
+                        is Income -> item.date
+                        is Expense -> item.date
+                        is Saving -> item.date
+                        else -> Date(0)
+                    }
+                }.thenByDescending { item ->
+                    when (item) {
+                        is Income -> item.date.time
+                        is Expense -> item.date.time
+                        is Saving -> item.date.time
+                        else -> 0L
+                    }
                 }
-            }
+            )
     }
 
     // calculate income and expense values from a list of transactions

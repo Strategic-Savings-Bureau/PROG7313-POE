@@ -7,8 +7,6 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.ktx.auth
@@ -45,13 +43,6 @@ class CreateCategoryActivity : AppCompatActivity() {
         // Initialize database
         db = AppDatabase.getInstance(this)
 
-        // Edge-to-edge padding
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
-            insets
-        }
-
         setupButtons()
     }
 
@@ -73,11 +64,6 @@ class CreateCategoryActivity : AppCompatActivity() {
         binding.btnCancelCategory.setOnClickListener {
             Log.d("CreateCategoryActivity", "Cancel button clicked, finishing activity")
             finish()
-        }
-
-        binding.btnRewards.setOnClickListener {
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show()
-            Log.d("CreateCategoryActivity", "Rewards button clicked")
         }
     }
 

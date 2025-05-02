@@ -36,18 +36,6 @@
                     android:textSize="24sp"
                     android:textColor="#000000" />
 
-
-                <ImageButton
-                    android:id="@+id/btnRewards"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:layout_gravity="end|center_vertical"
-                    android:background="@drawable/btn_rewards_background_round"
-                    android:contentDescription="@string/cd_rewards_button"
-                    android:padding="8dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_gift_unfilled"
-                    tools:ignore="ImageContrastCheck,RedundantDescriptionCheck" />
             </FrameLayout>
 
 
@@ -76,17 +64,28 @@
                 android:text="Date"
                 android:textSize="16sp"
                 android:textColor="#000000" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select date"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_calender_unfilled"
+            app:endIconContentDescription="Select date">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_input"
                 android:padding="12dp"
-                android:hint="March 16, 2025"
-                android:inputType="date"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none"
                 android:text="@={viewmodel.date}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Amount -->
+
+        <!-- Amount -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
