@@ -2,6 +2,7 @@ package com.ssba.strategic_savings_budget_app.landing
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
@@ -99,6 +100,7 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         // Show error message if login fails
                         Toast.makeText(this@LoginActivity, "Invalid Email or Password", Toast.LENGTH_SHORT).show()
+                        Log.e("LoginActivity", "Login failed", task.exception)
                     }
                 }
             }
