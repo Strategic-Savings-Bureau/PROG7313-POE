@@ -156,7 +156,6 @@ Under each release, download the APK asset (e.g., 'app-debug.apk') to install on
 | Blaise de Gier     | ST10249838 |
 | Sashveer Ramjathan | ST10361554 |
 | Shravan Ramjathan  | ST10247982 |
-| Uvaan Covenden     | ST10022006 |
 
 ---
 
