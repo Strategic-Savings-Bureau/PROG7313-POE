@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ssba.strategic_savings_budget_app"
-        minSdk = 32
+        minSdk = 31
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
