@@ -17,6 +17,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.SavingsActivity
+import com.ssba.strategic_savings_budget_app.TransactionsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseEntryBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
@@ -148,14 +149,15 @@ class ExpenseEntryActivity : AppCompatActivity() {
         Log.d("ExpenseEntryActivity", "loadCategories started")
 
         lifecycleScope.launch {
+
             val categories = withContext(Dispatchers.IO) {
                 categoryDao.getAllExpenseCategories()
             }
-            val names = categories.map(ExpenseCategory::name)
+
             val adapter = ArrayAdapter(
                 this@ExpenseEntryActivity,
                 android.R.layout.simple_spinner_item,
-                names
+                categories
             ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
             binding.spinnerCategory.adapter = adapter
 
@@ -170,13 +172,13 @@ class ExpenseEntryActivity : AppCompatActivity() {
                         id: Long,
                     ) {
                         viewModel.categoryPosition.value = position
-                        Log.d("ExpenseEntryActivity", "Category selected: $position")
+                        Log.d("ExpenseEntryActivity", "Category position selected: $position")
                     }
 
                     override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
                 }
 
-            Log.d("ExpenseEntryActivity", "Categories loaded: ${names.size}")
+            Log.d("ExpenseEntryActivity", "Categories loaded: ${categories.size}")
         }
 
         Log.d("ExpenseEntryActivity", "loadCategories completed")
@@ -209,6 +211,11 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
                 Log.d("ExpenseEntryActivity", "Received Supabase URL: $publicUrl")
 
+                // get the correct category ID
+                val selectedCategory = binding.spinnerCategory.selectedItem as ExpenseCategory
+
+                val selectedCategoryId = selectedCategory.categoryId!!
+
                 // 2) build the Expense object
                 val expense = Expense(
                     title               = viewModel.titleOrName.value!!.trim(),
@@ -216,7 +223,7 @@ class ExpenseEntryActivity : AppCompatActivity() {
                     amount              = viewModel.amount.value!!.toDouble(),
                     description         = viewModel.description.value!!.trim(),
                     receiptPictureUrl   = publicUrl,
-                    categoryId          = binding.spinnerCategory.selectedItemPosition
+                    categoryId          = selectedCategoryId
                 )
 
                 // 3) write into Room on IO dispatcher
@@ -226,7 +233,9 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
                 // 4) feedback + navigate away
                 Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this@ExpenseEntryActivity, SavingsActivity::class.java))
+
+                // navigate to Transactions
+                startActivity(Intent(this@ExpenseEntryActivity, TransactionsActivity::class.java))
                 finish()
             }
         }
