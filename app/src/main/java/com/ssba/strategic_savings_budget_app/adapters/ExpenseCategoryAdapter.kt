@@ -11,7 +11,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import com.ssba.strategic_savings_budget_app.ExpenseCategoryAnalysisActivity
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
@@ -27,12 +27,12 @@ import java.util.Locale
  	* Code Attribution
  	* Purpose:
  	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
- 	*   - Loading and displaying images using Picasso library
- 	* Author: Android Developers / Square, Inc.
+ 	*   - Loading and displaying images using Glide library
+ 	* Author: Android Developers / BumpTech.
  	* Date Accessed: 30 April 2025
  	* Sources:
  	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
- 	*   - Picasso: https://github.com/square/picasso
+ 	*   - Gilde: https://github.com/bumptech/glide
 */
 
 
@@ -93,12 +93,14 @@ class ExpenseCategoryAdapter(private var expenseCategories: List<ExpenseCategory
                     // Convert the icon string to a URI
                     val iconUri = category.icon.toUri()
 
-                    // Load the icon using Picasso
-                    Picasso.get()
+                    // Load image using Glide
+                    Glide.with(context)
                         .load(iconUri)
+                        .centerInside()
                         .placeholder(R.drawable.ic_default_image) // shown while loading
                         .error(R.drawable.ic_default_expense_category) // shown if loading fails
                         .into(holder.ivCategoryIcon)
+
 
                 } catch (e: Exception) {
 

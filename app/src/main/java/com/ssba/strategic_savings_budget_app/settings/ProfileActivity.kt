@@ -11,8 +11,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.squareup.picasso.Picasso
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.SettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
@@ -35,14 +35,14 @@ import kotlinx.coroutines.withContext
  	*   - Setting up Supabase client in an Android app
  	*   - Uploading an image to a Supabase bucket
  	*   - Implementing Swipe to Refresh functionality in an Android app
- 	*   - Loading and displaying images using Picasso library
+ 	*   - Loading and displaying images using Glide library
  	*   - Accessing the authenticated user and updating the user's password using Firebase Authentication
- 	* Author: Supabase Community / Android Developers / Square, Inc. / Firebase Team
+ 	* Author: Supabase Community / Android Developers / BumpTech / Firebase Team
  	* Sources:
  	*   - Supabase Android Client: https://supabase.com/docs/guides/with-react-native/android
  	*   - Uploading Files to Bucket: https://supabase.com/docs/guides/storage/upload-files
  	*   - Swipe to Refresh: https://developer.android.com/reference/android/widget/SwipeRefreshLayout
- 	*   - Picasso: https://github.com/square/picasso
+ 	*   - Glide: https://github.com/bumptech/glide
  	*   - Firebase Authentication - Update Password: https://firebase.google.com/docs/auth/android/manage-users#update_a_users_password
 */
 
@@ -383,7 +383,7 @@ class ProfileActivity : AppCompatActivity() {
             binding.etFullName.setText(user?.fullName)
             binding.etEmail.setText(user?.email)
             val picUrl = user?.profilePictureUrl.takeUnless { it.isNullOrBlank() }
-            Picasso.get()
+            Glide.with(this@ProfileActivity)
                 .load(picUrl)
                 .placeholder(R.drawable.ic_default_profile)
                 .error(R.drawable.ic_default_profile)

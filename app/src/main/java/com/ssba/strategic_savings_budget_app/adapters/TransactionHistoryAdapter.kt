@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.entities.Expense
@@ -27,12 +27,12 @@ import java.util.Locale
  	* Code Attribution
  	* Purpose:
  	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
- 	*   - Loading and displaying images using Picasso library
- 	* Author: Android Developers / Square, Inc.
+ 	*   - Loading and displaying images using Glide library
+ 	* Author: Android Developers / BumpTech
  	* Date Accessed: 30 April 2025
  	* Sources:
  	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
- 	*   - Picasso: https://github.com/square/picasso
+ 	*   - Glide: https://github.com/bumptech/glide
 */
 
 
@@ -139,9 +139,10 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
 
                         if (transaction.receiptPictureUrl.isNotBlank())
                         {
-                            Picasso.get()
+                            Glide.with(context)
                                 .load(transaction.receiptPictureUrl)
                                 .placeholder(R.drawable.ic_default_image)
+                                .error(R.drawable.ic_error_image)
                                 .into(ivReceipt)
                         }
                         else
