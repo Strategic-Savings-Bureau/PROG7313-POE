@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Strategic Savings Budget App</string>
+    <string name="app_name">Strategic Savings</string>
 
     <!--Login -->
     <string name="login_title">Welcome Back</string>
