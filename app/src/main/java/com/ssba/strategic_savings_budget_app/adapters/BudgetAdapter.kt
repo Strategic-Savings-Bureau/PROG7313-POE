@@ -3,7 +3,7 @@ package com.ssba.strategic_savings_budget_app.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.databinding.ActivityItemBudgetCategoryBinding
 import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
@@ -17,8 +17,11 @@ class BudgetCategoryAdapter(
         RecyclerView.ViewHolder(b.root) {
         fun bind(cat: ExpenseCategory) {
             if (cat.icon.isNotBlank()) {
-                Picasso.get()
+                Glide.with(this.itemView)
                     .load(cat.icon)
+                    .into(b.ivCategoryIcon)
+//                Picasso.get()
+//                    .load(cat.icon)
 
             } else {
                 b.ivCategoryIcon.setImageResource(R.drawable.ic_transaction_expense)

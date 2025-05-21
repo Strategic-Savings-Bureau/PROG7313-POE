@@ -6,8 +6,8 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.squareup.picasso.Picasso
 import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
@@ -20,11 +20,13 @@ import kotlinx.coroutines.launch
  	* Purpose:
  	*   - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
  	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
- 	* Author: Android Developers / Firebase Team
+ 	*   - Loading and displaying images using Glide library
+ 	* Author: Android Developers / Firebase Team / BumpTech
  	* Date Accessed: 2 May 2025
  	* Sources:
  	*   - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
  	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ 	*   - Glide: https://github.com/bumptech/glide
 */
 
 class SettingsActivity : AppCompatActivity() {
@@ -66,7 +68,7 @@ class SettingsActivity : AppCompatActivity() {
             // Null check if a URL is null or empty
             val picUrl = user?.profilePictureUrl
                 .takeUnless { it.isNullOrBlank() }
-            Picasso.get()
+            Glide.with(this@SettingsActivity)
                 .load(picUrl)
                 .placeholder(R.drawable.ic_default_profile)
                 .error(R.drawable.ic_default_profile)

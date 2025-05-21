@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ssba.strategic_savings_budget_app"
-        minSdk = 32
+        minSdk = 31
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -92,8 +92,8 @@ dependencies {
     implementation("io.ktor:ktor-client-android:$ktor_version")
     implementation("io.github.jan-tennert.supabase:storage-kt:$ktor_version")
 
-    // Add Picasso to App (image loading library)
-    implementation("com.squareup.picasso:picasso:2.71828")
+    // Add Glide to App (image loading library)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     // Add SwipeRefreshLayout to App
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")

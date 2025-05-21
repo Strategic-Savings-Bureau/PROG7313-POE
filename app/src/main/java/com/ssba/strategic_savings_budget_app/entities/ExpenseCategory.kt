@@ -53,3 +53,9 @@ data class ExpenseCategory(
 
     val userId: String // Foreign key linking the category to a specific user
 )
+{
+    override fun toString() : String
+    {
+        return name
+    }
+}

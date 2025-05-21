@@ -60,12 +60,17 @@
 
             <ImageView
                 android:id="@+id/ivReceipt"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_width="224dp"
+                android:layout_height="wrap_content"
+                android:maxHeight="400dp"
+                android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:contentDescription="@string/cd_receipt_image"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/ic_default_image" />
+                android:background="@drawable/ic_default_image"
+                android:contentDescription="@string/cd_receipt_image"
+                android:layout_gravity="center" />
+
+
 
             <Button
                 android:id="@+id/btnCloseExpense"
