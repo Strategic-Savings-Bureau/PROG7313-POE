@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
+import com.ssba.strategic_savings_budget_app.budget.BudgetComposeActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
@@ -107,7 +107,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Navigate to Budget Settings
         binding.btnBudgeting.setOnClickListener {
-            startActivity(Intent(this, BudgetSettingsActivity::class.java))
+            startActivity(Intent(this, BudgetComposeActivity::class.java))
         }
 
         binding.btnYourData.setOnClickListener {
