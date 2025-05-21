@@ -18,12 +18,8 @@ import com.ssba.strategic_savings_budget_app.SettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityProfileBinding
 import com.ssba.strategic_savings_budget_app.entities.User
+import com.ssba.strategic_savings_budget_app.helpers.SupabaseUtils
 import com.ssba.strategic_savings_budget_app.models.UserViewModel
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.storage.Storage
-import io.github.jan.supabase.storage.storage
-import io.ktor.http.ContentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -32,15 +28,11 @@ import kotlinx.coroutines.withContext
 /*
  	* Code Attribution
  	* Purpose:
- 	*   - Setting up Supabase client in an Android app
- 	*   - Uploading an image to a Supabase bucket
  	*   - Implementing Swipe to Refresh functionality in an Android app
  	*   - Loading and displaying images using Glide library
  	*   - Accessing the authenticated user and updating the user's password using Firebase Authentication
- 	* Author: Supabase Community / Android Developers / BumpTech / Firebase Team
+ 	* Author: Android Developers / BumpTech / Firebase Team
  	* Sources:
- 	*   - Supabase Android Client: https://supabase.com/docs/guides/with-react-native/android
- 	*   - Uploading Files to Bucket: https://supabase.com/docs/guides/storage/upload-files
  	*   - Swipe to Refresh: https://developer.android.com/reference/android/widget/SwipeRefreshLayout
  	*   - Glide: https://github.com/bumptech/glide
  	*   - Firebase Authentication - Update Password: https://firebase.google.com/docs/auth/android/manage-users#update_a_users_password
@@ -60,15 +52,6 @@ class ProfileActivity : AppCompatActivity() {
 
     // Room Database
     private lateinit var db: AppDatabase
-
-    // Supabase Storage
-    private val supabase = createSupabaseClient(
-        supabaseUrl = "https://bxpptnwmvrqqvdwpzucp.supabase.co",
-        supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4cHB0bndtdnJxcXZkd3B6dWNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxNDU0OTUsImV4cCI6MjA1OTcyMTQ5NX0.rl2dikHc7MA6ECiBUvgD5LnHctCujKq3AU9p-nh-1CI"
-    ) {
-        install(Postgrest)
-        install(Storage)
-    }
 
     private var profilePictureUri: Uri? = null
 
@@ -147,6 +130,9 @@ class ProfileActivity : AppCompatActivity() {
         lifecycleScope.launch {
             loadUserData()
         }
+
+        // Initialize Supabase Client
+        SupabaseUtils.init(this)
 
         setupTextWatchers()
         setupValidationObservers()
@@ -334,8 +320,8 @@ class ProfileActivity : AppCompatActivity() {
 
     // Method for Image Upload to Supabase
     private suspend fun uploadImageToSupabase(uri: Uri, fileName: String): String {
-        // Initialize the storage bucket name
-        val bucketId = "user-profile-pictures"
+//        // Initialize the storage bucket name
+//        val bucketId = "user-profile-pictures"
 
         // Read the image data from the URI
         val fileBytes = withContext(Dispatchers.IO) {
@@ -350,19 +336,11 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         return try {
-            // Initialize the storage bucket
-            val bucket = supabase.storage.from(bucketId)
-
-            // Upload the image to the specified file path within the bucket
-            bucket.upload(fileName, fileBytes)
-            {
-                upsert = true
-                contentType = ContentType.Image.JPEG // Set the content type to JPEG
-            }
-
             // Retrieve and return the public URL of the uploaded image
-            return bucket.publicUrl(fileName)
-        } catch (e: Exception) {
+            return SupabaseUtils.uploadProfileImageToStorage(fileName, fileBytes)
+        }
+        catch (e: Exception)
+        {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     this@ProfileActivity,

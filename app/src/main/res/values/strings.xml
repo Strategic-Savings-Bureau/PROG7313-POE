@@ -1,6 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Strategic Savings</string>
 
+    <!-- Supabase Credentials -->
+    <string name="supabase_url">https://bxpptnwmvrqqvdwpzucp.supabase.co</string>
+    <string name="supabase_api_key" tools:ignore="Typos">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4cHB0bndtdnJxcXZkd3B6dWNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxNDU0OTUsImV4cCI6MjA1OTcyMTQ5NX0.rl2dikHc7MA6ECiBUvgD5LnHctCujKq3AU9p-nh-1CI</string>
+    <string name="supabase_user_profile_bucket_name">user-profile-pictures</string>
+    <string name="supabase_receipt_bucket_name">expense-reciepts</string>
+
     <!--Login -->
     <string name="login_title">Welcome Back</string>
     <string name="email_hint">Email Address</string>
