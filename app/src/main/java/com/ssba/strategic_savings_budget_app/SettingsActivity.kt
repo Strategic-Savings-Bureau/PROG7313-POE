@@ -1,10 +1,12 @@
 package com.ssba.strategic_savings_budget_app
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +42,10 @@ class SettingsActivity : AppCompatActivity() {
 
     // Database
     private lateinit var db: AppDatabase
+
+    // Themes
+    private val sharedPreferences: SharedPreferences by lazy { getSharedPreferences("MODE", MODE_PRIVATE) }
+    private val editor: SharedPreferences.Editor by lazy { sharedPreferences.edit() }
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,10 +99,6 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnSharedBudget.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
-        }
-
         binding.btnCurrencyConverter.setOnClickListener {
             Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
@@ -110,8 +112,17 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent(this, BudgetSettingsActivity::class.java))
         }
 
-        binding.btnYourData.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+        // Set switch state based on shared preferences
+        binding.themeSwitch.isChecked = sharedPreferences.getBoolean("night", false)
+
+        binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            editor.putBoolean("night", isChecked).apply()
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked)
+                    AppCompatDelegate.MODE_NIGHT_YES
+                else
+                    AppCompatDelegate.MODE_NIGHT_NO
+            )
         }
 
         // Button to Log Out the Current User

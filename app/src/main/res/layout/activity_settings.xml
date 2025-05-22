@@ -125,23 +125,6 @@
                     app:iconTint="@null"
                     tools:ignore="DuplicateSpeakableTextCheck,VisualLintButtonSize" />
 
-                <!-- Repeat for other buttons with respective icons -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSharedBudget"
-                    style="@style/Widget.Material3.Button.IconButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/shared_budget_title"
-                    android:textColor="@color/black"
-                    app:icon="@drawable/ic_settings_shared"
-                    app:iconGravity="start"
-                    app:iconPadding="12dp"
-                    app:iconSize="40dp"
-                    app:iconTint="@null"
-                    tools:ignore="VisualLintButtonSize" />
-
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCurrencyConverter"
                     style="@style/Widget.Material3.Button.IconButton"
@@ -181,18 +164,37 @@
                     app:iconTint="@null"
                     tools:ignore="VisualLintButtonSize" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnYourData"
-                    style="@style/Widget.Material3.Button.IconButton"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/your_data_title"
-                    android:textColor="@color/black"
-                    app:icon="@drawable/ic_settings_yourdata"
-                    app:iconSize="40dp"
-                    app:iconTint="@null"
-                    tools:ignore="TouchTargetSizeCheck,VisualLintButtonSize" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="20dp"
+                        android:src="@drawable/ic_settings_theme"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/themes_title"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:textColor="@color/black" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/themeSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:showText="false"
+                        android:switchMinWidth="0dp" />
+                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLogout"
