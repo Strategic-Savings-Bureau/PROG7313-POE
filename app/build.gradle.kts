@@ -9,7 +9,7 @@ plugins {
 
     // import kotlin symbol processor (KSP)
     id("com.google.devtools.ksp")
-    alias(libs.plugins.kotlin.compose)
+
 }
 
 android {
@@ -45,7 +45,6 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
-        compose = true
     }
 }
 
@@ -59,8 +58,6 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
@@ -68,7 +65,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
