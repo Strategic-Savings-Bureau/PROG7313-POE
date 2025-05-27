@@ -2,23 +2,22 @@ package com.ssba.strategic_savings_budget_app.budget
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.MainActivity
-import com.ssba.strategic_savings_budget_app.R
-import com.ssba.strategic_savings_budget_app.adapters.BudgetCategoryAdapter
+import com.ssba.strategic_savings_budget_app.adapters.AdvancedExpenseCategoryAdapter
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityAdvancedBudgetSettingsBinding
+import com.ssba.strategic_savings_budget_app.databinding.ItemExpenseCategoryCardBinding
 import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
-import com.ssba.strategic_savings_budget_app.models.BudgetSettingsViewModel
+import com.ssba.strategic_savings_budget_app.models.BudgetViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,108 +25,99 @@ import kotlinx.coroutines.withContext
 class AdvancedBudgetSettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdvancedBudgetSettingsBinding
-    private lateinit var adapter: BudgetCategoryAdapter
-    private lateinit var db: AppDatabase
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-
-    // Keep a snapshot of the original list so we can detect changes
-    private var originalCategories = emptyList<ExpenseCategory>()
-
+    private val viewModel: BudgetViewModel by viewModels()
+    private lateinit var adapter: AdvancedCategoryAdapter
+    private val db = AppDatabase.getInstance(this)
+    val auth = FirebaseAuth.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdvancedBudgetSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1) Ensure the user is logged in
-        val userId = auth.currentUser?.uid.orEmpty().also {
-            if (it.isBlank()) {
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+        if (auth.currentUser == null) {
+            Toast.makeText(this, "User is not logged in", Toast.LENGTH_SHORT).show()
+            Intent(this, LoginActivity::class.java)
+            finish()
+        }
+        val userId = auth.currentUser?.uid
+        viewModel.initialDbSet(db)
+        viewModel.fetchUserId(userId!!)
+        viewModel.initialLoad()
+        adapter = AdvancedCategoryAdapter { updatedCategory ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                db.expenseCategoryDao.upsertExpenseCategory(updatedCategory)
             }
         }
-        db = AppDatabase.getInstance(this)
+        binding.recyclerExpenseCategories.layoutManager = LinearLayoutManager(this)
+        binding.recyclerExpenseCategories.adapter = adapter
 
-        // 2) Read and display the incoming max / current expense values
-        val maxExpenses  = intent.getStringExtra("maxExpenses").orEmpty().takeIf { it.isNotBlank() } ?: "0"
-        val currExpenses = intent.getStringExtra("currCategoryExpenses").orEmpty().takeIf { it.isNotBlank() } ?: "0"
-        binding.tvMaximumExpense.text = "Maximum Expense: R $maxExpenses"
-        binding.tvCurrentExpense.text = "Current Expense: R $currExpenses"
-
-        // 3) Load categories from Room and wire up the RecyclerView
+        // Observe ViewModel state changes
         lifecycleScope.launch {
-            originalCategories = withContext(Dispatchers.IO) {
-                db.expenseCategoryDao.getExpenseCategoriesByUserId(userId)
-            }
-            adapter = BudgetCategoryAdapter(originalCategories) { /* optional click handler */ }
-            binding.rvBudgetCategories.apply {
-                layoutManager = LinearLayoutManager(this@AdvancedBudgetSettingsActivity)
-                adapter = this@AdvancedBudgetSettingsActivity.adapter
-            }
-        }
+            viewModel.uiState.collect { state ->
+                binding.textMaxLimit.text = "Max Limit: R ${state.maximumMonthlyExpenses}"
 
-        // 4) Save Changes button persists edits immediately
-        binding.btnSaveChanges.setOnClickListener {
-            saveAllEdits()
-        }
+                // Load and sort categories here
+                val categories = withContext(Dispatchers.IO) {
 
-        // 5) Done button checks for unsaved edits, prompts if needed, then returns
-        binding.btnDone.setOnClickListener {
-            handleDone()
-        }
-    }
-
-    /** Reads back the edited limits, upserts them into the DB, and refreshes the “Current Expense” label */
-    private fun saveAllEdits() {
-        val edited = adapter.getEditedCategories(binding.rvBudgetCategories)
-        lifecycleScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    edited.forEach { db.expenseCategoryDao.upsertExpenseCategory(it) }
+                    db.expenseCategoryDao.getExpenseCategoriesByUserId(userId = userId!!)
+                        .sortedByDescending { it.maximumMonthlyTotal }
                 }
-                // Update the current-total display
-                val total = edited.sumOf { it.maximumMonthlyTotal }
-                binding.tvCurrentExpense.text = "Current Expense: R %.2f".format(total)
-                Toast.makeText(this@AdvancedBudgetSettingsActivity, "Changes saved.", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                Toast.makeText(this@AdvancedBudgetSettingsActivity, "Failed to save changes.", Toast.LENGTH_SHORT).show()
+
+                val currentTotal = categories.sumOf { it.maximumMonthlyTotal }
+                binding.textCurrentTotal.text =
+                    "Current Total: R ${String.format("%.2f", currentTotal)}"
+
+                adapter.submitList(categories)
             }
         }
     }
 
-    /** If there are unsaved edits, prompts the user to Save / Discard / Cancel; otherwise returns immediately */
-    private fun handleDone() {
-        val edited = adapter.getEditedCategories(binding.rvBudgetCategories)
-        val changed = edited.zip(originalCategories).any { (e, o) ->
-            e.maximumMonthlyTotal != o.maximumMonthlyTotal
+    class AdvancedCategoryAdapter(
+        private val onAmountChanged: (ExpenseCategory) -> Unit
+    ) : androidx.recyclerview.widget.ListAdapter<ExpenseCategory, ExpenseCategoryViewHolder>(
+        ExpenseCategoryDiffCallback()
+    ) {
+        override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): ExpenseCategoryViewHolder {
+            val inflater = android.view.LayoutInflater.from(parent.context)
+            val binding = ItemExpenseCategoryCardBinding.inflate(inflater, parent, false)
+            return ExpenseCategoryViewHolder(binding, onAmountChanged)
         }
 
-        if (changed) {
-            AlertDialog.Builder(this)
-                .setTitle("Unsaved Changes")
-                .setMessage("You have unsaved edits. Save before leaving?")
-                .setPositiveButton("Save")    { _, _ ->
-                    saveAllEdits()
-                    returnToBudgetSettings()
-                }
-                .setNegativeButton("Discard") { _, _ -> returnToBudgetSettings() }
-                .setNeutralButton("Cancel", null)
-                .show()
-        } else {
-            returnToBudgetSettings()
+        override fun onBindViewHolder(holder: ExpenseCategoryViewHolder, position: Int) {
+            holder.bind(getItem(position))
         }
     }
 
-    /** Packages up the current displayed max & current values and returns to BudgetSettingsActivity */
-    private fun returnToBudgetSettings() {
-        val updatedMax  = binding.tvMaximumExpense.text.toString().substringAfter(": ").trim()
-        val updatedCurr = binding.tvCurrentExpense.text.toString().substringAfter(": ").trim()
-        Intent(this, BudgetSettingsActivity::class.java).apply {
-            putExtra("updatedMaxExpense", updatedMax)
-            putExtra("updatedTotalExpense", updatedCurr)
-            startActivity(this)
+    class ExpenseCategoryViewHolder(
+        private val binding: ItemExpenseCategoryCardBinding,
+        private val onAmountChanged: (ExpenseCategory) -> Unit
+    ) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(category: ExpenseCategory) {
+            binding.textCategoryName.text = category.name
+            Glide.with(binding.imageIcon.context).load(category.icon).into(binding.imageIcon)
+            binding.editAmount.setText(category.maximumMonthlyTotal.toString())
+
+            binding.editAmount.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    val newAmount = s.toString().toDoubleOrNull()
+                    if (newAmount != null && newAmount != category.maximumMonthlyTotal) {
+                        onAmountChanged(category.copy(maximumMonthlyTotal = newAmount))
+                    }
+                }
+            })
         }
-        finish()
+    }
+
+    class ExpenseCategoryDiffCallback : androidx.recyclerview.widget.DiffUtil.ItemCallback<ExpenseCategory>() {
+        override fun areItemsTheSame(oldItem: ExpenseCategory, newItem: ExpenseCategory): Boolean {
+            return oldItem.categoryId == newItem.categoryId
+        }
+
+        override fun areContentsTheSame(oldItem: ExpenseCategory, newItem: ExpenseCategory): Boolean {
+            return oldItem == newItem
+        }
     }
 }
-
-

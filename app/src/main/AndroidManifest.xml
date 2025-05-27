@@ -23,10 +23,14 @@
             android:name=".settings.NotificationsSettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ExpenseCategoryAnalysisActivity"
+            android:name=".budget.AdvancedBudgetSettingsActivity"
             android:exported="false" />
         <activity
             android:name=".budget.AdvancedBudgetSettingsActivity"
+            android:name=".budget.BudgetSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ExpenseCategoryAnalysisActivity"
             android:exported="false" />
         <activity
             android:name=".SavingsGoalActivity"
@@ -39,9 +43,6 @@
             android:exported="false" />
         <activity
             android:name=".budget.CreateCategoryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".budget.BudgetSettingsActivity"
             android:exported="false" />
         <activity
             android:name=".budget.SavingGoalEntryActivity"
