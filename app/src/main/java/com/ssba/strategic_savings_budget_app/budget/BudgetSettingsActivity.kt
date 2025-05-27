@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -34,7 +35,8 @@ class BudgetSettingsActivity : AppCompatActivity() {
     private lateinit var advancedButton: Button
     private lateinit var saveButton: Button
     private lateinit var cancelButton: Button
-
+    private lateinit var minIncomeErrorText: TextView
+    private lateinit var maxExpensesErrorText: TextView
     // Flags to prevent overwriting while user is typing (if EditTexts are directly observed by state)
     // This is important for the observer logic that sets EditText text.
     private var isUserEditingMinIncome = false
@@ -49,8 +51,8 @@ class BudgetSettingsActivity : AppCompatActivity() {
 
         minIncomeInput = findViewById(R.id.minIncomeInput)
         maxExpenseInput = findViewById(R.id.maxExpensesInput)
-        minIncomeErrorTextView = findViewById(R.id.minIncomeLabel) // Assuming this is your error TextView
-        maxExpenseErrorTextView = findViewById(R.id.maxExpensesLabel) // Assuming this is your error TextView
+        minIncomeErrorText = findViewById(R.id.minIncomeErrorText)
+        maxExpensesErrorText = findViewById(R.id.maxExpensesErrorText)
         advancedButton = findViewById(R.id.advancedSettingsBtn)
         saveButton = findViewById(R.id.saveBtn)
         cancelButton = findViewById(R.id.cancelBtn)
@@ -164,8 +166,11 @@ class BudgetSettingsActivity : AppCompatActivity() {
                         // Optionally move cursor to the end: maxExpenseInput.setSelection(state.maximumMonthlyExpenses.length)
                     }
 
-                    minIncomeErrorTextView.text = state.minIncomeError
-                    maxExpenseErrorTextView.text = state.maxExpensesError
+                    minIncomeErrorText.text = state.minIncomeError
+                    minIncomeErrorText.visibility = if (state.minIncomeError.isNotEmpty()) View.VISIBLE else View.GONE
+
+                    maxExpensesErrorText.text = state.maxExpensesError
+                    maxExpensesErrorText.visibility = if (state.maxExpensesError.isNotEmpty()) View.VISIBLE else View.GONE
 
                     // Handle general error message display (e.g., if you have a dedicated TextView for it)
                     // Or rely on Toasts as currently implemented in the save button.
