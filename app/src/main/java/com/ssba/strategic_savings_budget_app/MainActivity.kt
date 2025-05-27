@@ -32,6 +32,7 @@ import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.entities.Income
 import com.ssba.strategic_savings_budget_app.entities.User
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.models.StreakManager
 import kotlinx.coroutines.launch
 
 /*
@@ -250,10 +251,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnRewards.setOnClickListener {
+            val streakManager = StreakManager(this)
+            streakManager.updateStreak()
+            val currentStreak = streakManager.getCurrentStreak()
 
-            Toast.makeText(this, "Rewards Coming Soon", Toast.LENGTH_SHORT).show()
-
-            // Start Rewards Intent Here
+            Toast.makeText(this, "Current streak: $currentStreak days.", Toast.LENGTH_LONG).show()
         }
 
         // Set up Bottom Navigation View onClickListener

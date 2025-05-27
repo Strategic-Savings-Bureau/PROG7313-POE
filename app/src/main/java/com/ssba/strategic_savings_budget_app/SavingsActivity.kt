@@ -18,6 +18,7 @@ import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySavingsBinding
 import com.ssba.strategic_savings_budget_app.entities.SavingGoal
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.models.StreakManager
 import kotlinx.coroutines.launch
 
 /*
@@ -118,7 +119,11 @@ class SavingsActivity : AppCompatActivity() {
     private fun setupOnClickListeners() {
 
         btnRewards.setOnClickListener {
-            Toast.makeText(this, "Rewards Coming Soon", Toast.LENGTH_SHORT).show()
+            val streakManager = StreakManager(this)
+            streakManager.updateStreak()
+            val currentStreak = streakManager.getCurrentStreak()
+
+            Toast.makeText(this, "Current streak: $currentStreak days.", Toast.LENGTH_LONG).show()
         }
 
         btnAddGoal.setOnClickListener {
