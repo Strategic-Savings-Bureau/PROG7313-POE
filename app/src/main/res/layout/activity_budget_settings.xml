@@ -5,8 +5,8 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="@color/bg_teal"
+    android:fillViewport="true"
     tools:context=".budget.BudgetSettingsActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,12 +21,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="16dp"
             app:cardBackgroundColor="@color/white"
-            app:layout_constraintTop_toTopOf="parent"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -38,82 +38,102 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Budget Settings"
-                    android:textSize="24sp"
                     android:textColor="@android:color/black"
+                    android:textSize="24sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/minIncomeLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
                     android:text="Minimum Monthly Income"
                     android:textColor="@android:color/black"
-                    app:layout_constraintTop_toBottomOf="@id/titleText"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="24dp" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/titleText" />
 
                 <EditText
                     android:id="@+id/minIncomeInput"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:hint="R0.00"
+                    android:layout_marginTop="8dp"
                     android:background="@android:drawable/edit_text"
+                    android:hint="R0.00"
+                    android:inputType="numberDecimal"
                     android:padding="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/minIncomeLabel"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeLabel" />
+
+                <TextView
+                    android:id="@+id/minIncomeErrorText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeInput" />
 
                 <TextView
                     android:id="@+id/maxExpensesLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
                     android:text="Maximum Monthly Expenses"
                     android:textColor="@android:color/black"
-                    app:layout_constraintTop_toBottomOf="@id/minIncomeInput"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="24dp" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeInput" />
 
                 <EditText
                     android:id="@+id/maxExpensesInput"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:hint="R0.00"
+                    android:layout_marginTop="8dp"
                     android:background="@android:drawable/edit_text"
+                    android:hint="R0.00"
+                    android:inputType="numberDecimal"
                     android:padding="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/maxExpensesLabel"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesLabel" />
+
+                <TextView
+                    android:id="@+id/maxExpensesErrorText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInput" />
 
                 <Button
                     android:id="@+id/advancedSettingsBtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
                     android:text="Advanced Settings"
-                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInput"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="32dp" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInput" />
 
                 <!-- Reversed Buttons with updated styles -->
                 <LinearLayout
                     android:id="@+id/actionButtons"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@id/advancedSettingsBtn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="100dp"
-                    android:weightSum="2">
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/advancedSettingsBtn">
 
                     <!-- Cancel Button: Outlined style -->
                     <Button
@@ -121,8 +141,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Cancel"
                         android:background="@drawable/outlined_button"
+                        android:text="Cancel"
                         android:textColor="@android:color/black" />
 
                     <Space
@@ -135,9 +155,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:backgroundTint="@color/bg_teal"
                         android:text="Save"
-                        android:textColor="@android:color/white"
-                        android:backgroundTint="@color/bg_teal" />
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
