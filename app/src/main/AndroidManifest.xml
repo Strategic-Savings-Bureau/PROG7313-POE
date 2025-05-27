@@ -26,7 +26,6 @@
             android:name=".budget.AdvancedBudgetSettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".budget.AdvancedBudgetSettingsActivity"
             android:name=".budget.BudgetSettingsActivity"
             android:exported="false" />
         <activity
