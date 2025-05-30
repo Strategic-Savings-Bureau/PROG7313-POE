@@ -22,54 +22,57 @@
                 android:id="@+id/tvExpenseTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@string/tv_expense_title"
                 android:textAppearance="?attr/textAppearanceHeadline6"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+                android:textColor="?android:textColorPrimary"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvExpenseAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@string/tv_expense_amount"
-                android:textStyle="bold"
-                android:textSize="18sp"
                 android:textColor="@color/expense_red"
-                android:layout_marginBottom="8dp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvExpenseDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@string/tv_expense_date"
-                android:layout_marginBottom="8dp" />
+                android:textColor="?android:textColorPrimary" />
 
             <TextView
                 android:id="@+id/tvExpenseDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:text="@string/tv_expense_description"
-                android:layout_marginBottom="12dp" />
+                android:textColor="?android:textColorPrimary" />
 
             <TextView
                 android:id="@+id/tvExpenseCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:text="@string/tv_expense_category"
-                android:layout_marginBottom="12dp" />
+                android:textColor="?android:textColorPrimary" />
 
             <ImageView
                 android:id="@+id/ivReceipt"
                 android:layout_width="224dp"
                 android:layout_height="wrap_content"
-                android:maxHeight="400dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
+                android:layout_gravity="center"
                 android:layout_marginBottom="12dp"
+                android:adjustViewBounds="true"
                 android:background="@drawable/ic_default_image"
                 android:contentDescription="@string/cd_receipt_image"
-                android:layout_gravity="center" />
-
+                android:maxHeight="400dp"
+                android:scaleType="fitCenter" />
 
 
             <Button

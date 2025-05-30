@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/settings_title"
+            android:textColor="?android:textColorPrimary"
             android:textSize="19sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -75,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/full_name_hint"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="18sp" />
 
             <TextView
@@ -83,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/username_hint"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="14sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -118,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:text="@string/profile_title"
-                    android:textColor="@color/black"
+                    android:textColor="?android:textColorPrimary"
                     app:icon="@drawable/ic_settings_profile"
                     app:iconPadding="12dp"
                     app:iconSize="40dp"
@@ -132,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:text="@string/currency_converter_title"
-                    android:textColor="@color/black"
+                    android:textColor="?android:textColorPrimary"
                     app:icon="@drawable/ic_settings_curcon"
                     app:iconSize="40dp"
                     app:iconTint="@null"
@@ -145,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:text="@string/notifications_title"
-                    android:textColor="@color/black"
+                    android:textColor="?android:textColorPrimary"
                     app:icon="@drawable/ic_settings_notifications"
                     app:iconSize="40dp"
                     app:iconTint="@null"
@@ -158,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:text="@string/budgeting_title"
-                    android:textColor="@color/black"
+                    android:textColor="?android:textColorPrimary"
                     app:icon="@drawable/ic_settings_budgeting"
                     app:iconSize="40dp"
                     app:iconTint="@null"
@@ -186,7 +189,7 @@
                         android:gravity="center"
                         android:text="@string/themes_title"
                         android:textAppearance="?attr/textAppearanceTitleSmall"
-                        android:textColor="@color/black" />
+                        android:textColor="?android:textColorPrimary" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/themeSwitch"
@@ -202,7 +205,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/logout_title"
-                    android:textColor="@color/black"
+                    android:textColor="?android:textColorPrimary"
                     app:icon="@drawable/ic_settings_logout"
                     app:iconSize="40dp"
                     app:iconTint="@null"

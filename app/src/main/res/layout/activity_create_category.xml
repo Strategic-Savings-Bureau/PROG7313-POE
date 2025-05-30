@@ -45,7 +45,7 @@
                         android:layout_gravity="center"
                         android:text="Add A Category"
                         android:textSize="24sp"
-                        android:textColor="#000000" />
+                        android:textColor="?android:textColorPrimary" />
 
 
                 </FrameLayout>
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:text="Category Name"
                     android:textSize="16sp"
-                    android:textColor="#000" />
+                    android:textColor="?android:textColorPrimary" />
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCategoryName"
@@ -74,7 +74,7 @@
                     android:layout_marginTop="24dp"
                     android:text="Category Description"
                     android:textSize="16sp"
-                    android:textColor="#000" />
+                    android:textColor="?android:textColorPrimary" />
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCategoryDescription"
@@ -94,7 +94,7 @@
                     android:layout_marginTop="24dp"
                     android:text="Category Icon (URL)"
                     android:textSize="16sp"
-                    android:textColor="#000" />
+                    android:textColor="?android:textColorPrimary" />
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCategoryIcon"
@@ -114,7 +114,7 @@
                     android:layout_marginTop="24dp"
                     android:text="Maximum Monthly Total"
                     android:textSize="16sp"
-                    android:textColor="#000" />
+                    android:textColor="?android:textColorPrimary" />
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMaxMonthlyTotal"
