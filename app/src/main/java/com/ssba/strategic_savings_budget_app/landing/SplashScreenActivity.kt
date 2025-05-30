@@ -35,8 +35,15 @@ class SplashScreenActivity : AppCompatActivity() {
         // Keep splash screen on-screen until auth state is checked
         splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
 
-        // Default to light mode for consistency [Dark TBI]
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        // Check the user preferences for the theme
+        val prefs = getSharedPreferences("MODE", MODE_PRIVATE)
+        val isNight = prefs.getBoolean("night", false)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isNight)
+                AppCompatDelegate.MODE_NIGHT_YES
+            else
+                AppCompatDelegate.MODE_NIGHT_NO
+        )
 
         // Wait for both persistence load AND minimal delay
         Handler(Looper.getMainLooper()).postDelayed({

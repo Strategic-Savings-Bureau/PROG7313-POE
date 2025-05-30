@@ -14,14 +14,13 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- White Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/white"
+            app:cardBackgroundColor="?android:attr/colorBackgroundFloating"
             app:cardCornerRadius="16dp"
             app:cardElevation="6dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +37,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Budget Settings"
-                    android:textColor="@android:color/black"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +49,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:text="Minimum Monthly Income"
-                    android:textColor="@android:color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/titleText" />
@@ -85,7 +82,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:text="Maximum Monthly Expenses"
-                    android:textColor="@android:color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/minIncomeInput" />
@@ -119,6 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Advanced Settings"
+                    android:textColor="?android:textColorPrimary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/maxExpensesInput" />
@@ -143,7 +140,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/outlined_button"
                         android:text="Cancel"
-                        android:textColor="@android:color/black" />
+                        android:textColor="?android:textColorPrimary" />
 
                     <Space
                         android:layout_width="16dp"
@@ -157,7 +154,7 @@
                         android:layout_weight="1"
                         android:backgroundTint="@color/bg_teal"
                         android:text="Save"
-                        android:textColor="@android:color/white" />
+                        android:textColor="?android:textColorPrimary" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

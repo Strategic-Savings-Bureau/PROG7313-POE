@@ -26,6 +26,7 @@
             android:layout_marginTop="4dp"
             android:padding="8dp"
             android:text="@string/tv_title_savings_goals"
+            android:textColor="?android:textColorPrimary"
             android:textSize="19sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

@@ -18,10 +18,11 @@
             android:id="@+id/tvIncomeTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/tv_income_title"
             android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:textColor="?android:textColorPrimary"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvIncomeAmount"
@@ -37,15 +38,17 @@
             android:id="@+id/tvIncomeDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/tv_income_date"
-            android:layout_marginBottom="8dp" />
+            android:textColor="?android:textColorPrimary" />
 
         <TextView
             android:id="@+id/tvIncomeDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/tv_income_description"
-            android:layout_marginBottom="8dp" />
+            android:textColor="?android:textColorPrimary" />
 
         <Button
             android:id="@+id/btnIncomeClose"

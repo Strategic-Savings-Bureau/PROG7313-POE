@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tv_transaction_title"
-            android:textColor="#000000"
+            android:textColor="?android:textColorPrimary"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:text="@string/tv_transaction_type"
         android:textSize="14sp"
-        android:textColor="#000000"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintTop_toTopOf="@id/ivTransactionType"
         app:layout_constraintBottom_toBottomOf="@id/ivTransactionType"
         app:layout_constraintEnd_toStartOf="@id/tvTransactionAmount"
