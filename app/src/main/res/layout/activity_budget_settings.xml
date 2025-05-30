@@ -1,127 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_teal"
+    android:fillViewport="true"
+    tools:context=".budget.BudgetSettingsActivity">
 
-    <data>
-        <variable
-            name="viewmodel"
-            type="com.ssba.strategic_savings_budget_app.models.BudgetSettingsViewModel" />
-    </data>
-
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bg_teal"
+        android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!-- White Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:id="@+id/budgetCard"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/rounded_card"
-                android:padding="24dp"
-                android:elevation="4dp"
-                android:gravity="center_horizontal"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:padding="20dp">
 
-                <!-- Screen Title -->
                 <TextView
-                    android:id="@+id/tvTitle"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/titleText"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Budget Settings"
+                    android:textColor="@android:color/black"
                     android:textSize="24sp"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="24dp"/>
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Min. Monthly Income -->
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/minIncomeLabel"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
                     android:text="Minimum Monthly Income"
-                    android:textSize="16sp"
-                    android:textColor="#000"
-                    android:layout_marginTop="16dp"/>
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etMinIncome"
-                    android:layout_width="match_parent"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/titleText" />
+
+                <EditText
+                    android:id="@+id/minIncomeInput"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_input"
-                    android:padding="12dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:drawable/edit_text"
                     android:hint="R0.00"
                     android:inputType="numberDecimal"
-                    android:text="@={viewmodel.minimumMonthlyIncome}"/>
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeLabel" />
 
-                <!-- Max. Monthly Expenses -->
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/minIncomeErrorText"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeInput" />
+
+                <TextView
+                    android:id="@+id/maxExpensesLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
                     android:text="Maximum Monthly Expenses"
-                    android:textSize="16sp"
-                    android:textColor="#000"
-                    android:layout_marginTop="24dp"/>
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etMaxExpenses"
-                    android:layout_width="match_parent"
+                    android:textColor="@android:color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeInput" />
+
+                <EditText
+                    android:id="@+id/maxExpensesInput"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_input"
-                    android:padding="12dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:drawable/edit_text"
                     android:hint="R0.00"
                     android:inputType="numberDecimal"
-                    android:text="@={viewmodel.maximumMonthlyExpenses}"/>
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesLabel" />
 
-                <!-- Advanced Settings Button -->
+                <TextView
+                    android:id="@+id/maxExpensesErrorText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInput" />
+
                 <Button
-                    android:id="@+id/btnAdvancedSettings"
-                    android:layout_width="match_parent"
+                    android:id="@+id/advancedSettingsBtn"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Advanced Settings"
                     android:layout_marginTop="32dp"
-                    android:backgroundTint="@color/white"
-                    android:textColor="@color/black"
+                    android:text="Advanced Settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInput" />
 
-                    android:padding="12dp"
-                    android:drawablePadding="8dp"/>
-
-                <!-- Action Buttons -->
+                <!-- Reversed Buttons with updated styles -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/actionButtons"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="100dp"
                     android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginTop="200dp">
+                    android:weightSum="2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/advancedSettingsBtn">
 
+                    <!-- Cancel Button: Outlined style -->
                     <Button
-                        android:id="@+id/btnSaveBudget"
+                        android:id="@+id/cancelBtn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:backgroundTint="#4CD7A9"
-                        android:text="Save"
-                        android:textColor="#000"/>
-
-                    <Space android:layout_width="16dp" android:layout_height="wrap_content"/>
-
-                    <Button
-                        android:id="@+id/btnCancelBudget"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="#000"
+                        android:background="@drawable/outlined_button"
                         android:text="Cancel"
-                        android:textColor="#FFF"/>
+                        android:textColor="@android:color/black" />
+
+                    <Space
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content" />
+
+                    <!-- Save Button: Primary filled -->
+                    <Button
+                        android:id="@+id/saveBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/bg_teal"
+                        android:text="Save"
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-</layout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

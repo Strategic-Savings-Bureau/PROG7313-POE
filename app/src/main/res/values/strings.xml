@@ -197,5 +197,7 @@
     <string name="tv_expense_limit_percentage">65% towards montly limit</string>
     <string name="cd_add_expense_button_category_analysis">Add Expense Button</string>
     <string name="cd_list_of_expenses_for_the_given_category">list of expenses for the given category</string>
+    <string name="title_activity_budget_compose">BudgetComposeActivity</string>
+    <string name="title_activity_advanced_budget_compose">AdvancedBudgetCompose</string>
 
 </resources>

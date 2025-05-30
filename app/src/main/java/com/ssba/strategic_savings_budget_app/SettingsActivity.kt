@@ -14,6 +14,7 @@ import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.settings.NotificationsSettingsActivity
 import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
 import kotlinx.coroutines.launch
 
@@ -104,7 +105,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.btnNotifications.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, NotificationsSettingsActivity::class.java))
         }
 
         // Navigate to Budget Settings

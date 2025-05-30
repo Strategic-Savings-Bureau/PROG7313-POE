@@ -1,83 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/advanced_budget_root"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/advanced_budget_settings_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@color/bg_teal">
+    android:orientation="vertical"
+    android:background="@color/bg_teal"
+    android:padding="16dp">
 
-    <!-- Title -->
+    <!-- Display Maximum Expense Limit -->
     <TextView
-        android:id="@+id/tvAdvancedTitle"
-        android:layout_width="0dp"
+        android:id="@+id/text_max_limit"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Advanced Budget Settings"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:text="Max Limit: $0.00"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-    <!-- Current Expense -->
+    <!-- Display Current Total of Expense Categories -->
     <TextView
-        android:id="@+id/tvCurrentExpense"
-        android:layout_width="0dp"
+        android:id="@+id/text_current_total"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Expense: R0"
+        android:text="Current Total: $0.00"
         android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/tvAdvancedTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginTop="8dp" />
 
-    <!-- Maximum Expense -->
-    <TextView
-        android:id="@+id/tvMaximumExpense"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Maximum Expense: R0"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tvCurrentExpense"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- RecyclerView for categories -->
+    <!-- RecyclerView for Expense Categories -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvBudgetCategories"
-        android:layout_width="0dp"
+        android:id="@+id/recycler_expense_categories"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvMaximumExpense"
-        app:layout_constraintBottom_toTopOf="@id/btnSaveChanges"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_weight="1"
+        android:layout_marginTop="16dp" />
 
-    <!-- Save Changes Button -->
-    <Button
-        android:id="@+id/btnSaveChanges"
-        android:layout_width="0dp"
+    <!-- Bottom Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Changes"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/btnDone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp">
 
-    <!-- Done Button -->
-    <Button
-        android:id="@+id/btnDone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Done"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <Button
+            android:id="@+id/cancelBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:background="@drawable/outlined_button"
+            android:textColor="@android:color/black" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_marginStart="64dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
