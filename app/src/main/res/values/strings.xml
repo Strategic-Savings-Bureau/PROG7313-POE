@@ -200,4 +200,8 @@
     <string name="title_activity_budget_compose">BudgetComposeActivity</string>
     <string name="title_activity_advanced_budget_compose">AdvancedBudgetCompose</string>
 
+    <!-- Auth Activity -->
+    <string name="tv_success">Biometric Auth Succeeded!</string>
+    <string name="btn_use_biometrics">Use Biometrics</string>
+    <string name="tv_click_the_button_below_to_authenticate_using_biometrics">Click the button below to login</string>
 </resources>

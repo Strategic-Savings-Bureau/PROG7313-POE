@@ -60,7 +60,7 @@ class BudgetViewModel : ViewModel() {
     }
 
     fun acummalateCategoryLimits() {
-        if (db==null) return
+
         viewModelScope.launch(Dispatchers.IO) {
             // Assuming getAllExpenseCategories() should be filtered by userId if applicable
             // For now, using it as is based on your provided code.
