@@ -97,4 +97,7 @@ dependencies {
 
     // Add SwipeRefreshLayout to App
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // biometrics
+    implementation("androidx.biometric:biometric:1.1.0")
 }

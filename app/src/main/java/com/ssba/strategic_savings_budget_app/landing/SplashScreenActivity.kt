@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.auth.FirebaseAuth
+import com.ssba.strategic_savings_budget_app.AuthActivity
 import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySplashScreenBinding
 
@@ -56,7 +57,7 @@ class SplashScreenActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
         val destination = if (currentUser != null) {
-            MainActivity::class.java
+            AuthActivity::class.java
         } else {
             LoginActivity::class.java
         }
