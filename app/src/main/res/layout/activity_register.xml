@@ -37,18 +37,17 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/register_title"
-                    android:textColor="#222222"
+                    android:textColor="?android:textColorPrimary"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <!-- Subtitle (optional for registration) -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/tv_enter_your_details_to_register"
                     android:gravity="center"
                     android:textSize="14sp"
-                    android:textColor="#222222"
+                    android:textColor="?android:textColorPrimary"
                     android:layout_marginTop="12dp"
                     android:textStyle="bold"
                     tools:ignore="MissingTranslation" />
