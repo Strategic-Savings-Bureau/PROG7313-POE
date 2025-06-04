@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,7 +15,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.adapters.ExpenseCategoryAdapter
 import com.ssba.strategic_savings_budget_app.budget.CreateCategoryActivity
@@ -27,10 +30,6 @@ import com.ssba.strategic_savings_budget_app.graph_data.CategoryGraphData
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import com.ssba.strategic_savings_budget_app.models.StreakManager
 import kotlinx.coroutines.launch
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import java.util.Calendar
 
 /*
@@ -335,7 +334,7 @@ class AnalysisActivity : AppCompatActivity() {
             animateY(1000) // Animate chart vertically for 1 second
 
             xAxis.apply {
-                position = XAxis.XAxisPosition.BOTTOM // Position X axis labels at botto
+                position = XAxis.XAxisPosition.BOTTOM // Position X axis labels at bottom
                 granularity = 1f // Set minimum interval for labels
                 setCenterAxisLabels(true) // Center the labels between groups
                 axisMinimum = -0.5f // Start slightly before first bar for padding
