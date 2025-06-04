@@ -59,6 +59,7 @@
     <string name="tv_recent_transactions">Recent Transactions</string>
     <string name="cd_list_of_recent_transactions">List of recent transactions</string>
     <string name="tv_no_transactions_to_display">No Transactions to display</string>
+    <string name="tv_trans_chart_title">This Month\'s Summary</string>
 
     <!-- Dialogue: Budget Setup -->
     <string name="budget_setup">Budget Setup</string>
