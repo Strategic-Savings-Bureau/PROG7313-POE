@@ -67,12 +67,14 @@ dependencies {
         *   - Adding Supabase for backend integration with features like storage, authentication, and data handling
         *   - Using Picasso for image loading and caching
         *   - Implementing SwipeRefreshLayout for adding pull-to-refresh functionality to views
+        *   - Using MPAndroidChart for creating charts and graphs
         * Author: Various Open Source Communities
         * Sources:
         *   - Room Database: https://developer.android.com/jetpack/androidx/releases/room
         *   - Supabase: https://supabase.com/docs
         *   - Picasso: https://square.github.io/picasso/
         *   - SwipeRefreshLayout: https://developer.android.com/reference/androidx/swiperefreshlayout/widget/SwipeRefreshLayout
+        *   - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
     */
 
     // Add Room to App
@@ -98,6 +100,9 @@ dependencies {
     // Add SwipeRefreshLayout to App
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
+    // Add MPAndroidChart to App
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    
     // biometrics
     implementation("androidx.biometric:biometric:1.1.0")
 }
