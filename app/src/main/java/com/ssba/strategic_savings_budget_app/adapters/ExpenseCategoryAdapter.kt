@@ -32,7 +32,7 @@ import java.util.Locale
  	* Date Accessed: 30 April 2025
  	* Sources:
  	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
- 	*   - Gilde: https://github.com/bumptech/glide
+ 	*   - Glide: https://github.com/bumptech/glide
 */
 
 
