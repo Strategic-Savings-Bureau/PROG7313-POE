@@ -44,7 +44,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
 
 /*
  	* Code Attribution
@@ -53,6 +52,7 @@ import kotlin.random.Random
  	*   - Creating and displaying an AlertDialog in an Android app
  	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
  	*   - Implementing the Material DatePicker for selecting dates in the app
+ 	*   - Data Visualisation with Line Chart
  	* Author: Android Developers / Firebase Team
  	* Date Accessed: 30 April 2025
  	* Sources:
@@ -60,6 +60,7 @@ import kotlin.random.Random
  	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
  	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
  	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
+ 	*   - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
 */
 
 class ExpenseCategoryAnalysisActivity : AppCompatActivity()
