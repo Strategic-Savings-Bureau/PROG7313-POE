@@ -3,6 +3,8 @@ package com.ssba.strategic_savings_budget_app
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -13,9 +15,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -25,6 +36,7 @@ import com.ssba.strategic_savings_budget_app.budget.ExpenseEntryActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseCategoryAnalysisBinding
 import com.ssba.strategic_savings_budget_app.entities.Expense
+import com.ssba.strategic_savings_budget_app.graph_data.ExpenseGraphData
 import com.ssba.strategic_savings_budget_app.models.StreakManager
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -32,6 +44,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
 
 /*
  	* Code Attribution
@@ -76,6 +89,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     private lateinit var pbLimit: ProgressBar
     private lateinit var tvProgressPercentage: TextView
     private lateinit var tvTitle: TextView
+    private lateinit var lcExpenses: LineChart
     // endregion
 
     @SuppressLint("SetTextI18n")
@@ -107,6 +121,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
         pbLimit = binding.progressLimit
         tvProgressPercentage = binding.tvProgressPercentage
         tvTitle = binding.tvTitle
+        lcExpenses = binding.lineChart
         // endregion
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "ZA"))
@@ -167,7 +182,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
                 tvProgressPercentage.text = "${progressPercentage.toInt()}% past monthly limit"
             }
 
-            // region Set up RecyclerView
+            // region Set up RecyclerView and Line Graph
 
             // get all the expenses for the current goal
             val expenseTransactions = getAllExpensesForCategory(expenseCategory.name, db)
@@ -190,6 +205,9 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
 
                 // set adapter in rv
                 rvTransactions.adapter = adapter
+
+                // set up line graph
+                setupLineChart(lcExpenses, expenseTransactions.map { ExpenseGraphData(it.amount.toFloat(), it.date) })
             }
 
             // endregion
@@ -314,6 +332,9 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
 
                             rvTransactions.adapter = adapter
 
+                            // set up line graph
+                            setupLineChart(lcExpenses, filteredTransactions.map { ExpenseGraphData(it.amount.toFloat(), it.date) })
+
                             dialog.dismiss()
                             Toast.makeText(this@ExpenseCategoryAnalysisActivity, "Transactions Filtered Successfully", Toast.LENGTH_SHORT).show()
                             return@launch
@@ -414,6 +435,9 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
                             rvTransactions.layoutManager = LinearLayoutManager(this@ExpenseCategoryAnalysisActivity)
 
                             rvTransactions.adapter = adapter
+
+                            // set up line graph
+                            setupLineChart(lcExpenses, expenseTransactions.map { ExpenseGraphData(it.amount.toFloat(), it.date) })
                         }
 
                         dialog.dismiss()
@@ -552,5 +576,134 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
             }
         }
     }
+    // endregion
+
+    // region Set Up Line Graph
+
+
+    /**
+     * Generates mock expense data for testing the chart.
+     *
+     * NOTE: This method is for testing purposes only and should be removed and replaced with real data in production.
+     */
+    private fun generateTestExpenses(): List<ExpenseGraphData> {
+        val expenses = mutableListOf<ExpenseGraphData>()
+        val calendar = Calendar.getInstance()
+
+        for (i in 0 until 20) {
+            val amount = Random.nextFloat() * 1000f  // Random amount between 0 and 1000
+            val date = calendar.time
+            expenses.add(ExpenseGraphData(amount, date))
+
+            // Increment date by 1 day
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        return expenses
+    }
+
+
+    private fun setupLineChart(lineChart: LineChart, transactions: List<ExpenseGraphData>)
+    {
+        // Detect if the device is in dark mode
+        val isDarkMode = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            else -> false
+        }
+
+        // Define color settings based on theme
+        val chartTextColor = if (isDarkMode) Color.WHITE else Color.BLACK
+        val backgroundColor = if (isDarkMode) Color.TRANSPARENT else Color.WHITE
+
+//        val demoTransactions = generateTestExpenses()
+//
+//        val entries = demoTransactions.map {
+//            Entry(it.date.time.toFloat(), it.amount)
+//        }
+
+        // Convert data into chart entries
+        val entries = transactions.map {
+            Entry(it.date.time.toFloat(), it.amount)
+        }
+
+        // Create and style the LineDataSet
+        val lineDataSet = LineDataSet(entries, "Expenses Over Time").apply {
+            color = ContextCompat.getColor(this@ExpenseCategoryAnalysisActivity, R.color.expense_gold)
+            valueTextColor = chartTextColor
+            valueTextSize = 10f
+            setDrawCircles(true)
+            circleRadius = 3f
+            setCircleColor(chartTextColor)
+            setDrawValues(true)
+            lineWidth = 4f
+            mode = LineDataSet.Mode.CUBIC_BEZIER
+            setDrawHighlightIndicators(false)
+        }
+
+        // Assign data to the chart
+        lineChart.data = LineData(lineDataSet)
+
+        // Set background and no-data styling
+        lineChart.setBackgroundColor(backgroundColor)
+        lineChart.setNoDataText("No data to show")
+        lineChart.setNoDataTextColor(chartTextColor)
+
+        // Extra padding at the bottom
+        lineChart.extraBottomOffset = 30f
+
+        // Configure chart legend
+        lineChart.legend.apply {
+            verticalAlignment = Legend.LegendVerticalAlignment.TOP
+            horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            orientation = Legend.LegendOrientation.HORIZONTAL
+            setDrawInside(false)
+            textColor = chartTextColor
+        }
+
+        // Configure the X-Axis to show formatted date labels
+        val xAxis = lineChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.valueFormatter = object : ValueFormatter() {
+            private val sdf = SimpleDateFormat("dd MMM", Locale("en", "ZA"))
+            override fun getFormattedValue(value: Float): String {
+                return sdf.format(Date(value.toLong()))
+            }
+        }
+        xAxis.granularity = 1f
+        xAxis.labelRotationAngle = -45f
+        xAxis.textColor = chartTextColor
+        xAxis.gridColor = chartTextColor
+        xAxis.axisLineColor = chartTextColor
+
+        // Add padding: 2 days before and after the range
+        if (transactions.isNotEmpty()) {
+            val sortedDates = transactions.map { it.date.time }.sorted()
+            val twoDaysMillis = 2 * 24 * 60 * 60 * 1000L
+            xAxis.axisMinimum = (sortedDates.first() - twoDaysMillis).toFloat()
+            xAxis.axisMaximum = (sortedDates.last() + twoDaysMillis).toFloat()
+        }
+
+        // Configure the Y-Axis
+        lineChart.axisRight.isEnabled = false
+        lineChart.axisLeft.apply {
+            axisMinimum = 0f
+            textColor = chartTextColor
+            gridColor = chartTextColor
+            axisLineColor = chartTextColor
+        }
+
+        // General chart settings
+        lineChart.description.isEnabled = false
+        lineChart.setTouchEnabled(true)
+        lineChart.setPinchZoom(true)
+        lineChart.isHighlightPerTapEnabled = false
+
+        // Entry animation
+        lineChart.animateX(1500, Easing.EaseInOutQuad)
+
+        // Refresh the chart
+        lineChart.invalidate()
+    }
+
     // endregion
 }
