@@ -105,6 +105,9 @@
     <string name="tv_transactions">Transactions</string>
     <string name="cd_list_of_income_and_expense_transactions">List of income and expense transactions</string>
     <string name="cd_filter_by_date_range_button">Filter by date range button</string>
+    <string name="chip_7_days">7 Days</string>
+    <string name="chip_14_days">14 Days</string>
+    <string name="chip_30_days">30 Days</string>
 
     <!-- Item: Transaction History -->
     <string name="tv_transaction_category">Category</string>
@@ -205,4 +208,5 @@
     <string name="tv_success">Biometric Auth Succeeded!</string>
     <string name="btn_use_biometrics">Use Biometrics</string>
     <string name="tv_click_the_button_below_to_authenticate_using_biometrics">Click the button below to login</string>
+
 </resources>
