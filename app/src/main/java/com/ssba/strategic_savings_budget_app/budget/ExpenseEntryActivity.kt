@@ -22,6 +22,7 @@ import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
 import com.ssba.strategic_savings_budget_app.helpers.SupabaseUtils
 import com.ssba.strategic_savings_budget_app.models.ExpenseEntryViewModel
+import com.ssba.strategic_savings_budget_app.models.StreakManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -222,6 +223,10 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
                 // 4) feedback + navigate away
                 Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT).show()
+
+                // 5) Update the streak
+                val streakManager = StreakManager(this@ExpenseEntryActivity)
+                streakManager.updateStreak()
 
                 // navigate to Transactions
                 startActivity(Intent(this@ExpenseEntryActivity, TransactionsActivity::class.java))

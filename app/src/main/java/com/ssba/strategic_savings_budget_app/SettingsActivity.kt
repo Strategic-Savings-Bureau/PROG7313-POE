@@ -14,6 +14,7 @@ import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.models.StreakManager
 import com.ssba.strategic_savings_budget_app.settings.NotificationsSettingsActivity
 import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
 import kotlinx.coroutines.launch
@@ -91,7 +92,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupOnClickListeners() {
         binding.btnRewards.setOnClickListener {
-            Toast.makeText(this, "Rewards Coming Soon", Toast.LENGTH_SHORT).show()
+            StreakManager(this).showStreakDialog()
         }
 
         // Navigate to update user profile
