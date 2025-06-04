@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewmodel"
             type="com.ssba.strategic_savings_budget_app.models.SavingsEntryViewModel" />
@@ -19,10 +20,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:background="@drawable/rounded_card"
-            android:padding="24dp"
-            android:elevation="4dp">
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="24dp">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -35,8 +36,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Add A Saving"
-                    android:textSize="24sp"
-                    android:textColor="#000000" />
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="24sp" />
 
             </FrameLayout>
 
@@ -45,15 +46,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Saving Title"
-                android:textSize="16sp"
-                android:textColor="#000000" />
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp" />
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSavingsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_input"
-                android:padding="12dp"
                 android:hint="Holiday Fund"
+                android:padding="12dp"
                 android:text="@={viewmodel.titleOrName}" />
 
             <!-- Amount -->
@@ -62,16 +64,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Amount"
-                android:textSize="16sp"
-                android:textColor="#000000" />
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp" />
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSavingsAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_input"
-                android:padding="12dp"
                 android:hint="R500,00"
                 android:inputType="numberDecimal"
+                android:padding="12dp"
                 android:text="@={viewmodel.amount}" />
 
             <!-- Date Picker -->
@@ -80,37 +83,38 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Date"
-                android:textSize="16sp"
-                android:textColor="#000000" />
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select date"
                 app:boxBackgroundMode="outline"
-                app:endIconMode="custom"
+                app:endIconContentDescription="Open date picker"
                 app:endIconDrawable="@drawable/ic_calender_unfilled"
-            app:endIconContentDescription="Open date picker">
+                app:endIconMode="custom">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSavingsDate"
-                android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSavingsDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_input"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:padding="12dp"
+                    android:text="@={viewmodel.date}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_input"
-                android:padding="12dp"
-                android:focusable="false"
-                android:clickable="true"
-                android:inputType="none"
-                android:text="@={viewmodel.date}" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Savings Goal"
-            android:textSize="16sp"
-            android:textColor="#000000" />
+                android:layout_marginTop="16dp"
+                android:text="Savings Goal"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp" />
 
             <Spinner
                 android:id="@+id/spinnerSavingsGoal"
@@ -118,17 +122,18 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_input"
                 android:padding="18dp"
-                android:spinnerMode="dropdown"
+                android:selectedItemPosition="@={viewmodel.selectedGoalId}"
 
-                android:selectedItemPosition="@={viewmodel.selectedGoalId}"/>
+                android:spinnerMode="dropdown" />
             <!-- Description -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Description"
-                android:textSize="16sp"
-                android:textColor="#000000" />
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/etSavingsDescription"
                 android:layout_width="match_parent"

@@ -1,10 +1,12 @@
 package com.ssba.strategic_savings_budget_app
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -12,6 +14,7 @@ import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.models.StreakManager
 import com.ssba.strategic_savings_budget_app.settings.NotificationsSettingsActivity
 import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
 import kotlinx.coroutines.launch
@@ -41,6 +44,10 @@ class SettingsActivity : AppCompatActivity() {
 
     // Database
     private lateinit var db: AppDatabase
+
+    // Themes
+    private val sharedPreferences: SharedPreferences by lazy { getSharedPreferences("MODE", MODE_PRIVATE) }
+    private val editor: SharedPreferences.Editor by lazy { sharedPreferences.edit() }
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,17 +92,13 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupOnClickListeners() {
         binding.btnRewards.setOnClickListener {
-            Toast.makeText(this, "Rewards Coming Soon", Toast.LENGTH_SHORT).show()
+            StreakManager(this).showStreakDialog()
         }
 
         // Navigate to update user profile
         binding.btnProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()
-        }
-
-        binding.btnSharedBudget.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnCurrencyConverter.setOnClickListener {
@@ -111,8 +114,17 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent(this, BudgetSettingsActivity::class.java))
         }
 
-        binding.btnYourData.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+        // Set switch state based on shared preferences
+        binding.themeSwitch.isChecked = sharedPreferences.getBoolean("night", false)
+
+        binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            editor.putBoolean("night", isChecked).apply()
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked)
+                    AppCompatDelegate.MODE_NIGHT_YES
+                else
+                    AppCompatDelegate.MODE_NIGHT_NO
+            )
         }
 
         // Button to Log Out the Current User

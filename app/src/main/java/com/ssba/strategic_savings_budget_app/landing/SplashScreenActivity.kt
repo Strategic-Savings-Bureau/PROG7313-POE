@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.auth.FirebaseAuth
+import com.ssba.strategic_savings_budget_app.AuthActivity
 import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySplashScreenBinding
 
@@ -35,8 +36,15 @@ class SplashScreenActivity : AppCompatActivity() {
         // Keep splash screen on-screen until auth state is checked
         splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
 
-        // Default to light mode for consistency [Dark TBI]
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        // Check the user preferences for the theme
+        val prefs = getSharedPreferences("MODE", MODE_PRIVATE)
+        val isNight = prefs.getBoolean("night", false)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isNight)
+                AppCompatDelegate.MODE_NIGHT_YES
+            else
+                AppCompatDelegate.MODE_NIGHT_NO
+        )
 
         // Wait for both persistence load AND minimal delay
         Handler(Looper.getMainLooper()).postDelayed({
@@ -49,7 +57,7 @@ class SplashScreenActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
         val destination = if (currentUser != null) {
-            MainActivity::class.java
+            AuthActivity::class.java
         } else {
             LoginActivity::class.java
         }

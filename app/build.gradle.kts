@@ -102,4 +102,7 @@ dependencies {
 
     // Add MPAndroidChart to App
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    
+    // biometrics
+    implementation("androidx.biometric:biometric:1.1.0")
 }

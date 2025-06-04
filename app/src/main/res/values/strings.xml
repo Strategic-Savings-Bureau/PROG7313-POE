@@ -81,9 +81,6 @@
     <string name="tv_transaction_type_income">Income</string>
     <string name="settings_title">Settings</string>
 
-    <!-- Shared Budget -->
-    <string name="shared_budget_title">Shared Budget</string>
-
     <!-- Currency Converter -->
     <string name="currency_converter_title">Currency Converter</string>
 
@@ -93,8 +90,8 @@
     <!-- Budgeting -->
     <string name="budgeting_title">Budget Settings</string>
 
-    <!-- Your Data -->
-    <string name="your_data_title">Your Data</string>
+    <!-- Themes-->
+    <string name="themes_title">Themes</string>
 
     <!-- Transaction History -->
     <string name="tv_title_transaction_history">Transaction History</string>
@@ -203,4 +200,8 @@
     <string name="title_activity_budget_compose">BudgetComposeActivity</string>
     <string name="title_activity_advanced_budget_compose">AdvancedBudgetCompose</string>
 
+    <!-- Auth Activity -->
+    <string name="tv_success">Biometric Auth Succeeded!</string>
+    <string name="btn_use_biometrics">Use Biometrics</string>
+    <string name="tv_click_the_button_below_to_authenticate_using_biometrics">Click the button below to login</string>
 </resources>

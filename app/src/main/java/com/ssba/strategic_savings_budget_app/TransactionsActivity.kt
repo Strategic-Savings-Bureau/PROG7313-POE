@@ -26,6 +26,7 @@ import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.entities.Income
 import com.ssba.strategic_savings_budget_app.entities.Saving
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
+import com.ssba.strategic_savings_budget_app.models.StreakManager
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -155,7 +156,7 @@ class TransactionsActivity : AppCompatActivity() {
     private fun setupOnClickListeners() {
 
         btnRewards.setOnClickListener {
-            Toast.makeText(this, "Rewards Coming Soon", Toast.LENGTH_SHORT).show()
+            StreakManager(this).showStreakDialog()
         }
 
         btnIncomeTransactions.setOnClickListener {

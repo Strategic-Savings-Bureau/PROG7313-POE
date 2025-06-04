@@ -18,10 +18,11 @@
             android:id="@+id/tvSavingTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/tv_saving_title"
             android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:textColor="?android:textColorPrimary"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvSavingAmount"
@@ -37,22 +38,24 @@
             android:id="@+id/tvSavingDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tv_savings_date"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:text="@string/tv_savings_date" />
 
         <TextView
             android:id="@+id/tvSavingDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/tv_savings_description"
-            android:layout_marginBottom="8dp" />
+            android:textColor="?android:textColorPrimary" />
 
         <TextView
             android:id="@+id/tvSavingGoalName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/tv_savings_goal_name"
-            android:layout_marginBottom="8dp" />
+            android:textColor="?android:textColorPrimary" />
 
         <Button
             android:id="@+id/btnCloseSaving"
