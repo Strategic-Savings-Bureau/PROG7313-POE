@@ -580,29 +580,6 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
 
     // region Set Up Line Graph
 
-
-    /**
-     * Generates mock expense data for testing the chart.
-     *
-     * NOTE: This method is for testing purposes only and should be removed and replaced with real data in production.
-     */
-    private fun generateTestExpenses(): List<ExpenseGraphData> {
-        val expenses = mutableListOf<ExpenseGraphData>()
-        val calendar = Calendar.getInstance()
-
-        for (i in 0 until 20) {
-            val amount = Random.nextFloat() * 1000f  // Random amount between 0 and 1000
-            val date = calendar.time
-            expenses.add(ExpenseGraphData(amount, date))
-
-            // Increment date by 1 day
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        return expenses
-    }
-
-
     private fun setupLineChart(lineChart: LineChart, transactions: List<ExpenseGraphData>)
     {
         // Detect if the device is in dark mode
@@ -614,12 +591,6 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
         // Define color settings based on theme
         val chartTextColor = if (isDarkMode) Color.WHITE else Color.BLACK
         val backgroundColor = if (isDarkMode) Color.TRANSPARENT else Color.WHITE
-
-//        val demoTransactions = generateTestExpenses()
-//
-//        val entries = demoTransactions.map {
-//            Entry(it.date.time.toFloat(), it.amount)
-//        }
 
         // Convert data into chart entries
         val entries = transactions.map {
