@@ -1,8 +1,11 @@
 package com.ssba.strategic_savings_budget_app
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +22,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.adapters.RecentTransactionAdapter
@@ -30,10 +39,12 @@ import com.ssba.strategic_savings_budget_app.databinding.ActivityMainBinding
 import com.ssba.strategic_savings_budget_app.entities.Budget
 import com.ssba.strategic_savings_budget_app.entities.Expense
 import com.ssba.strategic_savings_budget_app.entities.Income
+import com.ssba.strategic_savings_budget_app.entities.Saving
 import com.ssba.strategic_savings_budget_app.entities.User
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import com.ssba.strategic_savings_budget_app.models.StreakManager
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 /*
  	* Code Attribution
@@ -42,12 +53,14 @@ import kotlinx.coroutines.launch
  	*   - Requesting POST_NOTIFICATIONS permission on Android 13 (API level 33) and above
  	*   - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
  	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
- 	* Author: Android Developers / Firebase Team
+ 	*   - Data Visualisation with BarChart
+ 	* Author: Android Developers / Firebase Team / MPAndroidChart
  	* Sources:
  	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
  	*   - POST_NOTIFICATIONS Permission: https://developer.android.com/develop/ui/views/notifications/permission
  	*   - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
  	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ 	*   - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
 */
 
 class MainActivity : AppCompatActivity() {
@@ -70,6 +83,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnAddExpense: ImageButton
     private lateinit var btnAddSavings: ImageButton
     private lateinit var rvRecentTransactions: RecyclerView
+    private lateinit var bcMonthlyOverview: BarChart
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +122,7 @@ class MainActivity : AppCompatActivity() {
         btnAddSavings = binding.btnAddSavings
         rvRecentTransactions = binding.rvRecentTransactions
         tvNoTransactions = binding.tvNoTransactions
+        bcMonthlyOverview = binding.barChart
         // endregion
 
         // Set Up Recycler View
@@ -179,6 +194,20 @@ class MainActivity : AppCompatActivity() {
             if (db.budgetDao.getBudgetByUserId(userID!!) == null) {
                 showBudgetSetupDialog(userID)
             }
+        }
+
+        lifecycleScope.launch {
+            // Get the Current Users Id
+            val userId = auth.currentUser?.uid
+
+            if (userId == null)
+            {
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                finish()
+                return@launch
+            }
+
+            setUpMonthlyComparisonBarChart(db, userId, bcMonthlyOverview)
         }
     }
 
@@ -436,6 +465,278 @@ class MainActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    // method to get the users budget
+    private suspend fun getMinimumIncome(db: AppDatabase, userId: String): Double
+    {
+        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
+
+        return budget.minimumMonthlyIncome
+    }
+
+    // method to get total Income for current month
+    @SuppressLint("DefaultLocale")
+    private suspend fun getTotalIncomeForCurrentMonth(db: AppDatabase, userId: String): Double {
+        val userWithIncomes = db.userDao.getUserWithIncomes(userId)
+        var totalIncome = 0.00
+
+        if (userWithIncomes.isEmpty()) {
+            return totalIncome
+        }
+
+        // Get current month and year
+        val calendar = Calendar.getInstance()
+        val currentMonth = calendar.get(Calendar.MONTH)
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        for (income in userWithIncomes[0].incomes)
+        {
+            val incomeCalendar = Calendar.getInstance()
+            incomeCalendar.time = income.date
+
+            val incomeMonth = incomeCalendar.get(Calendar.MONTH)
+            val incomeYear = incomeCalendar.get(Calendar.YEAR)
+
+            if (incomeMonth == currentMonth && incomeYear == currentYear) {
+                totalIncome += income.amount
+            }
+        }
+
+        return totalIncome
+    }
+
+    // method to get the users budget
+    private suspend fun getMaximumExpenseLimit(db: AppDatabase, userId: String): Double
+    {
+        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
+
+        return budget.maximumMonthlyExpenses
+    }
+
+    // method to get total Expenses for current month
+    @SuppressLint("DefaultLocale")
+    private suspend fun getTotalExpensesForCurrentMonth(db: AppDatabase, userId: String): Double
+    {
+        val expenses = getAllExpensesForUser(db, userId)
+
+        var totalExpenses = 0.00
+
+        if (expenses.isEmpty()) {
+            return totalExpenses
+        }
+
+        // Get current month and year
+        val calendar = Calendar.getInstance()
+        val currentMonth = calendar.get(Calendar.MONTH)
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        for (expense in expenses)
+        {
+            val expenseCalendar = Calendar.getInstance()
+            expenseCalendar.time = expense.date
+
+            val expenseMonth = expenseCalendar.get(Calendar.MONTH)
+            val expenseYear = expenseCalendar.get(Calendar.YEAR)
+
+            if (expenseMonth == currentMonth && expenseYear == currentYear) {
+                totalExpenses += expense.amount
+            }
+        }
+
+        return totalExpenses
+    }
+
+    private suspend fun getTotalSavingsForCurrentMonth(db: AppDatabase, userId: String): Double
+    {
+        val savingsGoalsWithUser = db.userDao.getUserWithSavingGoals(userId)
+
+        if (savingsGoalsWithUser.isEmpty()) {
+            return 0.0
+        }
+
+        var totalSavings = 0.0
+
+        val savingsTransactions = mutableListOf<Saving>()
+
+        // get all the savingGoalsWithSavings for the current user
+        for (goal in savingsGoalsWithUser[0].savingGoals)
+        {
+            // get the savings for the current goal
+            val savingsGoalWithSavings = db.savingsGoalDao.getSavingsBySavingGoalTitle(goal.title)
+
+            if (savingsGoalWithSavings.isNotEmpty())
+            {
+                // add the savings to the list
+                savingsTransactions.addAll(savingsGoalWithSavings[0].savings)
+            }
+        }
+
+        if (savingsTransactions.isEmpty()) {
+            return totalSavings
+        }
+
+        // Get current month and year
+        val calendar = Calendar.getInstance()
+        val currentMonth = calendar.get(Calendar.MONTH)
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        for (saving in savingsTransactions)
+        {
+            val savingCalendar = Calendar.getInstance()
+            savingCalendar.time = saving.date
+
+            val savingMonth = savingCalendar.get(Calendar.MONTH)
+            val savingYear = savingCalendar.get(Calendar.YEAR)
+
+            if (savingMonth == currentMonth && savingYear == currentYear) {
+                totalSavings += saving.amount
+            }
+        }
+
+        return totalSavings
+    }
+
+
+    // endregion
+
+    // region Bar Chart SetUp
+    private suspend fun setUpMonthlyComparisonBarChart(db: AppDatabase, userId: String, chart: BarChart)
+    {
+        // Retrieve income and goal income for the current month
+        val income = getTotalIncomeForCurrentMonth(db, userId)
+        val incomeGoal = getMinimumIncome(db, userId)
+
+        // Retrieve expenses and expense limit for the current month
+        val expenses = getTotalExpensesForCurrentMonth(db, userId)
+        val expenseLimit = getMaximumExpenseLimit(db, userId)
+
+        // Retrieve savings data for the current month
+        val savings = getTotalSavingsForCurrentMonth(db, userId)
+
+        // Initialize and configure the chart with retrieved values
+        initialiseMonthlyComparisonBarChart(
+            chart = chart,
+            income = income.toFloat(),
+            incomeGoal = incomeGoal.toFloat(),
+            expenses = expenses.toFloat(),
+            expenseLimit = expenseLimit.toFloat(),
+            savings = savings.toFloat()
+        )
+
+    }
+
+    // Function to configure and display the grouped bar chart
+    private fun initialiseMonthlyComparisonBarChart(
+        chart: BarChart,
+        income: Float,
+        incomeGoal: Float,
+        expenses: Float,
+        expenseLimit: Float,
+        savings: Float
+    )
+    {
+        // Detect current UI mode (light or dark)
+        val isDarkMode = when (chart.context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            else -> false
+        }
+
+        // Set chart text and background colors based on UI mode
+        val chartTextColor = if (isDarkMode) Color.WHITE else Color.BLACK
+        val backgroundColor = if (isDarkMode) Color.TRANSPARENT else Color.WHITE
+
+        // Define layout properties for grouped bars
+        val groupCount = 3
+        val barSpace = 0.05f
+        val barWidth = 0.35f
+        val groupSpace = 0.2f
+
+        // Create entries for actual values (current performance)
+        val actualEntries = listOf(
+            BarEntry(0f, income),
+            BarEntry(1f, expenses),
+            BarEntry(2f, savings)
+        )
+
+        // Create entries for goal/target values
+        val goalEntries = listOf(
+            BarEntry(0f, incomeGoal),
+            BarEntry(1f, expenseLimit)
+        )
+
+        // Set up the dataset for actual values with conditional coloring
+        val actualDataSet = BarDataSet(actualEntries, "Actual").apply {
+            valueTextSize = 14f
+            valueTextColor = chartTextColor
+            colors = listOf(
+                if (income > incomeGoal) ContextCompat.getColor(chart.context, R.color.income_green) else Color.BLUE,
+                if (expenses > expenseLimit) Color.RED else ContextCompat.getColor(chart.context, R.color.expense_gold),
+                ContextCompat.getColor(chart.context, R.color.savings_blue)
+            )
+        }
+
+        // Set up the dataset for goal values using light gray
+        val goalDataSet = BarDataSet(goalEntries, "Target").apply {
+            color = Color.LTGRAY
+            valueTextSize = 14f
+            valueTextColor = chartTextColor
+        }
+
+        // Combine both datasets into BarData
+        val barData = BarData(goalDataSet, actualDataSet)
+        barData.barWidth = barWidth
+        chart.data = barData
+
+        // Apply chart-wide visual settings
+        chart.apply {
+            setBackgroundColor(backgroundColor)
+            setNoDataTextColor(chartTextColor)
+            description.isEnabled = false
+            legend.apply {
+                isEnabled = true
+                textColor = chartTextColor
+            }
+            animateY(1000)
+            setFitBars(true)
+            groupBars(0f, groupSpace, barSpace) // Group the bars properly for comparison
+
+            // Configure X-axis labels and formatting
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                granularity = 1f
+                setCenterAxisLabels(true)
+                axisMinimum = 0f
+                axisMaximum = barData.getGroupWidth(groupSpace, barSpace) * groupCount
+                textColor = chartTextColor
+                gridColor = textColor
+                axisLineColor = textColor
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return when (value.toInt()) {
+                            0 -> "Income"
+                            1 -> "Expenses"
+                            2 -> "Savings"
+                            else -> ""
+                        }
+                    }
+                }
+            }
+
+            // Configure Y-axis range and style
+            axisLeft.apply {
+                axisMinimum = 0f
+                axisMaximum = maxOf(income, incomeGoal, expenses, expenseLimit, savings) + 2000f
+                granularity = 2000f
+                textColor = chartTextColor
+                gridColor = textColor
+                axisLineColor = textColor
+            }
+
+            // Disable right Y-axis for clarity
+            axisRight.isEnabled = false
+            invalidate() // Refresh the chart with new data
+        }
     }
 
     // endregion
