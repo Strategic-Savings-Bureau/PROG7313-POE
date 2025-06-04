@@ -1,9 +1,14 @@
 package com.ssba.strategic_savings_budget_app.models
 
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
+import android.widget.TextView
 import java.util.Calendar
 import androidx.core.content.edit
+import com.ssba.strategic_savings_budget_app.R
 
 class StreakManager(val context: Context) {
 
@@ -46,6 +51,44 @@ class StreakManager(val context: Context) {
             putLong("last_logged_date", now)
             Log.d("StreakManager", "Updated last-logged-date to “now”")
         }
+    }
+
+    fun showStreakDialog() {
+        val dialog = Dialog(context).apply {
+            setContentView(R.layout.dialog_rewards)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+
+        val streakManager = StreakManager(context)
+        val streakCount = streakManager.getCurrentStreak()
+
+        // Update UI components
+        dialog.findViewById<TextView>(R.id.tvStreak).text = streakCount.toString()
+
+        val tvMessage = dialog.findViewById<TextView>(R.id.tvMessage)
+        val tvNextMilestone = dialog.findViewById<TextView>(R.id.tvNextMilestone)
+
+        // Dynamic messages based on streak
+        tvMessage.text = when {
+            streakCount == 0 -> "Start building your streak today!"
+            streakCount < 3 -> "Keep going! Every day counts 💪"
+            streakCount < 7 -> "You're building momentum! 🔥"
+            streakCount < 14 -> "Amazing consistency! ✨"
+            else -> "Legendary discipline! 🏆"
+        }
+
+        // Milestone tracker
+        val nextMilestone = when {
+            streakCount < 3 -> 3
+            streakCount < 7 -> 7
+            streakCount < 14 -> 14
+            streakCount < 30 -> 30
+            else -> 60
+        }
+        tvNextMilestone.text = "$nextMilestone days"
+
+        // Display the dialog
+        dialog.show()
     }
 
     fun getCurrentStreak(): Int {

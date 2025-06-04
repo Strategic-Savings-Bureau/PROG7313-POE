@@ -156,11 +156,7 @@ class TransactionsActivity : AppCompatActivity() {
     private fun setupOnClickListeners() {
 
         btnRewards.setOnClickListener {
-            val streakManager = StreakManager(this)
-            streakManager.updateStreak()
-            val currentStreak = streakManager.getCurrentStreak()
-
-            Toast.makeText(this, "Current streak: $currentStreak days.", Toast.LENGTH_LONG).show()
+            StreakManager(this).showStreakDialog()
         }
 
         btnIncomeTransactions.setOnClickListener {
