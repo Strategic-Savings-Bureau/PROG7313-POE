@@ -190,7 +190,6 @@
                             android:id="@+id/chip7days"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:text="@string/chip_7_days"
-                            app:chipStrokeWidth="1dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
 
@@ -198,7 +197,6 @@
                             android:id="@+id/chip14days"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:text="@string/chip_14_days"
-                            app:chipStrokeWidth="1dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
 
@@ -206,7 +204,6 @@
                             android:id="@+id/chip30days"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:text="@string/chip_30_days"
-                            app:chipStrokeWidth="1dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
