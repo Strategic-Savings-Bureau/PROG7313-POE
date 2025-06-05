@@ -12,26 +12,29 @@ import com.ssba.strategic_savings_budget_app.entities.*
 import kotlinx.coroutines.tasks.await
 
 /**
- * A [CoroutineWorker] that synchronizes local Room database entities with Firestore cloud database.
+ * [RoomToFirestoreSyncWorker] is a [CoroutineWorker] that uploads unsynced Room database entities
+ * to Firebase Firestore for backup and cross-device availability.
  *
- * This worker uploads all unsynced entities (such as savings goals, incomes, expenses, budgets, and users)
- * belonging to the currently logged-in user to Firestore, and then marks them as synced in Room.
+ * The worker:
+ * - Runs as a background job.
+ * - Checks for user authentication.
+ * - Uploads all unsynced entities (e.g., savings goals, incomes, expenses).
+ * - Marks each successfully synced entity in Room as `isSynced = true`.
+ * - Retries automatically on failure.
  *
- * It uses batch writes for efficiency and handles retries if syncing fails.
- *
- * @param appContext The context of the application
- * @param workerParams Parameters for this worker
+ * @param appContext The application context used by the worker.
+ * @param workerParams Parameters passed to the worker.
  */
 class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
-    // Firestore database instance for syncing data to cloud
+    // Firebase Firestore instance for cloud storage
     private val firestoreDb = FirebaseFirestore.getInstance()
 
-    // Firebase Authentication instance to get current logged-in user ID
+    // FirebaseAuth instance for retrieving current user ID
     private val firebaseAuth = FirebaseAuth.getInstance()
 
-    // Singleton instance of Room database
+    // Singleton instance of the Room database
     private val roomDatabase = AppDatabase.getInstance(applicationContext)
 
     companion object {
@@ -39,17 +42,22 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
     }
 
     /**
-     * The main work function that runs asynchronously to:
-     * 1. Check if user is logged in.
-     * 2. Sync unsynced entities one by one.
-     * 3. Update the local Room entities with `isSynced = true` flag upon success.
-     * 4. Return a [Result] indicating success or retry on failure.
+     * The entry point of the worker, executed asynchronously in the background.
+     *
+     * Steps:
+     * 1. Verify if a user is logged in.
+     * 2. Call [syncEntities] for each entity type to sync unsynced Room entries to Firestore.
+     * 3. Handle user profile syncing separately.
+     * 4. Mark each synced item in Room with `isSynced = true`.
+     *
+     * @return [Result.success] if syncing is successful,
+     *         [Result.failure] if no user is logged in,
+     *         [Result.retry] on exception/failure.
      */
     override suspend fun doWork(): Result {
-        // Get current user's UID from FirebaseAuth
         val userId = firebaseAuth.currentUser?.uid
 
-        // Abort if user is not logged in
+        // Exit early if no user is authenticated
         if (userId == null) {
             Log.w(TAG, "User not logged in. Sync aborted.")
             return Result.failure()
@@ -58,7 +66,7 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
         Log.d(TAG, "Starting Room to Firestore sync for user: $userId")
 
         return try {
-            // Sync each entity type by calling the generic syncEntities function
+            // Sequentially sync all Room entity types
             syncEntities(
                 userId,
                 "saving_goals",
@@ -107,61 +115,57 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
                 { it.budgetId.toString() }
             )
 
-            // Special handling for User profiles synchronization
+            // Sync user profile data independently
             val unsyncedUsers = roomDatabase.userDao().getAllUnSyncedUsers()
 
             if (unsyncedUsers.isNotEmpty()) {
-                // Start a Firestore batch operation for all unsynced users
                 val batch = firestoreDb.batch()
 
-                // Queue all unsynced users to be written to Firestore under "users_profile" collection
+                // Add each unsynced user to batch write
                 unsyncedUsers.forEach { user ->
                     val userRef = firestoreDb.collection("users_profile").document(user.userId)
                     batch.set(userRef, user, SetOptions.merge())
                 }
 
-                // Commit batch upload and wait for completion
+                // Commit all user writes to Firestore
                 batch.commit().await()
 
-                // Mark all user entities as synced in local Room database
+                // Mark users as synced in Room
                 unsyncedUsers.forEach { user ->
                     val updatedUser = user.copy(isSynced = true)
                     roomDatabase.userDao().upsertUser(updatedUser)
                 }
 
                 Log.d(TAG, "Synced ${unsyncedUsers.size} user profiles to Firestore.")
-
             } else {
                 Log.d(TAG, "No unsynced user profiles to sync.")
             }
 
             Log.d(TAG, "Room to Firestore sync completed successfully for user: $userId")
-
             Result.success()
 
         } catch (e: Exception) {
             Log.e(TAG, "Error during Room to Firestore sync for user $userId", e)
-            // Retry the sync if any exception occurs
             Result.retry()
         }
     }
 
     /**
-     * Generic suspend function to sync a list of unsynced entities from Room to Firestore.
+     * Generic suspend function to sync Room entities with Firestore in batch.
      *
-     * This function:
-     * - Retrieves unsynced entities using [getUnsyncedOp].
-     * - Performs a Firestore batch write to upload all entities.
-     * - Marks entities as synced by setting their `isSynced` flag to true and updating in Room via [updateOp].
+     * It:
+     * - Fetches unsynced items from Room via [getUnsyncedOp].
+     * - Writes them to Firestore in a batch under the appropriate collection.
+     * - Marks each entity as `isSynced = true` and updates Room via [updateOp].
      *
-     * @param T The type of the entity (e.g., SavingGoal, Expense, Budget)
-     * @param userId The Firebase UID of the current user
-     * @param collectionName Firestore sub-collection name where the entities will be stored
-     * @param getUnsyncedOp Suspended lambda that returns a list of unsynced entities from Room
-     * @param updateOp Suspended lambda to update an entity in Room with new values (e.g., isSynced = true)
-     * @param getDocumentId Function to extract a unique document ID from an entity
+     * @param T The entity type to sync.
+     * @param userId Firebase user ID.
+     * @param collectionName Firestore collection name (e.g., "expenses", "savings").
+     * @param getUnsyncedOp Function to fetch unsynced Room entities.
+     * @param updateOp Function to update an entity in Room after syncing.
+     * @param getDocumentId Function to extract the Firestore document ID from an entity.
      *
-     * @throws IllegalArgumentException if an unsupported entity type is passed
+     * @throws IllegalArgumentException If the entity type is unsupported.
      */
     private suspend fun <T : Any> syncEntities(
         userId: String,
@@ -170,28 +174,29 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
         updateOp: suspend (T) -> Unit,
         getDocumentId: (T) -> String
     ) {
-        // Fetch all unsynced items of type T from local database
+        // Get all unsynced entities of type T
         val unsyncedItems = getUnsyncedOp()
 
         if (unsyncedItems.isNotEmpty()) {
-            // Start a Firestore batch operation to upload all unsynced items
             val batch = firestoreDb.batch()
 
-            // Queue each unsynced item for upload using batch.set with merge option
+            // Add each item to the Firestore batch
             unsyncedItems.forEach { item ->
                 val docId = getDocumentId(item)
                 val docRef = firestoreDb.collection("users")
                     .document(userId)
                     .collection(collectionName)
                     .document(docId)
+
                 batch.set(docRef, item, SetOptions.merge())
             }
 
-            // Commit the batch and wait for Firestore upload completion
+            // Commit batch write to Firestore
             batch.commit().await()
 
-            // Update each synced item locally by setting isSynced = true
+            // Update each item as synced in Room
             unsyncedItems.forEach { item ->
+                @Suppress("UNCHECKED_CAST")
                 val updatedItem = when (item) {
                     is SavingGoal -> item.copy(isSynced = true) as T
                     is Saving -> item.copy(isSynced = true) as T
@@ -201,11 +206,11 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
                     is Budget -> item.copy(isSynced = true) as T
                     else -> throw IllegalArgumentException("Unsupported entity type")
                 }
-                updateOp(updatedItem) // Update Room database with synced item
+
+                updateOp(updatedItem)
             }
 
             Log.d(TAG, "Synced ${unsyncedItems.size} $collectionName to Firestore.")
-
         } else {
             Log.d(TAG, "No unsynced $collectionName to sync.")
         }

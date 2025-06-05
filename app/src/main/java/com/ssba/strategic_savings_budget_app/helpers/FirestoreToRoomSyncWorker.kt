@@ -11,22 +11,23 @@ import com.ssba.strategic_savings_budget_app.entities.*
 import kotlinx.coroutines.tasks.await
 
 /**
- * CoroutineWorker responsible for synchronizing user data from Firestore
- * to the local Room database when local data does not yet exist.
+ * A background [CoroutineWorker] that synchronizes user data from Firestore to the local Room database.
  *
- * This worker:
- * - Checks if the authenticated user exists in the local Room DB.
- * - If not, fetches the user's profile and subcollections from Firestore.
- * - Converts documents into Room entities and inserts them locally with isSynced = true.
+ * This worker runs when local data does not exist for the authenticated user.
+ * It:
+ * - Verifies if the user already exists in the local Room DB.
+ * - If not found, fetches the user's profile from the Firestore `users_profile` collection.
+ * - Also pulls subcollections under `/users/{userId}` including savings, goals, budgets, etc.
+ * - Converts Firestore documents into Room entities and inserts them with `isSynced = true`.
  *
- * Firestore structure assumed:
- * /users/{userId} -> user document
- * /users/{userId}/saving_goals
- * /users/{userId}/savings
- * /users/{userId}/income_entries
- * /users/{userId}/expense_categories
- * /users/{userId}/expenses
- * /users/{userId}/budgets
+ * Firestore structure expected:
+ * - /users_profile/{userId}             -> User profile document
+ * - /users/{userId}/saving_goals       -> List of saving goals
+ * - /users/{userId}/savings            -> List of savings
+ * - /users/{userId}/income_entries     -> List of income entries
+ * - /users/{userId}/expense_categories -> Expense category definitions
+ * - /users/{userId}/expenses           -> List of expense records
+ * - /users/{userId}/budgets            -> Monthly or custom budgets
  */
 class FirestoreToRoomSyncWorker(
     appContext: Context,
@@ -42,12 +43,11 @@ class FirestoreToRoomSyncWorker(
     private val roomDatabase = AppDatabase.getInstance(applicationContext)
 
     /**
-     * Entry point for background syncing work.
-     * This checks if the Room DB is empty for the current user,
-     * and if so, pulls data from Firestore and inserts it.
+     * Main logic executed when the WorkManager triggers this worker.
+     *
+     * @return Result indicating success, failure, or retry depending on sync outcome.
      */
-    override suspend fun doWork(): Result
-    {
+    override suspend fun doWork(): Result {
         val userId = firebaseAuth.currentUser?.uid
 
         if (userId == null) {
@@ -56,7 +56,7 @@ class FirestoreToRoomSyncWorker(
         }
 
         try {
-            // Check if user already exists in local Room database
+            // Check if user data already exists in the local Room database
             val localUser = roomDatabase.userDao().getUserById(userId)
             if (localUser != null) {
                 Log.d(TAG, "User $userId already exists in local DB. Skipping sync.")
@@ -65,9 +65,10 @@ class FirestoreToRoomSyncWorker(
 
             Log.d(TAG, "No local data found for user $userId. Starting sync from Firestore.")
 
-            // --- Sync main user document from 'users_profile' instead of 'users' ---
+            // Fetch main user document from Firestore `users_profile` collection
             val userDoc = firestoreDb.collection("users_profile").document(userId).get().await()
             val user = userDoc.toObject(User::class.java)?.copy(isSynced = true)
+
             if (user != null) {
                 roomDatabase.userDao().upsertUser(user)
                 Log.d(TAG, "User profile synced from users_profile.")
@@ -76,7 +77,7 @@ class FirestoreToRoomSyncWorker(
                 return Result.failure()
             }
 
-            // --- Sync subcollections ---
+            // Sync each subcollection under /users/{userId}/
             syncCollectionFromFirestore(
                 userId,
                 "saving_goals",
@@ -129,12 +130,12 @@ class FirestoreToRoomSyncWorker(
     }
 
     /**
-     * Generic function to synchronize a subcollection from Firestore into Room.
+     * Generic helper function to sync a Firestore subcollection into the local Room database.
      *
-     * @param userId The authenticated user's Firebase UID
-     * @param collectionName The name of the Firestore subcollection under /users/{userId}/
-     * @param mapDocToEntity Function to convert Firestore DocumentSnapshot to Room entity (with isSynced = true)
-     * @param insertOp Room DAO function to insert a list of parsed entities
+     * @param userId Firebase Auth UID of the user.
+     * @param collectionName Name of the subcollection under `/users/{userId}/`.
+     * @param mapDocToEntity Lambda to map a Firestore document to a Room entity.
+     * @param insertOp Suspend function to insert the list of mapped entities into Room.
      */
     private suspend fun <T> syncCollectionFromFirestore(
         userId: String,
@@ -146,7 +147,7 @@ class FirestoreToRoomSyncWorker(
             .document(userId)
             .collection(collectionName)
 
-        // Fetch all documents from the subcollection
+        // Fetch all documents from the specified subcollection
         val querySnapshot = collectionRef.get().await()
 
         if (querySnapshot.isEmpty) {
@@ -154,14 +155,14 @@ class FirestoreToRoomSyncWorker(
             return
         }
 
-        // Convert Firestore documents to Room entities (filtering nulls)
+        // Map each Firestore document to a Room entity, ignoring null results
         val entities = querySnapshot.documents.mapNotNull { mapDocToEntity(it) }
 
         if (entities.isNotEmpty()) {
             insertOp(entities)
-            Log.d(TAG, "Inserted ${entities.size} from $collectionName into Room.")
+            Log.d(TAG, "Inserted ${entities.size} records from $collectionName into Room.")
         } else {
-            Log.w(TAG, "All documents in $collectionName were null or failed to parse.")
+            Log.w(TAG, "All documents in $collectionName failed to parse or were null.")
         }
     }
 }
