@@ -169,7 +169,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Income Chart Card -->
-            <com.google.android.material.card.MaterialCardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardIncomeChart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 android:padding="16dp"
-                android:backgroundTint="@color/white">
+                android:background="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -200,21 +200,21 @@
                         android:paddingBottom="5dp">
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/chip7Days"
+                            android:id="@+id/chip7DaysIncome"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:text="@string/chip_7_days"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"/>
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/chip14Days"
+                            android:id="@+id/chip14DaysIncome"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:text="@string/chip_14_days"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"/>
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/chip30Days"
+                            android:id="@+id/chip30DaysIncome"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:text="@string/chip_30_days"
                             android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </androidx.cardview.widget.CardView>
 
             <!-- Recent Transactions Card -->
             <androidx.cardview.widget.CardView
@@ -278,7 +278,7 @@
                     <TextView
                         android:id="@+id/tvNoTransactions"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="400dp"
                         android:text="@string/tv_no_transactions_to_display"
                         android:textSize="16sp"
                         android:textColor="@android:color/darker_gray"
