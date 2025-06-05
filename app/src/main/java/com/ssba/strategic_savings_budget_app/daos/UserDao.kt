@@ -2,9 +2,12 @@ package com.ssba.strategic_savings_budget_app.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.ssba.strategic_savings_budget_app.entities.Budget
 import com.ssba.strategic_savings_budget_app.entities.User
 import com.ssba.strategic_savings_budget_app.entities.relations.*
 
@@ -134,6 +137,12 @@ interface UserDao {
      */
     @Query("SELECT * FROM user WHERE isSynced = false")
     suspend fun getAllUnSyncedUsers(): List<User>
+
+    @Query("SELECT COUNT(*) FROM user")
+    suspend fun getCountForUser(): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUsers(users: List<User>)
 
     // endregion
 }

@@ -2,8 +2,11 @@ package com.ssba.strategic_savings_budget_app.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
+import com.ssba.strategic_savings_budget_app.entities.Budget
 import com.ssba.strategic_savings_budget_app.entities.Saving
 import java.util.Date
 
@@ -114,4 +117,7 @@ interface SavingDao {
      */
     @Query("SELECT * FROM saving WHERE userId = :userId AND isSynced = false")
     suspend fun getUnSyncedSavings(userId: String): List<Saving>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSavings(savings: List<Saving>)
 }

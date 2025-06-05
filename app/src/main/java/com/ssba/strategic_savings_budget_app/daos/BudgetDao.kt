@@ -2,6 +2,8 @@ package com.ssba.strategic_savings_budget_app.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
@@ -72,6 +74,9 @@ interface BudgetDao {
      */
     @Query("SELECT * FROM budget WHERE userId = :userId AND isSynced = false")
     suspend fun getUnSyncedBudgets(userId: String): List<Budget>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBudgets(budgets: List<Budget>)
 
     //endregion
 }
