@@ -170,11 +170,14 @@ class IncomeHistoryActivity : AppCompatActivity()
                 tvNoTransactions.visibility = View.VISIBLE
                 rvTransactions.visibility = View.GONE
                 cgDays.visibility = View.GONE
+                lcIncome.visibility = View.GONE
             }
             else
             {
                 rvTransactions.visibility = View.VISIBLE
                 tvNoTransactions.visibility = View.GONE
+                cgDays.visibility = View.VISIBLE
+                lcIncome.visibility = View.VISIBLE
 
                 val adapter = IncomeHistoryAdapter(incomeTransactions)
 
@@ -308,6 +311,7 @@ class IncomeHistoryActivity : AppCompatActivity()
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
                             cgDays.visibility = View.GONE
+                            lcIncome.visibility = View.VISIBLE
 
                             // Set up the recycler view
                             val adapter = IncomeHistoryAdapter(filteredTransactions)
@@ -586,7 +590,7 @@ class IncomeHistoryActivity : AppCompatActivity()
         return totalIncome
     }
 
-    // Converts a list of transactions (Income, Expense, Saving) into a list of TransactionGraphData
+    // Converts a list of transactions (Income) into a list of TransactionGraphData
     private fun parseTransactionGraphData(transactions: List<Income>): List<TransactionGraphData>
     {
         // Initialize a mutable list to store the parsed graph data
@@ -691,7 +695,7 @@ class IncomeHistoryActivity : AppCompatActivity()
         val chartTextColor = if (isDarkMode) Color.WHITE else Color.BLACK
         val backgroundColor = if (isDarkMode) Color.TRANSPARENT else Color.WHITE
 
-        // Separate lists for income, expense, and savings data points
+        // list for income
         val incomeEntries = ArrayList<Entry>()
 
         // Formatter for x-axis dates
