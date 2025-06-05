@@ -53,7 +53,7 @@ import java.util.Locale
  	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
  	*   - Implementing the Material DatePicker for selecting dates in the app
  	*   - Data Visualisation with Line Chart
- 	* Author: Android Developers / Firebase Team
+ 	* Author: Android Developers / Firebase Team / MPAndroidChart
  	* Date Accessed: 30 April 2025
  	* Sources:
  	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
