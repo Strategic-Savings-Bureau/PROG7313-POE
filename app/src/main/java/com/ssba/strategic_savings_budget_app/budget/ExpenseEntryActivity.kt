@@ -63,8 +63,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
         // Initialize database and DAOs
         db = AppDatabase.getInstance(this)
-        expenseDao = db.expenseDao
-        categoryDao = db.expenseCategoryDao
+        expenseDao = db.expenseDao()
+        categoryDao = db.expenseCategoryDao()
 
         // Inflate view binding
         binding = ActivityExpenseEntryBinding.inflate(layoutInflater)
@@ -213,7 +213,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
                     amount              = viewModel.amount.value!!.toDouble(),
                     description         = viewModel.description.value!!.trim(),
                     receiptPictureUrl   = publicUrl,
-                    categoryId          = selectedCategoryId
+                    categoryId          = selectedCategoryId,
+                    userId              = auth.currentUser!!.uid
                 )
 
                 // 3) write into Room on IO dispatcher

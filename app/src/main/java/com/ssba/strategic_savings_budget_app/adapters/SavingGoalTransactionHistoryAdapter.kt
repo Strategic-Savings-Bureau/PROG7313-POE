@@ -71,7 +71,7 @@ class SavingGoalTransactionHistoryAdapter(private var savings: List<Saving>) :
 
             val savingsGoal = withContext(Dispatchers.IO) {
 
-                db.savingsGoalDao.getSavingGoalById(savingsTransaction.savingGoalId)
+                db.savingsGoalDao().getSavingGoalById(savingsTransaction.savingGoalId)
             }
 
             if (savingsGoal != null)

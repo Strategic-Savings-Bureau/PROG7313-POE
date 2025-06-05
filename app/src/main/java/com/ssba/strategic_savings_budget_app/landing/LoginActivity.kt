@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 // Check if User Exists in Room Database
-                val user = db.userDao.getUserByEmail(email)
+                val user = db.userDao().getUserByEmail(email)
 
                 // Attempt To Login
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->

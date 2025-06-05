@@ -122,7 +122,7 @@ class SavingsGoalActivity : AppCompatActivity()
         lifecycleScope.launch {
 
             // get the savings goal from the database
-            val savingsGoal = db.savingsGoalDao.getSavingGoalByTitle(savingsGoalTitle)
+            val savingsGoal = db.savingsGoalDao().getSavingGoalByTitle(savingsGoalTitle)
 
             if (savingsGoal == null)
             {
@@ -368,7 +368,7 @@ class SavingsGoalActivity : AppCompatActivity()
     // get the total of all savings for the current goal
     private suspend fun getTotalSavingsForGoal(goalTitle: String, db: AppDatabase): Double
     {
-        val savingsGoalWithSavings = db.savingsGoalDao.getSavingsBySavingGoalTitle(goalTitle)
+        val savingsGoalWithSavings = db.savingsGoalDao().getSavingsBySavingGoalTitle(goalTitle)
 
         if (savingsGoalWithSavings.isEmpty()) {
             return 0.0
@@ -393,7 +393,7 @@ class SavingsGoalActivity : AppCompatActivity()
     private suspend fun getAllSavingsForGoal(goalTitle: String, db: AppDatabase): List<Saving>
     {
         // get the savings goal from the database
-        val savingsGoalWithSavings = db.savingsGoalDao.getSavingsBySavingGoalTitle(goalTitle)
+        val savingsGoalWithSavings = db.savingsGoalDao().getSavingsBySavingGoalTitle(goalTitle)
 
         if (savingsGoalWithSavings.isEmpty()) {
             return emptyList()

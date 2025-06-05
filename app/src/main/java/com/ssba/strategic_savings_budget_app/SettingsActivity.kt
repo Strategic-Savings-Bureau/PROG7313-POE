@@ -68,7 +68,7 @@ class SettingsActivity : AppCompatActivity() {
         // Load User Profile
         lifecycleScope.launch {
             // Get user from database
-            val user = db.userDao.getUserById(auth.currentUser?.uid ?: return@launch)
+            val user = db.userDao().getUserById(auth.currentUser?.uid ?: return@launch)
 
             // Assign values to views
             binding.tvFullName.text = user?.fullName

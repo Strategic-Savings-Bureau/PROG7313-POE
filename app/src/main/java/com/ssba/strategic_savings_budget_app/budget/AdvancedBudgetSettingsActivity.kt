@@ -70,7 +70,7 @@ class AdvancedBudgetSettingsActivity : AppCompatActivity() {
                 binding.textMaxLimit.text = "Max Limit: R ${state.maximumMonthlyExpenses}"
 
                 val categories = withContext(Dispatchers.IO) {
-                    db.expenseCategoryDao.getExpenseCategoriesByUserId(userId).sortedByDescending { it.maximumMonthlyTotal }
+                    db.expenseCategoryDao().getExpenseCategoriesByUserId(userId).sortedByDescending { it.maximumMonthlyTotal }
                 }
                 currentCategories = categories
                 adapter.submitList(categories)
@@ -81,7 +81,7 @@ class AdvancedBudgetSettingsActivity : AppCompatActivity() {
         binding.cancelBtn.setOnClickListener {
             lifecycleScope.launch {
                 val savedCategories = withContext(Dispatchers.IO) {
-                    db.expenseCategoryDao.getExpenseCategoriesByUserId(userId)
+                    db.expenseCategoryDao().getExpenseCategoriesByUserId(userId)
                 }
                 currentCategories = savedCategories
                 adapter.submitList(savedCategories)
@@ -100,7 +100,7 @@ class AdvancedBudgetSettingsActivity : AppCompatActivity() {
             }
 
             lifecycleScope.launch(Dispatchers.IO) {
-                currentCategories.forEach { db.expenseCategoryDao.upsertExpenseCategory(it) }
+                currentCategories.forEach { db.expenseCategoryDao().upsertExpenseCategory(it) }
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@AdvancedBudgetSettingsActivity, "Changes saved", Toast.LENGTH_SHORT).show()
                     finish()

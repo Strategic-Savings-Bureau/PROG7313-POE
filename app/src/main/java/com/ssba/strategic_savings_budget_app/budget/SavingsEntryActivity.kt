@@ -92,7 +92,7 @@ class SavingsEntryActivity : AppCompatActivity() {
     private fun loadSavingGoals() {
         lifecycleScope.launch {
             val goals = withContext(Dispatchers.IO) {
-                db.savingsGoalDao.getSavingGoalsByUserId(auth.currentUser?.uid.toString())
+                db.savingsGoalDao().getSavingGoalsByUserId(auth.currentUser?.uid.toString())
             }
 
             val titles = goals.map { it.title }
@@ -151,13 +151,14 @@ class SavingsEntryActivity : AppCompatActivity() {
             title = viewModel.titleOrName.value.orEmpty(),
             amount = viewModel.amount.value?.toDoubleOrNull() ?: 0.0,
             description = viewModel.description.value.orEmpty(),
-            savingGoalId = selectedSavingGoalId!!
+            savingGoalId = selectedSavingGoalId!!,
+            userId = auth.currentUser?.uid.toString()
         )
 
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 Log.d("SavingsEntryActivity", "Inserting saving into DB...")
-                db.savingDao.upsertSaving(saving)
+                db.savingDao().upsertSaving(saving)
             }
 
             Log.d("SavingsEntryActivity", "Saving successfully recorded.")

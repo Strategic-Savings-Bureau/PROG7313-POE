@@ -191,7 +191,7 @@ class MainActivity : AppCompatActivity() {
         // Check if a budget is set up
         lifecycleScope.launch {
             val userID = auth.currentUser?.uid
-            if (db.budgetDao.getBudgetByUserId(userID!!) == null) {
+            if (db.budgetDao().getBudgetByUserId(userID!!) == null) {
                 showBudgetSetupDialog(userID)
             }
         }
@@ -319,7 +319,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun getCurrentUser(db: AppDatabase, userId: String): User? {
-        return db.userDao.getUserById(userId)
+        return db.userDao().getUserById(userId)
     }
 
     private fun showBudgetSetupDialog(userId: String) {
@@ -359,7 +359,7 @@ class MainActivity : AppCompatActivity() {
                             maximumMonthlyExpenses = expenses,
                             userId = userId
                         )
-                        db.budgetDao.upsertBudget(newBudget)
+                        db.budgetDao().upsertBudget(newBudget)
                         Toast.makeText(this@MainActivity, "Budget created successfully", Toast.LENGTH_SHORT).show()
                         Log.i("MainActivity", "Budget created successfully")
                         dialog.dismiss()
@@ -378,7 +378,7 @@ class MainActivity : AppCompatActivity() {
     private suspend fun getRecentTransactions(db: AppDatabase, userId: String): List<Any>
     {
         // get all the incomes for the current user
-        val incomes = db.userDao.getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
+        val incomes = db.userDao().getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
 
         // get all the expenses for the current user
          val expenses = getAllExpensesForUser(db, userId)
@@ -409,7 +409,7 @@ class MainActivity : AppCompatActivity() {
         val allExpenses = mutableListOf<Expense>()
 
         // Step 1: Get the user's expense categories
-        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
+        val userWithCategories = db.userDao().getUserWithExpenseCategories(userId)
 
         if (userWithCategories.isNotEmpty())
         {
@@ -418,7 +418,7 @@ class MainActivity : AppCompatActivity() {
             // Step 2: For each category, get the expenses
             for (category in expenseCategories)
             {
-                val expensesWithCategory = db.expenseCategoryDao.getExpensesByCategoryName(category.name)
+                val expensesWithCategory = db.expenseCategoryDao().getExpensesByCategoryName(category.name)
 
                 if (expensesWithCategory.isNotEmpty())
                 {
@@ -434,7 +434,7 @@ class MainActivity : AppCompatActivity() {
     // method to check if user has any expense categories return bool
     private suspend fun hasExpenseCategories(db: AppDatabase, userId: String): Boolean
     {
-        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
+        val userWithCategories = db.userDao().getUserWithExpenseCategories(userId)
 
         if (userWithCategories.isEmpty())
         {
@@ -452,7 +452,7 @@ class MainActivity : AppCompatActivity() {
     // method to check if user has any savings goals return bool
     private suspend fun hasSavingsGoals(db: AppDatabase, userId: String): Boolean
     {
-        val userWithGoals = db.userDao.getUserWithSavingGoals(userId)
+        val userWithGoals = db.userDao().getUserWithSavingGoals(userId)
 
         if (userWithGoals.isEmpty())
         {
@@ -470,7 +470,7 @@ class MainActivity : AppCompatActivity() {
     // method to get the users budget
     private suspend fun getMinimumIncome(db: AppDatabase, userId: String): Double
     {
-        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
+        val budget = db.budgetDao().getBudgetByUserId(userId) ?: return 0.00
 
         return budget.minimumMonthlyIncome
     }
@@ -478,7 +478,7 @@ class MainActivity : AppCompatActivity() {
     // method to get total Income for current month
     @SuppressLint("DefaultLocale")
     private suspend fun getTotalIncomeForCurrentMonth(db: AppDatabase, userId: String): Double {
-        val userWithIncomes = db.userDao.getUserWithIncomes(userId)
+        val userWithIncomes = db.userDao().getUserWithIncomes(userId)
         var totalIncome = 0.00
 
         if (userWithIncomes.isEmpty()) {
@@ -509,7 +509,7 @@ class MainActivity : AppCompatActivity() {
     // method to get the users budget
     private suspend fun getMaximumExpenseLimit(db: AppDatabase, userId: String): Double
     {
-        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
+        val budget = db.budgetDao().getBudgetByUserId(userId) ?: return 0.00
 
         return budget.maximumMonthlyExpenses
     }
@@ -549,7 +549,7 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun getTotalSavingsForCurrentMonth(db: AppDatabase, userId: String): Double
     {
-        val savingsGoalsWithUser = db.userDao.getUserWithSavingGoals(userId)
+        val savingsGoalsWithUser = db.userDao().getUserWithSavingGoals(userId)
 
         if (savingsGoalsWithUser.isEmpty()) {
             return 0.0
@@ -563,7 +563,7 @@ class MainActivity : AppCompatActivity() {
         for (goal in savingsGoalsWithUser[0].savingGoals)
         {
             // get the savings for the current goal
-            val savingsGoalWithSavings = db.savingsGoalDao.getSavingsBySavingGoalTitle(goal.title)
+            val savingsGoalWithSavings = db.savingsGoalDao().getSavingsBySavingGoalTitle(goal.title)
 
             if (savingsGoalWithSavings.isNotEmpty())
             {
