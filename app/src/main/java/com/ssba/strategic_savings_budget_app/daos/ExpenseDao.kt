@@ -115,4 +115,16 @@ interface ExpenseDao {
     suspend fun getTotalExpenseAmountByCategoryId(categoryId: Int): Double
 
     //endregion
+
+    // region Sync Queries
+
+    /**
+     * Retrieves all un-synced expenses from the database.
+     *
+     * @return A list of all expenses in the database.
+     */
+    @Query("SELECT * FROM expense WHERE userId = :userId AND isSynced = false")
+    suspend fun getUnSyncedExpenses(userId: String): List<Expense>
+
+    // endregion
 }

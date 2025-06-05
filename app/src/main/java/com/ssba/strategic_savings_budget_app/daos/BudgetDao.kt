@@ -62,4 +62,16 @@ interface BudgetDao {
     suspend fun getBudgetById(budgetId: Int): Budget?
 
     //endregion
+
+    // region Sync Operations
+
+    /**
+     * Retrieves all un-synced budgets from the database.
+     *
+     * @return A list of all [Budget] entities in the database.
+     */
+    @Query("SELECT * FROM budget WHERE userId = :userId AND isSynced = false")
+    suspend fun getUnSyncedBudgets(userId: String): List<Budget>
+
+    //endregion
 }

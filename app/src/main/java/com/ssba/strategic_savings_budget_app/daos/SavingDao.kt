@@ -105,4 +105,13 @@ interface SavingDao {
     suspend fun getTotalSavedInDateRange(startDate: Date, endDate: Date): Double
 
     //endregion
+
+    // region Sync Queries
+    /**
+     * Retrieves all un-synced savings.
+     *
+     * @return A list of all savings.
+     */
+    @Query("SELECT * FROM saving WHERE userId = :userId AND isSynced = false")
+    suspend fun getUnSyncedSavings(userId: String): List<Saving>
 }

@@ -124,4 +124,16 @@ interface UserDao {
     suspend fun getUserWithSavingGoals(userId: String): List<UserWithSavingGoals>
 
     //endregion
+
+    // region Sync Queries
+
+    /**
+     * Retrieves a list of all un-synced users.
+     *
+     * @return A list of all users.
+     */
+    @Query("SELECT * FROM user WHERE isSynced = false")
+    suspend fun getAllUnSyncedUsers(): List<User>
+
+    // endregion
 }

@@ -118,4 +118,11 @@ interface ExpenseCategoryDao {
     suspend fun getExpensesByCategoryId(categoryId: Int): List<ExpenseCategoryWithExpenses>
 
     //endregion
+
+    // region Sync Queries
+
+    @Query("SELECT * FROM expense_category WHERE userId = :userId AND isSynced = false")
+    suspend fun getUnSyncedExpenseCategories(userId: String): List<ExpenseCategory>
+
+    // endregion
 }

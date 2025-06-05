@@ -104,4 +104,13 @@ interface SavingGoalDao {
     suspend fun getSavingsBySavingGoalTitle(title: String): List<SavingGoalWithSavings>
 
     //endregion
+
+    // region Sync Queries
+    /**
+     * Retrieves all un-synced saving goals from the database.
+     *
+     * @return A list of all saving goals in the database.
+     */
+    @Query("SELECT * FROM saving_goal WHERE userId = :userId AND isSynced = false")
+    suspend fun getUnSyncedSavingGoals(userId: String): List<SavingGoal>
 }
