@@ -269,7 +269,7 @@
                     <TextView
                         android:id="@+id/tvNoTransactions"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="450dp"
                         android:text="@string/tv_no_transactions_to_display"
                         android:textSize="16sp"
                         android:textColor="@android:color/darker_gray"

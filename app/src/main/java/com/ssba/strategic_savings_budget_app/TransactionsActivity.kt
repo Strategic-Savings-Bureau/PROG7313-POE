@@ -153,11 +153,14 @@ class TransactionsActivity : AppCompatActivity() {
                 rvTransactions.visibility = View.GONE
                 tvNoTransactions.visibility = View.VISIBLE
                 cgDays.visibility = View.GONE
+                lcTransactions.visibility = View.GONE
             }
             else
             {
                 rvTransactions.visibility = View.VISIBLE
                 tvNoTransactions.visibility = View.GONE
+                cgDays.visibility = View.VISIBLE
+                lcTransactions.visibility = View.VISIBLE
 
                 // Set up the recycler view
                 val adapter = TransactionHistoryAdapter(transactions)
@@ -263,6 +266,7 @@ class TransactionsActivity : AppCompatActivity() {
                             rvTransactions.visibility = View.GONE
                             tvNoTransactions.visibility = View.VISIBLE
                             cgDays.visibility = View.GONE
+                            lcTransactions.visibility = View.GONE
 
                             dialog.dismiss()
                             Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
@@ -277,6 +281,8 @@ class TransactionsActivity : AppCompatActivity() {
                             rvTransactions.visibility = View.GONE
                             tvNoTransactions.visibility = View.VISIBLE
                             cgDays.visibility = View.GONE
+                            lcTransactions.visibility = View.GONE
+
                             Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
                             dialog.dismiss()
                             return@launch
@@ -294,6 +300,7 @@ class TransactionsActivity : AppCompatActivity() {
                             rvTransactions.visibility = View.VISIBLE
                             tvNoTransactions.visibility = View.GONE
                             cgDays.visibility = View.GONE
+                            lcTransactions.visibility = View.VISIBLE
 
                             // Set up the recycler view
                             val adapter = TransactionHistoryAdapter(filteredTransactions)
@@ -342,6 +349,7 @@ class TransactionsActivity : AppCompatActivity() {
                         rvTransactions.visibility = View.GONE
                         tvNoTransactions.visibility = View.VISIBLE
                         cgDays.visibility = View.GONE
+                        lcTransactions.visibility = View.GONE
 
                         dialog.dismiss()
                         Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
@@ -360,6 +368,7 @@ class TransactionsActivity : AppCompatActivity() {
                         rvTransactions.visibility = View.VISIBLE
                         tvNoTransactions.visibility = View.GONE
                         cgDays.visibility = View.VISIBLE
+                        lcTransactions.visibility = View.VISIBLE
 
                         // Set up the recycler view and Line Graph
                         val adapter = TransactionHistoryAdapter(transactions)
@@ -419,8 +428,34 @@ class TransactionsActivity : AppCompatActivity() {
         // Set a listener for when the selection state of chips changes
         cgDays.setOnCheckedStateChangeListener { _, checkedIds ->
 
+            // If no chips are checked, show all data
+            if (checkedIds.isEmpty())
+            {
+                // Get user ID
+                val userId = auth.currentUser?.uid
+
+                // If the user is not authenticated, redirect them to the login screen
+                if (userId == null) {
+                    startActivity(Intent(this@TransactionsActivity, LoginActivity::class.java))
+                    finish()
+                    return@setOnCheckedStateChangeListener
+                }
+
+                lifecycleScope.launch {
+
+                    // Get all transactions
+                    val transactions = getAllTransactions(db, userId)
+                    val graphData = parseTransactionGraphData(transactions)
+
+                    // Show all data (no filter)
+                    setupLineChart(lcTransactions, graphData)
+                }
+
+                return@setOnCheckedStateChangeListener
+            }
+
             // Get the first selected chip ID, or return if none is selected
-            val checkedId = checkedIds.firstOrNull() ?: return@setOnCheckedStateChangeListener
+            val checkedId = checkedIds.first()
 
             // Get the currently authenticated user's ID
             val userId = auth.currentUser?.uid
