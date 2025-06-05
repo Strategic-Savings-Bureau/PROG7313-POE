@@ -53,13 +53,13 @@ import com.ssba.strategic_savings_budget_app.entities.*
 abstract class AppDatabase : RoomDatabase() {
 
     // Abstract DAO accessors for Room to generate DAO implementations
-    abstract val userDao: UserDao
-    abstract val budgetDao: BudgetDao
-    abstract val savingsGoalDao: SavingGoalDao
-    abstract val savingDao: SavingDao
-    abstract val incomeDao: IncomeDao
-    abstract val expenseCategoryDao: ExpenseCategoryDao
-    abstract val expenseDao: ExpenseDao
+    abstract fun userDao(): UserDao
+    abstract fun budgetDao(): BudgetDao
+    abstract fun savingsGoalDao(): SavingGoalDao
+    abstract fun savingDao(): SavingDao
+    abstract fun incomeDao(): IncomeDao
+    abstract fun expenseCategoryDao(): ExpenseCategoryDao
+    abstract fun expenseDao(): ExpenseDao
 
     companion object {
 

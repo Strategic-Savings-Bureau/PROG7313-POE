@@ -524,7 +524,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     private suspend fun getAllIncomeTransactions(db: AppDatabase, userId: String): List<Income>
     {
          // get all the incomes for the current user
-            val userWithIncomes = db.userDao.getUserWithIncomes(userId)
+            val userWithIncomes = db.userDao().getUserWithIncomes(userId)
             val incomeTransactions = userWithIncomes[0].incomes
 
         // sort the incomes by date and time in descending order
@@ -534,7 +534,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     @SuppressLint("DefaultLocale")
     private suspend fun getTotalIncome(db: AppDatabase, userId: String): Double
     {
-        val userWithIncomes = db.userDao.getUserWithIncomes(userId)
+        val userWithIncomes = db.userDao().getUserWithIncomes(userId)
 
         var totalIncome = 0.00
 
@@ -554,7 +554,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     // method to get the users budget
     private suspend fun getMinimumIncome(db: AppDatabase, userId: String): Double
     {
-        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
+        val budget = db.budgetDao().getBudgetByUserId(userId) ?: return 0.00
 
         return budget.minimumMonthlyIncome
     }
@@ -562,7 +562,7 @@ class IncomeHistoryActivity : AppCompatActivity()
     // method to get total Income for current month
     @SuppressLint("DefaultLocale")
     private suspend fun getTotalIncomeForCurrentMonth(db: AppDatabase, userId: String): Double {
-        val userWithIncomes = db.userDao.getUserWithIncomes(userId)
+        val userWithIncomes = db.userDao().getUserWithIncomes(userId)
         var totalIncome = 0.00
 
         if (userWithIncomes.isEmpty()) {
