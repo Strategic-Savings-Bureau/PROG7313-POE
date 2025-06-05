@@ -47,5 +47,9 @@ data class User(
 
     val username: String, // Unique username for display and search within the app
 
-    val profilePictureUrl: String // URL linking to the user's profile image (hosted on Supabase Storage)
+    val profilePictureUrl: String, // URL linking to the user's profile image (hosted on Supabase Storage)
+
+    // Sync fields (if user profile data is editable locally and needs sync)
+    var isSynced: Boolean = false,
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
 )

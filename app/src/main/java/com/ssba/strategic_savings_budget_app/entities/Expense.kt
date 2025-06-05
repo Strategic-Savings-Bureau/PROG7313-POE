@@ -56,5 +56,11 @@ data class Expense(
 
     val receiptPictureUrl: String, // URL to the receipt image stored in Supabase Storage (optional)
 
-    val categoryId: Int // Foreign key linking this expense to a specific expense category (indexed for filtering by category)
+    val categoryId: Int, // Foreign key linking this expense to a specific expense category (indexed for filtering by category)
+
+    val userId: String, // Foreign key linking this expense to a specific user
+
+    // Sync fields
+    var isSynced: Boolean = false,
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
 )

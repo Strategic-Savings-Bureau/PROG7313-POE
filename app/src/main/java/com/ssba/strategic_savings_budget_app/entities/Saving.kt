@@ -52,5 +52,11 @@ data class Saving(
 
     val description: String, // Additional details about the saving entry
 
-    val savingGoalId: Int // Foreign key referencing the associated saving goal
+    val savingGoalId: Int, // Foreign key referencing the associated saving goal
+
+    val userId: String, // Foreign key referencing the associated user
+
+    // Sync fields
+    var isSynced: Boolean = false,
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
 )

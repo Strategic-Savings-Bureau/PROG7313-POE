@@ -52,5 +52,9 @@ data class Income(
 
     val description: String, // Additional details about the income entry
 
-    val userId: String // Foreign key referencing the associated user
+    val userId: String, // Foreign key referencing the associated user
+
+    // Sync fields
+    var isSynced: Boolean = false,
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
 )

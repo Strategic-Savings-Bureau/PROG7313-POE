@@ -51,7 +51,11 @@ data class ExpenseCategory(
 
     val maximumMonthlyTotal: Double, // Maximum allowed total for expenses in this category per month
 
-    val userId: String // Foreign key linking the category to a specific user
+    val userId: String, // Foreign key linking the category to a specific user
+
+    // Sync fields
+    var isSynced: Boolean = false,
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
 )
 {
     override fun toString() : String

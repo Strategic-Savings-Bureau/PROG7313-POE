@@ -52,5 +52,9 @@ data class SavingGoal(
 
     val description: String, // Optional details or notes about the goal
 
-    val userId: String // Firebase UID acting as a foreign key linking to the user
+    val userId: String, // Firebase UID acting as a foreign key linking to the user
+
+    // Sync fields
+    var isSynced: Boolean = false,
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
 )

@@ -43,5 +43,9 @@ data class Budget(
 
     val maximumMonthlyExpenses: Double, // Maximum allowable expenses for the user each month
 
-    val userId: String // Foreign key that links the budget to a specific user (references user table)
+    val userId: String, // Foreign key that links the budget to a specific user (references user table)
+
+    // Sync fields
+    var isSynced: Boolean = false,
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
 )
