@@ -179,6 +179,7 @@
     <string name="cd_add_saving_button">Add Saving Button</string>
     <string name="cd_list_of_savings_transactions_for_the_goal">List of savings transactions for the goal</string>
 
+
     <!-- Analysis -->
     <string name="tv_categories">Categories</string>
     <string name="cd_create_a_new_expense_category">Create a new expense category</string>
@@ -209,6 +210,7 @@
     <string name="saved_email">saved_email </string>
     <string name="saved_password">saved_password </string>
     <string name="login_with_biometrics">Login with biometrics</string>
+    <string name="currency_converter_title">Currency Converter</string>
 
 
 </resources>
