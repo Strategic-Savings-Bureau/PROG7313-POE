@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ssba.strategic_savings_budget_app.SavingsActivity
@@ -42,6 +43,7 @@ class SavingsEntryActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySavingsEntryBinding
     private val viewModel: SavingsEntryViewModel by viewModels()
     private lateinit var db: AppDatabase
+    private lateinit var auth: FirebaseAuth
     private val datePicker by lazy {
 
         val constraints = CalendarConstraints.Builder()
@@ -54,7 +56,7 @@ class SavingsEntryActivity : AppCompatActivity() {
             .setCalendarConstraints(constraints)
             .build()
     }
-    private val auth = Firebase.auth
+
     private var selectedDateMillis: Long? = null
     private var savingGoalIds: List<Int> = emptyList()
     private var selectedSavingGoalId: Int? = null
@@ -69,6 +71,7 @@ class SavingsEntryActivity : AppCompatActivity() {
 
         db = AppDatabase.getInstance(this)
 
+        auth = FirebaseAuth.getInstance()
 
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel

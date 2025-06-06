@@ -75,6 +75,9 @@ class ExpenseEntryActivity : AppCompatActivity() {
         // Initialize Supabase Client
         SupabaseUtils.init(this)
 
+        // initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
         Log.d("ExpenseEntryActivity", "Binding initialized")
 
         setupImagePicker()
