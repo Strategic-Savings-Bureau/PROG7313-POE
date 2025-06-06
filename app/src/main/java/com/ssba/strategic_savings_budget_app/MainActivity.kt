@@ -685,7 +685,7 @@ class MainActivity : AppCompatActivity() {
             valueTextSize = 14f
             valueTextColor = chartTextColor
             colors = listOf(
-                if (income > incomeGoal) ContextCompat.getColor(chart.context, R.color.income_green) else Color.BLUE,
+                if (income > incomeGoal) ContextCompat.getColor(chart.context, R.color.income_green) else ContextCompat.getColor(chart.context, R.color.bg_teal),
                 if (expenses > expenseLimit) Color.RED else ContextCompat.getColor(chart.context, R.color.expense_gold),
                 ContextCompat.getColor(chart.context, R.color.savings_blue)
             )
