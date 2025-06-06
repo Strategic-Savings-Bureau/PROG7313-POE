@@ -220,6 +220,8 @@
     <string name="tv_last_synced_update">Last synced: %1$s</string>
     <string name="text_sync_complete">Sync complete ✅</string>
     <string name="text_sync_failed">Sync failed ❌</string>
+    <string name="btn_save_notification">Save</string>
+    <string name="tv_how_often_would_you_like_to_receive_reminders">How often would you like to receive reminders?</string>
 
 
 </resources>
