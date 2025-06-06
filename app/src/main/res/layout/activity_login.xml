@@ -10,6 +10,7 @@
 
     <!-- Card container -->
     <LinearLayout
+        android:id="@+id/cardLoginContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -31,6 +32,7 @@
 
         <!-- Subtitle -->
         <TextView
+            android:id="@+id/tvSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/tv_enter_your_details_to_login"
@@ -42,6 +44,7 @@
 
         <!-- Email -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEmail"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,6 +63,7 @@
 
         <!-- Password -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPassword"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,25 +82,32 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Login button -->
-
-        <!-- Register link -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="26dp"
             android:backgroundTint="@color/expense_gold"
             android:text="@string/btn_login"
             android:textColor="@android:color/white"
             tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck,VisualLintButtonSize" />
 
+        <!-- Register and Biometric Links Container -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="16dp">
-
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="20dp">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tvLoginBiometric"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#4CD7A9"
+                android:text="@string/login_with_biometrics"
+                android:textColor="?android:textColorPrimary"
+                tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck,VisualLintButtonSize" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRegister"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -105,11 +116,14 @@
                 android:backgroundTint="@android:color/transparent"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:padding="0dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:text="@string/register_text"
                 android:textAllCaps="false"
                 android:textColor="#1976D2"
                 tools:ignore="TouchTargetSizeCheck" />
+
+
         </LinearLayout>
 
     </LinearLayout>

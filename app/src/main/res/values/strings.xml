@@ -82,8 +82,6 @@
     <string name="tv_transaction_type_income">Income</string>
     <string name="settings_title">Settings</string>
 
-    <!-- Currency Converter -->
-    <string name="currency_converter_title">Currency Converter</string>
 
     <!-- Notifications -->
     <string name="notifications_title">Notifications</string>
@@ -208,5 +206,9 @@
     <string name="tv_success">Biometric Auth Succeeded!</string>
     <string name="btn_use_biometrics">Use Biometrics</string>
     <string name="tv_click_the_button_below_to_authenticate_using_biometrics">Click the button below to login</string>
+    <string name="saved_email">saved_email </string>
+    <string name="saved_password">saved_password </string>
+    <string name="login_with_biometrics">Login with biometrics</string>
+
 
 </resources>
