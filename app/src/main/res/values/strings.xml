@@ -209,6 +209,7 @@
     <string name="saved_email">saved_email </string>
     <string name="saved_password">saved_password </string>
     <string name="login_with_biometrics">Login with biometrics</string>
+    <string name="currency_converter_title">Currency Converter</string>
 
 
 </resources>
