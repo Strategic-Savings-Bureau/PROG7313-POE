@@ -153,7 +153,6 @@ class TransactionsActivity : AppCompatActivity() {
                 rvTransactions.visibility = View.GONE
                 tvNoTransactions.visibility = View.VISIBLE
                 cgDays.visibility = View.GONE
-                lcTransactions.visibility = View.GONE
             }
             else
             {
@@ -266,7 +265,6 @@ class TransactionsActivity : AppCompatActivity() {
                             rvTransactions.visibility = View.GONE
                             tvNoTransactions.visibility = View.VISIBLE
                             cgDays.visibility = View.GONE
-                            lcTransactions.visibility = View.GONE
 
                             dialog.dismiss()
                             Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
@@ -349,7 +347,6 @@ class TransactionsActivity : AppCompatActivity() {
                         rvTransactions.visibility = View.GONE
                         tvNoTransactions.visibility = View.VISIBLE
                         cgDays.visibility = View.GONE
-                        lcTransactions.visibility = View.GONE
 
                         dialog.dismiss()
                         Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
@@ -494,7 +491,7 @@ class TransactionsActivity : AppCompatActivity() {
         val allExpenses = mutableListOf<Expense>()
 
         // Step 1: Get the user's expense categories
-        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
+        val userWithCategories = db.userDao().getUserWithExpenseCategories(userId)
 
         if (userWithCategories.isNotEmpty())
         {
@@ -503,7 +500,7 @@ class TransactionsActivity : AppCompatActivity() {
             // Step 2: For each category, get the expenses
             for (category in expenseCategories)
             {
-                val expensesWithCategory = db.expenseCategoryDao.getExpensesByCategoryName(category.name)
+                val expensesWithCategory = db.expenseCategoryDao().getExpensesByCategoryName(category.name)
 
                 if (expensesWithCategory.isNotEmpty())
                 {
@@ -521,7 +518,7 @@ class TransactionsActivity : AppCompatActivity() {
         val allSavings = mutableListOf<Saving>()
 
         // Step 1: Get the user's saving goals
-        val userWithSavingGoals = db.userDao.getUserWithSavingGoals(userId)
+        val userWithSavingGoals = db.userDao().getUserWithSavingGoals(userId)
 
         if (userWithSavingGoals.isNotEmpty()) {
             val savingGoals = userWithSavingGoals[0].savingGoals
@@ -529,7 +526,7 @@ class TransactionsActivity : AppCompatActivity() {
             // Step 2: For each category, get the expenses
             for (goal in savingGoals) {
                 val savingGoalsWithSavings =
-                    db.savingsGoalDao.getSavingsBySavingGoalTitle(goal.title)
+                    db.savingsGoalDao().getSavingsBySavingGoalTitle(goal.title)
 
                 if (savingGoalsWithSavings.isNotEmpty()) {
                     allSavings.addAll(savingGoalsWithSavings[0].savings)
@@ -545,7 +542,7 @@ class TransactionsActivity : AppCompatActivity() {
     private suspend fun getAllTransactions(db: AppDatabase, userId: String): List<Any>
     {
         // get all the incomes for the current user
-        val incomes = db.userDao.getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
+        val incomes = db.userDao().getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
 
         // get all the expenses for the current user
         val expenses = getAllExpensesForUser(db, userId)
@@ -586,7 +583,7 @@ class TransactionsActivity : AppCompatActivity() {
     @SuppressLint("DefaultLocale")
     private suspend fun getTotalIncome(db: AppDatabase, userId: String): Double
     {
-        val userWithIncomes = db.userDao.getUserWithIncomes(userId)
+        val userWithIncomes = db.userDao().getUserWithIncomes(userId)
 
         var totalIncome = 0.00
 

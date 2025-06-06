@@ -40,6 +40,9 @@
     <string name="save_changes">Save Changes</string>
     <string name="change_password">Change Password</string>
     <string name="update_password">Update Password</string>
+    <string name="tv_sync_database">Sync Database</string>
+    <string name="btn_sync_now">Sync Now</string>
+    <string name="tv_last_synced">Last synced: 31 Jan 2025, 12:32</string>
 
     <!-- Expense -->
     <string name="enter_date">Date</string>
@@ -211,6 +214,12 @@
     <string name="saved_password">saved_password </string>
     <string name="login_with_biometrics">Login with biometrics</string>
     <string name="currency_converter_title">Currency Converter</string>
+
+    <!-- Database Sync -->
+    <string name="tv_status_syncing">Syncing…</string>
+    <string name="tv_last_synced_update">Last synced: %1$s</string>
+    <string name="text_sync_complete">Sync complete ✅</string>
+    <string name="text_sync_failed">Sync failed ❌</string>
 
 
 </resources>

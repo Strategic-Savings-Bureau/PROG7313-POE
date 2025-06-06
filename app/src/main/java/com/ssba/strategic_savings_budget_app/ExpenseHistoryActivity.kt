@@ -523,7 +523,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
         val allExpenses = mutableListOf<Expense>()
 
         // Step 1: Get the user's expense categories
-        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
+        val userWithCategories = db.userDao().getUserWithExpenseCategories(userId)
 
         if (userWithCategories.isNotEmpty())
         {
@@ -532,7 +532,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
             // Step 2: For each category, get the expenses
             for (category in expenseCategories)
             {
-                val expensesWithCategory = db.expenseCategoryDao.getExpensesByCategoryName(category.name)
+                val expensesWithCategory = db.expenseCategoryDao().getExpensesByCategoryName(category.name)
 
                 if (expensesWithCategory.isNotEmpty())
                 {
@@ -568,7 +568,7 @@ class ExpenseHistoryActivity : AppCompatActivity()
     // method to get the users budget
     private suspend fun getMaximumExpenseLimit(db: AppDatabase, userId: String): Double
     {
-        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
+        val budget = db.budgetDao().getBudgetByUserId(userId) ?: return 0.00
 
         return budget.maximumMonthlyExpenses
     }

@@ -62,7 +62,7 @@ class IncomeEntryActivity : AppCompatActivity() {
 
         // init DB & DAO
         db = AppDatabase.getInstance(this)
-        incomeDao = db.incomeDao
+        incomeDao = db.incomeDao()
 
         binding = ActivityIncomeEntryBinding.inflate(layoutInflater)
         setContentView(binding.root)

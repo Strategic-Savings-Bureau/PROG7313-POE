@@ -44,7 +44,7 @@ class BudgetViewModel : ViewModel() {
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            val budget = db.budgetDao.getBudgetByUserId(userId)
+            val budget = db.budgetDao().getBudgetByUserId(userId)
             budget?.let {
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -64,7 +64,7 @@ class BudgetViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             // Assuming getAllExpenseCategories() should be filtered by userId if applicable
             // For now, using it as is based on your provided code.
-            val categoryCount = db.expenseCategoryDao.getExpenseCategoriesByUserId(userId).count()
+            val categoryCount = db.expenseCategoryDao().getExpenseCategoriesByUserId(userId).count()
 
 
             _uiState.update { currentState ->
@@ -195,7 +195,7 @@ class BudgetViewModel : ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            var budgetToSave = db.budgetDao.getBudgetByUserId(userId)
+            var budgetToSave = db.budgetDao().getBudgetByUserId(userId)
 
             if (budgetToSave != null) {
                 // Update existing budget
@@ -211,7 +211,7 @@ class BudgetViewModel : ViewModel() {
                     maximumMonthlyExpenses = validMaxExpense
                 )
             }
-            db.budgetDao.upsertBudget(budgetToSave)
+            db.budgetDao().upsertBudget(budgetToSave)
 
             // Update UI state to reflect the saved values and clear any previous errors
             _uiState.update { currentState ->

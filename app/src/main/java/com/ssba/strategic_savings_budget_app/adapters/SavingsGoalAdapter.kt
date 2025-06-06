@@ -108,7 +108,7 @@ class SavingsGoalAdapter(private var savingsGoals: List<SavingGoal>) :
     // get the total of all savings for the current goal
     private suspend fun getTotalSavingsForGoal(goalTitle: String, db: AppDatabase): Double
     {
-        val savingsGoalWithSavings = db.savingsGoalDao.getSavingsBySavingGoalTitle(goalTitle)
+        val savingsGoalWithSavings = db.savingsGoalDao().getSavingsBySavingGoalTitle(goalTitle)
 
         if (savingsGoalWithSavings.isEmpty()) {
             return 0.0

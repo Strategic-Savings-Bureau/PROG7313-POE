@@ -139,7 +139,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
         lifecycleScope.launch {
 
             // get the expense category from the database
-            val expenseCategory = db.expenseCategoryDao.getExpenseCategoryByName(categoryName)
+            val expenseCategory = db.expenseCategoryDao().getExpenseCategoryByName(categoryName)
 
             if (expenseCategory == null)
             {
@@ -355,7 +355,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
                 lifecycleScope.launch {
 
                     // get the expense category from the database
-                    val expenseCategory = db.expenseCategoryDao.getExpenseCategoryByName(categoryName)
+                    val expenseCategory = db.expenseCategoryDao().getExpenseCategoryByName(categoryName)
 
                     if (expenseCategory == null)
                     {
@@ -467,7 +467,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     // get the total of all expenses for the current category
     private suspend fun getTotalExpensesForCategory(categoryName: String, db: AppDatabase): Double
     {
-        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryName)
+        val categoryWithExpenses = db.expenseCategoryDao().getExpensesByCategoryName(categoryName)
 
         if (categoryWithExpenses.isEmpty()) {
             return 0.0
@@ -497,7 +497,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     // get the total of all expenses for the current category in the current month
     private suspend fun getTotalMonthlyExpensesForCategory(categoryTitle: String, db: AppDatabase): Double
     {
-        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryTitle)
+        val categoryWithExpenses = db.expenseCategoryDao().getExpensesByCategoryName(categoryTitle)
 
         if (categoryWithExpenses.isEmpty()) {
             return 0.0
@@ -536,7 +536,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     private suspend fun getAllExpensesForCategory(categoryName: String, db: AppDatabase): List<Expense>
     {
         // get the expense category from the database
-        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryName)
+        val categoryWithExpenses = db.expenseCategoryDao().getExpensesByCategoryName(categoryName)
 
         if (categoryWithExpenses.isEmpty()) {
             return emptyList()
