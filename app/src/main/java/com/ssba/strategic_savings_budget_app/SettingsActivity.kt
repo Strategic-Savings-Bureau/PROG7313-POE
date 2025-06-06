@@ -1,23 +1,40 @@
 package com.ssba.strategic_savings_budget_app
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.WindowManager
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
+import com.ssba.strategic_savings_budget_app.helpers.RoomToFirestoreSyncWorker
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import com.ssba.strategic_savings_budget_app.models.StreakManager
 import com.ssba.strategic_savings_budget_app.settings.NotificationsSettingsActivity
 import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /*
  	* Code Attribution
@@ -134,6 +151,89 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.btnSync.setOnClickListener {
+
+            // Step 1: Check for internet connectivity before syncing
+            if (!isInternetAvailable(this))
+            {
+                showAlertDialog("Sync Failed", "No internet connection. Please try again later.")
+                return@setOnClickListener
+            }
+
+            // Step 2: Inflate custom dialog layout for sync status
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_sync_status, null)
+            val progressBar = dialogView.findViewById<ProgressBar>(R.id.progressBar)
+            val statusText = dialogView.findViewById<TextView>(R.id.statusText)
+
+            // Step 3: Create and configure the AlertDialog
+            val alertDialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false) // Disable back button dismissal
+                .create()
+
+            alertDialog.setCanceledOnTouchOutside(false) // Disable outside touch dismissal
+
+            // Prevent touches to the area behind the dialog
+            alertDialog.window?.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+            )
+
+            // Dim the background
+            alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+            alertDialog.show()
+
+            // Block interaction with background completely while syncing
+            alertDialog.window?.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+
+            // Step 4: Show syncing status with progress spinner
+            statusText.text = getString(R.string.tv_status_syncing)
+            progressBar.isVisible = true
+
+            // Step 5: Build and enqueue the sync work request
+            val syncWorkRequest = OneTimeWorkRequestBuilder<RoomToFirestoreSyncWorker>().build()
+            WorkManager.getInstance(this).enqueue(syncWorkRequest)
+
+            // Step 6: Observe the sync job status using LiveData
+            WorkManager.getInstance(this)
+                .getWorkInfoByIdLiveData(syncWorkRequest.id)
+                .observe(this as LifecycleOwner) { workInfo ->
+
+                    // Only act once the work is finished
+                    if (workInfo != null && workInfo.state.isFinished)
+                    {
+                        progressBar.isVisible = false // Hide spinner
+
+                        // Re-enable interaction with background after sync completes
+                        alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
+                        if (workInfo.state == WorkInfo.State.SUCCEEDED)
+                        {
+                            // Sync succeeded – update the UI with the current timestamp
+                            statusText.text = getString(R.string.text_sync_complete)
+                            val currentTime = getCurrentTimeStamp()
+                            binding.tvLastSync.text =
+                                getString(R.string.tv_last_synced_update, currentTime)
+                        }
+                        else
+                        {
+                            // Sync failed – inform the user
+                            statusText.text = getString(R.string.text_sync_failed)
+                        }
+
+                        // Step 7: Dismiss dialog after short delay (for user to read status)
+                        statusText.postDelayed({
+                            alertDialog.dismiss()
+                        }, 2000)
+                    }
+                }
+        }
+
+
         // Set up Bottom Navigation View onClickListener
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
@@ -168,4 +268,59 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
     }
+
+    // region Sync Helper Functions
+
+    /**
+     * Checks if the device currently has an active internet connection.
+     *
+     * @param context The context used to access the system connectivity service.
+     * @return True if internet is available, false otherwise.
+     */
+    private fun isInternetAvailable(context: Context): Boolean
+    {
+        // Get the connectivity manager from the system services
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        // Get the currently active network; return false if none
+        val network = connectivityManager.activeNetwork ?: return false
+
+        // Get the capabilities of the active network; return false if unavailable
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        // Check if the network has internet capability
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    /**
+     * Displays a simple alert dialog with a title, message, and an OK button.
+     *
+     * @param title Title of the dialog.
+     * @param message Message content of the dialog.
+     * @param context Context in which to show the dialog (default is `this`).
+     */
+    private fun showAlertDialog(title: String, message: String, context: Context = this)
+    {
+        AlertDialog.Builder(context)
+            .setTitle(title)         // Set the dialog title
+            .setMessage(message)     // Set the message to display
+            .setPositiveButton("OK", null) // Set an OK button to dismiss the dialog
+            .show()                  // Show the dialog
+    }
+
+    /**
+     * Gets the current timestamp formatted as "dd MMM yyyy, HH:mm".
+     *
+     * @return A string representation of the current date and time.
+     */
+    private fun getCurrentTimeStamp(): String
+    {
+        // Define the date format
+        val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+
+        // Return the current date/time formatted
+        return sdf.format(Date())
+    }
+
+    // endregion
 }

@@ -215,5 +215,11 @@
     <string name="login_with_biometrics">Login with biometrics</string>
     <string name="currency_converter_title">Currency Converter</string>
 
+    <!-- Database Sync -->
+    <string name="tv_status_syncing">Syncing…</string>
+    <string name="tv_last_synced_update">Last synced: %1$s</string>
+    <string name="text_sync_complete">Sync complete ✅</string>
+    <string name="text_sync_failed">Sync failed ❌</string>
+
 
 </resources>
