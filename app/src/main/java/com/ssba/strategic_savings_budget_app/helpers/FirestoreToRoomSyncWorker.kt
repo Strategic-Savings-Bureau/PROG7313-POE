@@ -92,8 +92,8 @@ class FirestoreToRoomSyncWorker(
 
             Log.d(TAG, "No local data found for user $userId. Starting sync from Firestore.")
 
-            // Fetch main user document from Firestore `users_profile` collection
-            val userDoc = firestoreDb.collection("users_profile").document(userId).get().await()
+            // Fetch main user document from Firestore `user_profiles` collection
+            val userDoc = firestoreDb.collection("user_profiles").document(userId).get().await()
             val user = userDoc.toObject(User::class.java)?.copy(isSynced = true)
 
             if (user != null) {
@@ -170,7 +170,7 @@ class FirestoreToRoomSyncWorker(
         mapDocToEntity: (com.google.firebase.firestore.DocumentSnapshot) -> T?,
         insertOp: suspend (List<T>) -> Unit
     ) {
-        val collectionRef = firestoreDb.collection("users")
+        val collectionRef = firestoreDb.collection("user_data")
             .document(userId)
             .collection(collectionName)
 

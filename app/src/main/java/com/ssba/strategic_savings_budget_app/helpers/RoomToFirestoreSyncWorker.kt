@@ -150,7 +150,7 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
 
                 // Add each unsynced user to batch write
                 unsyncedUsers.forEach { user ->
-                    val userRef = firestoreDb.collection("users_profile").document(user.userId)
+                    val userRef = firestoreDb.collection("user_profiles").document(user.userId)
                     batch.set(userRef, user, SetOptions.merge())
                 }
 
@@ -210,7 +210,7 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
             // Add each item to the Firestore batch
             unsyncedItems.forEach { item ->
                 val docId = getDocumentId(item)
-                val docRef = firestoreDb.collection("users")
+                val docRef = firestoreDb.collection("user_data")
                     .document(userId)
                     .collection(collectionName)
                     .document(docId)
