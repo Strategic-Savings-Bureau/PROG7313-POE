@@ -114,6 +114,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
+                    android:backgroundTint="@color/expense_gold"
                     android:text="Advanced Settings"
                     android:textColor="?android:textColorPrimary"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -132,29 +133,32 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/advancedSettingsBtn">
 
-                    <!-- Cancel Button: Outlined style -->
+
                     <Button
                         android:id="@+id/cancelBtn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/outlined_button"
+
                         android:text="Cancel"
-                        android:textColor="?android:textColorPrimary" />
+                        android:backgroundTint="@color/black"
+                        android:textColor="?android:textColorPrimaryInverse"
+                      />
 
                     <Space
                         android:layout_width="16dp"
                         android:layout_height="wrap_content" />
 
-                    <!-- Save Button: Primary filled -->
                     <Button
                         android:id="@+id/saveBtn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:backgroundTint="@color/bg_teal"
+                        android:textColor="?android:textColorPrimary"
                         android:text="Save"
-                        android:textColor="?android:textColorPrimary" />
+                         />
+
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
