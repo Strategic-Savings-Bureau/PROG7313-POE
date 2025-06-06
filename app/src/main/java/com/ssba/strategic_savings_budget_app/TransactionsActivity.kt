@@ -153,7 +153,6 @@ class TransactionsActivity : AppCompatActivity() {
                 rvTransactions.visibility = View.GONE
                 tvNoTransactions.visibility = View.VISIBLE
                 cgDays.visibility = View.GONE
-                lcTransactions.visibility = View.GONE
             }
             else
             {
@@ -266,7 +265,6 @@ class TransactionsActivity : AppCompatActivity() {
                             rvTransactions.visibility = View.GONE
                             tvNoTransactions.visibility = View.VISIBLE
                             cgDays.visibility = View.GONE
-                            lcTransactions.visibility = View.GONE
 
                             dialog.dismiss()
                             Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
@@ -349,7 +347,6 @@ class TransactionsActivity : AppCompatActivity() {
                         rvTransactions.visibility = View.GONE
                         tvNoTransactions.visibility = View.VISIBLE
                         cgDays.visibility = View.GONE
-                        lcTransactions.visibility = View.GONE
 
                         dialog.dismiss()
                         Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
