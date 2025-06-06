@@ -46,7 +46,7 @@ import com.ssba.strategic_savings_budget_app.entities.*
         ExpenseCategory::class,
         Expense::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

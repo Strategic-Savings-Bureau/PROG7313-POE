@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -74,6 +75,21 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
         btnLogin = binding.btnLogin
         btnRegister = binding.btnRegister
         tvLoginBiometric = binding.tvLoginBiometric // Initialize Biometric Login TextView
+
+        // check if shared preferences exist
+        val sharedPrefCheck = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        val emailSharedPref = sharedPrefCheck.getString(getString(R.string.saved_email),"")
+        val passwordSharedPref = sharedPrefCheck.getString(getString(R.string.saved_password),"")
+
+        // if shared preferences do not exist, hide the biometric login button
+        if (emailSharedPref.isNullOrEmpty() || passwordSharedPref.isNullOrEmpty())
+        {
+            tvLoginBiometric.visibility = View.GONE
+        }
+        else
+        {
+            tvLoginBiometric.visibility = View.VISIBLE
+        }
 
         // Log into Account On Click Listener
         btnLogin.setOnClickListener {
@@ -210,7 +226,7 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
     }
 
     private fun navigateToMainActivity() {
-        val sharedPref = this?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
         val email = sharedPref.getString(getString(R.string.saved_email),"")
         val password = sharedPref.getString(getString(R.string.saved_password),"")
         etEmail.text.clear()
