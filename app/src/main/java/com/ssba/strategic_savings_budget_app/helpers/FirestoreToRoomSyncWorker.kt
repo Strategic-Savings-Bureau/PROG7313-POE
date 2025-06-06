@@ -10,6 +10,33 @@ import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.entities.*
 import kotlinx.coroutines.tasks.await
 
+/*
+ * Code Attribution
+ *
+ * Purpose:
+ * This helper class implements a background synchronization worker for the Strategic Savings Budget App.
+ * It syncs user profile and related financial data from Firebase Firestore to the local Room database,
+ * ensuring offline access and data consistency. Key functions include:
+ *   - Checking if user data exists locally before syncing
+ *   - Fetching user profile and subcollections (saving goals, savings, income, expenses, budgets)
+ *   - Mapping Firestore documents to Room entities with sync status
+ *   - Handling asynchronous work with Kotlin Coroutines and WorkManager
+ *   - Robust error handling with retries
+ *
+ * Authors/Technologies Used:
+ *   - Firebase Authentication & Firestore: Google Firebase Team
+ *   - Android Jetpack (WorkManager, CoroutineWorker, Room Persistence Library): Android Developers
+ *   - Kotlin Coroutines: JetBrains & Kotlin Team
+ *
+ * Date Accessed: 6 June 2025
+ *
+ * References:
+ *   - WorkManager: https://developer.android.com/topic/libraries/architecture/workmanager
+ *   - Firebase Firestore: https://firebase.google.com/docs/firestore/query-data/get-data
+ *   - Room Persistence Library: https://developer.android.com/training/data-storage/room
+ *   - Kotlin Coroutines: https://kotlinlang.org/docs/coroutines-overview.html
+ */
+
 /**
  * A background [CoroutineWorker] that synchronizes user data from Firestore to the local Room database.
  *

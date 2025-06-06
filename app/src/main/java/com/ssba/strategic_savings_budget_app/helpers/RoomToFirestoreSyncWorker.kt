@@ -11,6 +11,33 @@ import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.entities.*
 import kotlinx.coroutines.tasks.await
 
+/*
+ * Code Attribution
+ *
+ * Purpose:
+ * This worker handles background synchronization of unsynced Room database entities
+ * (such as savings goals, incomes, expenses, budgets, and user profiles) to Firebase Firestore.
+ * It:
+ *   - Authenticates the current user with FirebaseAuth
+ *   - Retrieves unsynced local Room entities
+ *   - Performs batch writes to Firestore collections under the authenticated user's ID
+ *   - Updates local Room entities to mark them as synced after successful upload
+ *   - Supports automatic retries on failure
+ *
+ * Authors/Technologies Used:
+ *   - Firebase Authentication & Firestore: Google Firebase Team
+ *   - Android Jetpack WorkManager & Room Persistence Library: Android Developers
+ *   - Kotlin Coroutines for asynchronous background processing: Kotlin Team
+ *
+ * Date Accessed: 6 June 2025
+ *
+ * References:
+ *   - Firebase Auth & Firestore Batch Writes: https://firebase.google.com/docs/firestore/manage-data/transactions
+ *   - Android WorkManager Documentation: https://developer.android.com/topic/libraries/architecture/workmanager
+ *   - Room Database: https://developer.android.com/training/data-storage/room
+ *   - Kotlin Coroutines with WorkManager: https://developer.android.com/kotlin/coroutines/coroutines-adv-workmanager
+ */
+
 /**
  * [RoomToFirestoreSyncWorker] is a [CoroutineWorker] that uploads unsynced Room database entities
  * to Firebase Firestore for backup and cross-device availability.

@@ -37,18 +37,36 @@ import java.util.Date
 import java.util.Locale
 
 /*
- 	* Code Attribution
- 	* Purpose:
- 	*   - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
- 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
- 	*   - Loading and displaying images using Glide library
- 	* Author: Android Developers / Firebase Team / BumpTech
- 	* Date Accessed: 2 May 2025
- 	* Sources:
- 	*   - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
- 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
- 	*   - Glide: https://github.com/bumptech/glide
-*/
+ * Code Attribution
+ *
+ * Purpose:
+ * This activity manages the Settings screen in the Strategic Savings Budget App, providing:
+ *   - User profile loading using Firebase and Room DB
+ *   - Image loading via Glide
+ *   - Theme switching using SharedPreferences and AppCompatDelegate
+ *   - Internet connectivity checks using NetworkCapabilities
+ *   - Background sync to Firestore using WorkManager and LiveData
+ *   - Custom alert dialog for sync status using AlertDialog with custom layout
+ *   - Navigation using BottomNavigationView
+ *   - User logout and navigation to sub-settings screens
+ *
+ * Authors/Technologies Used:
+ *   - Firebase Authentication & Firestore: Google Firebase Team
+ *   - Android Jetpack (WorkManager, LifecycleScope, AppCompatDelegate): Android Developers
+ *   - Glide (Image Loading): BumpTech
+ *   - Room (Local Database): Android Architecture Components
+ *
+ * Date Accessed: 2 May 2025
+ *
+ * References:
+ *   - Firebase Auth: https://firebase.google.com/docs/auth/android/manage-users
+ *   - Room Persistence: https://developer.android.com/training/data-storage/room
+ *   - WorkManager: https://developer.android.com/topic/libraries/architecture/workmanager
+ *   - Glide Library: https://github.com/bumptech/glide
+ *   - NetworkCapabilities (Internet Check): https://developer.android.com/reference/android/net/NetworkCapabilities
+ *   - AlertDialog (Custom Views): https://developer.android.com/guide/topics/ui/dialogs
+ *   - BottomNavigationView: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
+ */
 
 class SettingsActivity : AppCompatActivity() {
 
