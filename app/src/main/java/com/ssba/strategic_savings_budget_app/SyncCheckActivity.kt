@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.concurrent.futures.await
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -25,100 +26,98 @@ import com.ssba.strategic_savings_budget_app.databinding.ActivitySyncCheckBindin
 import com.ssba.strategic_savings_budget_app.helpers.FirestoreToRoomSyncWorker
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 /*
- 	* Code Attribution
- 	* Purpose:
- 	*   - Verifying if a user is authenticated using Firebase Authentication
- 	*   - Checking local Room database for existing user data
- 	*   - Prompting the user to sync data from Firestore if local data is absent
- 	*   - Using Android WorkManager to perform one-time sync jobs
- 	*   - Displaying sync status in a custom AlertDialog
- 	*   - Managing internet connectivity checks and redirection to Login or Main screen
- 	* Author: Android Developers / Firebase Team / Android Jetpack / Google
- 	* Date Accessed: 6 June 2025
- 	* Sources:
- 	*   - Firebase Authentication: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
- 	*   - Room Database: https://developer.android.com/training/data-storage/room
- 	*   - WorkManager: https://developer.android.com/topic/libraries/architecture/workmanager
- 	*   - AlertDialog: https://developer.android.com/reference/androidx/appcompat/app/AlertDialog
- 	*   - Internet Connectivity Check: https://developer.android.com/training/basics/network-ops/connecting
-*/
-class SyncCheckActivity : AppCompatActivity()
-{
+ * Code Attribution
+ *
+ * Purpose:
+ *   - Authenticate user session status with Firebase Authentication.
+ *   - Query local Room database for existing user data before syncing.
+ *   - Prompt user to initiate data sync from Firestore if local data is missing.
+ *   - Employ Android WorkManager for reliable one-time background sync tasks.
+ *   - Use Kotlin Coroutines for asynchronous database and sync operations.
+ *   - Present sync progress and status updates in a custom AlertDialog.
+ *   - Implement network connectivity checks to ensure internet availability before sync.
+ *   - Handle sync failure scenarios with retry/cancel dialogs and database cleanup.
+ *
+ * Authors/Technologies Used:
+ *   - Firebase Authentication: Google Firebase Team
+ *   - Android Jetpack WorkManager & Room Persistence Library: Android Developers
+ *   - Kotlin Coroutines: Kotlin Team
+ *   - UI Components & AlertDialog: AndroidX / Android Developers
+ *
+ * Date Accessed: 6 June 2025
+ *
+ * References:
+ *   - Firebase Authentication (Android): https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ *   - Android Room Persistence Library: https://developer.android.com/training/data-storage/room
+ *   - WorkManager (One-Time Work Request): https://developer.android.com/topic/libraries/architecture/workmanager
+ *   - Kotlin Coroutines integration with WorkManager: https://developer.android.com/kotlin/coroutines
+ *   - AlertDialog customization: https://developer.android.com/reference/androidx/appcompat/app/AlertDialog
+ *   - Connectivity checks with NetworkCapabilities: https://developer.android.com/training/basics/network-ops/connecting
+ */
 
-    // View binding object for accessing layout views
+class SyncCheckActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivitySyncCheckBinding
-
-    // Firebase Authentication instance
     private lateinit var auth: FirebaseAuth
-
-    // Reference to the Room database
     private lateinit var db: AppDatabase
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    // Reference to the currently enqueued sync WorkManager job ID
+    private var currentSyncWorkId: UUID? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Enables edge-to-edge content rendering
+        enableEdgeToEdge()  // Enable full edge-to-edge display for modern UI
 
         binding = ActivitySyncCheckBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Adjusts the layout to handle system bars (status bar, navigation bar)
+        // Apply system window insets as padding for proper layout insets handling
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Initialize Firebase Authentication and Room database
         auth = FirebaseAuth.getInstance()
         db = AppDatabase.getInstance(this)
 
-        // Check user authentication and data sync in a coroutine scope
         lifecycleScope.launch {
+            // Check if user is currently authenticated
             val userId = auth.currentUser?.uid
-
-            // If no user is logged in, redirect to LoginActivity
-            if (userId == null)
-            {
-                startActivity(Intent(this@SyncCheckActivity, LoginActivity::class.java))
-                finish()
+            if (userId == null) {
+                redirectToLogin()
                 return@launch
             }
 
-            // Check if user data exists locally in Room DB
-            val localUser = withContext(Dispatchers.IO)
-            {
+            // Query local Room DB on IO thread to find existing user data
+            val localUser = withContext(Dispatchers.IO) {
                 db.userDao().getUserById(userId)
             }
 
-            // If data exists, navigate to main screen; otherwise prompt to sync
-            if (localUser != null)
-            {
+            if (localUser != null) {
+                // Local user data found - proceed to main app screen
                 goToMain()
-            }
-            else
-            {
+            } else {
+                // No local data - prompt sync from Firestore
                 promptSync(userId)
             }
         }
     }
 
     /**
-     * Displays a dialog prompting the user to sync data from Firestore if no local data is found.
-     * Handles internet availability and redirect on cancellation.
+     * Prompts the user to sync data from Firestore if local data is absent.
+     * If no internet is available, informs user and signs out.
      */
-    private fun promptSync(userId: String)
-    {
-        if (!isInternetAvailable(this))
-        {
+    private fun promptSync(userId: String) {
+        if (!isInternetAvailable(this)) {
             Toast.makeText(this, "No internet connection. Please connect and try again.", Toast.LENGTH_LONG).show()
-            auth.signOut()
-            startActivity(Intent(this@SyncCheckActivity, LoginActivity::class.java))
-            finish()
+            signOutAndRedirect()
             return
         }
 
@@ -133,19 +132,17 @@ class SyncCheckActivity : AppCompatActivity()
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
                 Toast.makeText(this, "Sync canceled. Cannot proceed.", Toast.LENGTH_LONG).show()
-                auth.signOut()
-                startActivity(Intent(this@SyncCheckActivity, LoginActivity::class.java))
-                finish()
+                signOutAndRedirect()
             }
             .show()
     }
 
     /**
-     * Shows a custom syncing dialog and initiates a one-time sync job using WorkManager.
-     * Handles both success and failure states, including retry logic.
+     * Shows a syncing progress dialog and enqueues a Firestore to Room sync task using WorkManager.
+     * Observes work status and updates UI accordingly.
+     * Handles success, failure, and timeout scenarios.
      */
-    private fun showSyncingDialogAndStartFirestoreSync(userId: String)
-    {
+    private fun showSyncingDialogAndStartFirestoreSync(userId: String) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_sync_status, null)
         val progressBar = dialogView.findViewById<ProgressBar>(R.id.progressBar)
         val statusText = dialogView.findViewById<TextView>(R.id.statusText)
@@ -160,82 +157,126 @@ class SyncCheckActivity : AppCompatActivity()
         progressBar.isVisible = true
         statusText.text = getString(R.string.tv_status_syncing)
 
-        // Create a one-time sync request to fetch Firestore data to Room
-        val syncRequest = OneTimeWorkRequestBuilder<FirestoreToRoomSyncWorker>().build()
-        val workManager = WorkManager.getInstance(this)
+        // Cancel any ongoing sync task before starting a new one
+        currentSyncWorkId?.let { WorkManager.getInstance(this).cancelWorkById(it) }
 
+        // Build and enqueue new one-time WorkManager sync request
+        val syncRequest = OneTimeWorkRequestBuilder<FirestoreToRoomSyncWorker>().build()
+        currentSyncWorkId = syncRequest.id
+        val workManager = WorkManager.getInstance(this)
         workManager.enqueue(syncRequest)
 
-        // Observe the status of the sync job
-        workManager.getWorkInfoByIdLiveData(syncRequest.id)
-            .observe(this) { workInfo ->
+        // Observe work status live and update UI accordingly
+        workManager.getWorkInfoByIdLiveData(syncRequest.id).observe(this) { workInfo ->
 
-                if (workInfo != null && workInfo.state.isFinished)
-                {
-                    progressBar.isVisible = false
+            if (workInfo != null && workInfo.state.isFinished) {
+                progressBar.isVisible = false
 
-                    if (workInfo.state == WorkInfo.State.SUCCEEDED)
-                    {
-                        statusText.text = getString(R.string.text_sync_complete)
+                if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                    statusText.text = getString(R.string.text_sync_complete)
+                } else {
+                    statusText.text = getString(R.string.text_sync_failed)
+                }
+
+                statusText.postDelayed({
+                    alertDialog.dismiss()
+
+                    if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        goToMain()
+                    } else {
+                        // On failure, clear local DB and prompt retry or cancel
+                        clearDatabaseTables()
+                        showRetryCancelDialog(userId)
                     }
-                    else
-                    {
-                        statusText.text = getString(R.string.text_sync_failed)
-                    }
+                }, 2000)
+            }
+        }
 
-                    // After showing result, delay then dismiss dialog
-                    statusText.postDelayed({
-                        alertDialog.dismiss()
-
-                        if (workInfo.state == WorkInfo.State.SUCCEEDED)
-                        {
-                            goToMain()
-                        }
-                        else
-                        {
-                            // Prompt retry or cancel on sync failure
-                            AlertDialog.Builder(this)
-                                .setTitle("Sync Failed")
-                                .setMessage("Failed to sync from the cloud. Do you want to try again?")
-                                .setCancelable(false)
-                                .setPositiveButton("Retry") { _, _ ->
-                                    showSyncingDialogAndStartFirestoreSync(userId)
-                                }
-                                .setNegativeButton("Cancel") { _, _ ->
-                                    auth.signOut()
-                                    startActivity(Intent(this@SyncCheckActivity, LoginActivity::class.java))
-                                    finish()
-                                }
-                                .show()
-                        }
-                    }, 2000)
+        // Timeout logic to cancel sync after 90 seconds to avoid indefinite waits
+        lifecycleScope.launch {
+            launch {
+                delay(90000)
+                val workInfo = workManager.getWorkInfoById(syncRequest.id).await()
+                if (workInfo != null && !workInfo.state.isFinished) {
+                    workManager.cancelWorkById(syncRequest.id)
+                    alertDialog.dismiss()
+                    clearDatabaseTables()
+                    showRetryCancelDialog(userId, timedOut = true)
                 }
             }
+        }
     }
 
     /**
-     * Navigates the user to the MainActivity and finishes the current one.
+     * Shows a dialog to retry or cancel after a failed or timed-out sync attempt.
      */
-    private fun goToMain()
-    {
+    private fun showRetryCancelDialog(userId: String, timedOut: Boolean = false) {
+        val message = if (timedOut) {
+            "Sync timed out. Do you want to retry?"
+        } else {
+            "Failed to sync from the cloud. Do you want to try again?"
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Sync Failed")
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton("Retry") { _, _ ->
+                showSyncingDialogAndStartFirestoreSync(userId)
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                signOutAndRedirect()
+            }
+            .show()
+    }
+
+    /**
+     * Clears all data from all tables in the Room database on a background thread.
+     * Ensures database is clean before a retry sync attempt.
+     */
+    private fun clearDatabaseTables() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                db.clearAllTables()
+            } catch (ex: Exception) {
+                // Consider logging the error to a crash reporting system
+                ex.printStackTrace()
+            }
+        }
+    }
+
+    /**
+     * Signs the user out of Firebase Authentication and redirects to the Login screen.
+     */
+    private fun signOutAndRedirect() {
+        auth.signOut()
+        redirectToLogin()
+    }
+
+    /**
+     * Starts LoginActivity and finishes this activity.
+     */
+    private fun redirectToLogin() {
+        startActivity(Intent(this@SyncCheckActivity, LoginActivity::class.java))
+        finish()
+    }
+
+    /**
+     * Starts MainActivity and finishes this activity.
+     */
+    private fun goToMain() {
         startActivity(Intent(this@SyncCheckActivity, MainActivity::class.java))
         finish()
     }
 
     /**
-     * Checks if the device currently has an active internet connection.
-     *
-     * @param context The context used to access the system connectivity service.
-     * @return True if internet is available, false otherwise.
+     * Checks for active internet connectivity using NetworkCapabilities.
+     * Returns true if internet is available.
      */
-    private fun isInternetAvailable(context: Context): Boolean
-    {
+    private fun isInternetAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
         val network = connectivityManager.activeNetwork ?: return false
-
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 }
