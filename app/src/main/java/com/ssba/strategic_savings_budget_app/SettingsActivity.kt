@@ -12,7 +12,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
@@ -22,6 +21,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.budget.BudgetSettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
@@ -41,31 +41,31 @@ import java.util.Locale
  *
  * Purpose:
  * This activity manages the Settings screen in the Strategic Savings Budget App, providing:
- *   - User profile loading using Firebase and Room DB
- *   - Image loading via Glide
- *   - Theme switching using SharedPreferences and AppCompatDelegate
- *   - Internet connectivity checks using NetworkCapabilities
- *   - Background sync to Firestore using WorkManager and LiveData
- *   - Custom alert dialog for sync status using AlertDialog with custom layout
- *   - Navigation using BottomNavigationView
- *   - User logout and navigation to sub-settings screens
+ * - User profile loading using Firebase and Room DB
+ * - Image loading via Glide
+ * - Theme switching using SharedPreferences and AppCompatDelegate
+ * - Internet connectivity checks using NetworkCapabilities
+ * - Background sync to Firestore using WorkManager and LiveData
+ * - Custom alert dialog for sync status using AlertDialog with custom layout
+ * - Navigation using BottomNavigationView
+ * - User logout and navigation to sub-settings screens
  *
  * Authors/Technologies Used:
- *   - Firebase Authentication & Firestore: Google Firebase Team
- *   - Android Jetpack (WorkManager, LifecycleScope, AppCompatDelegate): Android Developers
- *   - Glide (Image Loading): BumpTech
- *   - Room (Local Database): Android Architecture Components
+ * - Firebase Authentication & Firestore: Google Firebase Team
+ * - Android Jetpack (WorkManager, LifecycleScope, AppCompatDelegate): Android Developers
+ * - Glide (Image Loading): BumpTech
+ * - Room (Local Database): Android Architecture Components
  *
  * Date Accessed: 2 May 2025
  *
  * References:
- *   - Firebase Auth: https://firebase.google.com/docs/auth/android/manage-users
- *   - Room Persistence: https://developer.android.com/training/data-storage/room
- *   - WorkManager: https://developer.android.com/topic/libraries/architecture/workmanager
- *   - Glide Library: https://github.com/bumptech/glide
- *   - NetworkCapabilities (Internet Check): https://developer.android.com/reference/android/net/NetworkCapabilities
- *   - AlertDialog (Custom Views): https://developer.android.com/guide/topics/ui/dialogs
- *   - BottomNavigationView: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
+ * - Firebase Auth: https://firebase.google.com/docs/auth/android/manage-users
+ * - Room Persistence: https://developer.android.com/training/data-storage/room
+ * - WorkManager: https://developer.android.com/topic/libraries/architecture/workmanager
+ * - Glide Library: https://github.com/bumptech/glide
+ * - NetworkCapabilities (Internet Check): https://developer.android.com/reference/android/net/NetworkCapabilities
+ * - AlertDialog (Custom Views): https://developer.android.com/guide/topics/ui/dialogs
+ * - BottomNavigationView: https://developer.google.com/android/reference/com/google/android/material/bottomnavigation/BottomNavigationView
  */
 
 class SettingsActivity : AppCompatActivity() {
@@ -80,9 +80,12 @@ class SettingsActivity : AppCompatActivity() {
     // Database
     private lateinit var db: AppDatabase
 
-    // Themes
-    private val sharedPreferences: SharedPreferences by lazy { getSharedPreferences("MODE", MODE_PRIVATE) }
-    private val editor: SharedPreferences.Editor by lazy { sharedPreferences.edit() }
+    // Themes and Sync Time SharedPreferences
+    private val appSharedPreferences: SharedPreferences by lazy { getSharedPreferences("APP_PREFS", MODE_PRIVATE) }
+    private val editor: SharedPreferences.Editor by lazy { appSharedPreferences.edit() }
+
+    // Constant for SharedPreferences key
+    private val keyLastSyncTime = "last_sync_time"
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +121,9 @@ class SettingsActivity : AppCompatActivity() {
                 .into(binding.ivProfilePic)
         }
 
+        // Load the last sync time when the activity is created
+        loadLastSyncTime()
+
         // Highlight the Menu Item
         binding.bottomNav.selectedItemId = R.id.miSettings
 
@@ -150,7 +156,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // Set switch state based on shared preferences
-        binding.themeSwitch.isChecked = sharedPreferences.getBoolean("night", false)
+        binding.themeSwitch.isChecked = appSharedPreferences.getBoolean("night", false)
 
         binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
             editor.putBoolean("night", isChecked).apply()
@@ -184,29 +190,17 @@ class SettingsActivity : AppCompatActivity() {
             val statusText = dialogView.findViewById<TextView>(R.id.statusText)
 
             // Step 3: Create and configure the AlertDialog
-            val alertDialog = AlertDialog.Builder(this)
+            // MaterialAlertDialogBuilder for modern dialog styling
+            val alertDialog = MaterialAlertDialogBuilder(this)
                 .setView(dialogView)
                 .setCancelable(false) // Disable back button dismissal
                 .create()
 
             alertDialog.setCanceledOnTouchOutside(false) // Disable outside touch dismissal
 
-            // Prevent touches to the area behind the dialog
-            alertDialog.window?.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-            )
-
-            // Dim the background
-            alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            alertDialog.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
             alertDialog.show()
-
-            // Block interaction with background completely while syncing
-            alertDialog.window?.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
 
             // Step 4: Show syncing status with progress spinner
             statusText.text = getString(R.string.tv_status_syncing)
@@ -226,9 +220,6 @@ class SettingsActivity : AppCompatActivity() {
                     {
                         progressBar.isVisible = false // Hide spinner
 
-                        // Re-enable interaction with background after sync completes
-                        alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-
                         if (workInfo.state == WorkInfo.State.SUCCEEDED)
                         {
                             // Sync succeeded – update the UI with the current timestamp
@@ -236,6 +227,10 @@ class SettingsActivity : AppCompatActivity() {
                             val currentTime = getCurrentTimeStamp()
                             binding.tvLastSync.text =
                                 getString(R.string.tv_last_synced_update, currentTime)
+                            // Save the current sync time
+                            saveLastSyncTime(currentTime)
+                            // Make sure the TextView is visible if a sync just occurred
+                            binding.tvLastSync.isVisible = true
                         }
                         else
                         {
@@ -287,6 +282,29 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Saves the last successful sync time to SharedPreferences.
+     *
+     * @param timestamp The formatted timestamp string to save.
+     */
+    private fun saveLastSyncTime(timestamp: String) {
+        editor.putString(keyLastSyncTime, timestamp).apply()
+    }
+
+    /**
+     * Loads the last successful sync time from SharedPreferences and displays it.
+     * If no value is found, the tvLastSync TextView will be hidden.
+     */
+    private fun loadLastSyncTime() {
+        val lastSyncTime = appSharedPreferences.getString(keyLastSyncTime, null)
+        if (lastSyncTime != null) {
+            binding.tvLastSync.text = getString(R.string.tv_last_synced_update, lastSyncTime)
+            binding.tvLastSync.isVisible = true
+        } else {
+            binding.tvLastSync.isVisible = false
+        }
+    }
+
     // region Sync Helper Functions
 
     /**
@@ -319,7 +337,8 @@ class SettingsActivity : AppCompatActivity() {
      */
     private fun showAlertDialog(title: String, message: String, context: Context = this)
     {
-        AlertDialog.Builder(context)
+        // MaterialAlertDialogBuilder for modern dialog styling
+        MaterialAlertDialogBuilder(context)
             .setTitle(title)         // Set the dialog title
             .setMessage(message)     // Set the message to display
             .setPositiveButton("OK", null) // Set an OK button to dismiss the dialog

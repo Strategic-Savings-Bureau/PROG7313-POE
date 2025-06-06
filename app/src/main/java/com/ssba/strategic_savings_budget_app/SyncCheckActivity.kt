@@ -2,6 +2,7 @@ package com.ssba.strategic_savings_budget_app
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -29,6 +30,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 /*
@@ -69,6 +73,13 @@ class SyncCheckActivity : AppCompatActivity() {
 
     // Reference to the currently enqueued sync WorkManager job ID
     private var currentSyncWorkId: UUID? = null
+
+    // SharedPreferences for app-wide preferences, including last sync time
+    private val appSharedPreferences: SharedPreferences by lazy { getSharedPreferences("APP_PREFS", MODE_PRIVATE) }
+    private val editor: SharedPreferences.Editor by lazy { appSharedPreferences.edit() }
+
+    // Constant for SharedPreferences key (must match the one in SettingsActivity)
+    private val keyLastSyncTime = "last_sync_time"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,6 +187,8 @@ class SyncCheckActivity : AppCompatActivity() {
 
                 if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                     statusText.text = getString(R.string.text_sync_complete)
+                    // Save the current sync time to SharedPreferences
+                    saveLastSyncTime(getCurrentTimeStamp())
                 } else {
                     statusText.text = getString(R.string.text_sync_failed)
                 }
@@ -281,5 +294,25 @@ class SyncCheckActivity : AppCompatActivity() {
         val network = connectivityManager.activeNetwork ?: return false
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    /**
+     * Saves the last successful sync time to SharedPreferences.
+     *
+     * @param timestamp The formatted timestamp string to save.
+     */
+    private fun saveLastSyncTime(timestamp: String) {
+        editor.putString(keyLastSyncTime, timestamp).apply()
+    }
+
+    /**
+     * Gets the current timestamp formatted as "dd MMM, HH:mm".
+     * This method is duplicated from SettingsActivity for convenience in SyncCheckActivity.
+     *
+     * @return A string representation of the current date and time.
+     */
+    private fun getCurrentTimeStamp(): String {
+        val sdf = SimpleDateFormat("dd MMM, HH:mm", Locale.getDefault())
+        return sdf.format(Date())
     }
 }
