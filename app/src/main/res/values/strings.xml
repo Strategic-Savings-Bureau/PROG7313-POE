@@ -40,6 +40,9 @@
     <string name="save_changes">Save Changes</string>
     <string name="change_password">Change Password</string>
     <string name="update_password">Update Password</string>
+    <string name="tv_sync_database">Sync Database</string>
+    <string name="btn_sync_now">Sync Now</string>
+    <string name="tv_last_synced">Last synced: 31 Jan 2025, 12:32</string>
 
     <!-- Expense -->
     <string name="enter_date">Date</string>
