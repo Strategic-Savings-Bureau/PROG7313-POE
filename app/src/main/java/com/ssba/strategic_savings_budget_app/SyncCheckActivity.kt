@@ -10,7 +10,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.concurrent.futures.await
 import androidx.core.view.ViewCompat
@@ -20,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder // Import for Material Design dialogs
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySyncCheckBinding
@@ -35,30 +35,30 @@ import java.util.UUID
  * Code Attribution
  *
  * Purpose:
- *   - Authenticate user session status with Firebase Authentication.
- *   - Query local Room database for existing user data before syncing.
- *   - Prompt user to initiate data sync from Firestore if local data is missing.
- *   - Employ Android WorkManager for reliable one-time background sync tasks.
- *   - Use Kotlin Coroutines for asynchronous database and sync operations.
- *   - Present sync progress and status updates in a custom AlertDialog.
- *   - Implement network connectivity checks to ensure internet availability before sync.
- *   - Handle sync failure scenarios with retry/cancel dialogs and database cleanup.
+ * - Authenticate user session status with Firebase Authentication.
+ * - Query local Room database for existing user data before syncing.
+ * - Prompt user to initiate data sync from Firestore if local data is missing.
+ * - Employ Android WorkManager for reliable one-time background sync tasks.
+ * - Use Kotlin Coroutines for asynchronous database and sync operations.
+ * - Present sync progress and status updates in a custom AlertDialog.
+ * - Implement network connectivity checks to ensure internet availability before sync.
+ * - Handle sync failure scenarios with retry/cancel dialogs and database cleanup.
  *
  * Authors/Technologies Used:
- *   - Firebase Authentication: Google Firebase Team
- *   - Android Jetpack WorkManager & Room Persistence Library: Android Developers
- *   - Kotlin Coroutines: Kotlin Team
- *   - UI Components & AlertDialog: AndroidX / Android Developers
+ * - Firebase Authentication: Google Firebase Team
+ * - Android Jetpack WorkManager & Room Persistence Library: Android Developers
+ * - Kotlin Coroutines: Kotlin Team
+ * - UI Components & AlertDialog: AndroidX / Android Developers
  *
  * Date Accessed: 6 June 2025
  *
  * References:
- *   - Firebase Authentication (Android): https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
- *   - Android Room Persistence Library: https://developer.android.com/training/data-storage/room
- *   - WorkManager (One-Time Work Request): https://developer.android.com/topic/libraries/architecture/workmanager
- *   - Kotlin Coroutines integration with WorkManager: https://developer.android.com/kotlin/coroutines
- *   - AlertDialog customization: https://developer.android.com/reference/androidx/appcompat/app/AlertDialog
- *   - Connectivity checks with NetworkCapabilities: https://developer.android.com/training/basics/network-ops/connecting
+ * - Firebase Authentication (Android): https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ * - Android Room Persistence Library: https://developer.android.com/training/data-storage/room
+ * - WorkManager (One-Time Work Request): https://developer.android.com/topic/libraries/architecture/workmanager
+ * - Kotlin Coroutines integration with WorkManager: https://developer.android.com/kotlin/coroutines
+ * - AlertDialog customization: https://developer.android.com/reference/androidx/appcompat/app/AlertDialog
+ * - Connectivity checks with NetworkCapabilities: https://developer.android.com/training/basics/network-ops/connecting
  */
 
 class SyncCheckActivity : AppCompatActivity() {
@@ -121,7 +121,8 @@ class SyncCheckActivity : AppCompatActivity() {
             return
         }
 
-        AlertDialog.Builder(this)
+        // Use MaterialAlertDialogBuilder for modern dialog styling
+        MaterialAlertDialogBuilder(this)
             .setTitle("Sync Required")
             .setMessage("No local data found. Do you want to sync from the cloud?")
             .setCancelable(false)
@@ -147,7 +148,8 @@ class SyncCheckActivity : AppCompatActivity() {
         val progressBar = dialogView.findViewById<ProgressBar>(R.id.progressBar)
         val statusText = dialogView.findViewById<TextView>(R.id.statusText)
 
-        val alertDialog = AlertDialog.Builder(this)
+        // Use MaterialAlertDialogBuilder for modern dialog styling
+        val alertDialog = MaterialAlertDialogBuilder(this)
             .setView(dialogView)
             .setCancelable(false)
             .create()
@@ -217,7 +219,8 @@ class SyncCheckActivity : AppCompatActivity() {
             "Failed to sync from the cloud. Do you want to try again?"
         }
 
-        AlertDialog.Builder(this)
+        // Use MaterialAlertDialogBuilder for modern dialog styling
+        MaterialAlertDialogBuilder(this)
             .setTitle("Sync Failed")
             .setMessage(message)
             .setCancelable(false)
