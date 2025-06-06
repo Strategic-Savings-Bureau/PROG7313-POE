@@ -199,6 +199,7 @@ class MainActivity : AppCompatActivity() {
         setupOnClickListeners()
 
         lifecycleScope.launch {
+
             // Get the current user's UID from Firebase Authentication
             val userID = auth.currentUser?.uid
 
@@ -210,11 +211,7 @@ class MainActivity : AppCompatActivity() {
                 return@launch
             }
 
-            // Synchronize user data from Firestore to local Room database
-            // Ensure all necessary data (e.g., budget info) is downloaded and saved locally
-            checkAndPromptSyncFromFirestore(userID)
-
-            // After syncing, check if the user has a budget set up in the local Room database
+            // Check if the user has a budget set up in the local Room database
             if (db.budgetDao().getBudgetByUserId(userID) == null)
             {
                 // If no budget is found, prompt the user to set up a budget
@@ -764,121 +761,6 @@ class MainActivity : AppCompatActivity() {
             invalidate() // Refresh the chart with new data
         }
     }
-
-    // endregion
-
-    // region Sync Database Helper Methods
-
-        /**
-         * Checks if the user exists in the local Room database.
-         * If not, prompts the user to sync their data from Firestore.
-         */
-        private fun checkAndPromptSyncFromFirestore(userId: String)
-        {
-            // Access the User DAO from the singleton Room database instance
-            val userDao = AppDatabase.getInstance(this).userDao()
-
-            // Launch a coroutine on the IO dispatcher for database access
-            lifecycleScope.launch(Dispatchers.IO) {
-
-                val localUser = userDao.getUserById(userId)
-
-                // If no local user data is found, prompt the user to sync from Firestore
-                if (localUser == null)
-                {
-                    withContext(Dispatchers.Main) {
-
-                        // Create and show a dialog asking the user if they want to sync
-                        val confirmDialog = AlertDialog.Builder(this@MainActivity)
-                            .setTitle("No Local Data Found")
-                            .setMessage("Your data is not available on this device. Would you like to sync from the cloud?")
-                            .setCancelable(false)
-                            .setPositiveButton("Confirm") { dialog, _ ->
-                                dialog.dismiss()
-                                // Start the sync process and show progress UI
-                                showSyncingDialogAndStartFirestoreSync()
-                            }
-                            .setNegativeButton("Cancel") { dialog, _ ->
-                                dialog.dismiss() // User chose not to sync
-                            }
-                            .create()
-
-                        confirmDialog.show()
-                    }
-                }
-            }
-        }
-
-        /**
-         * Displays a progress dialog and starts the sync process from Firestore to Room.
-         * Uses WorkManager to perform the sync in a background thread.
-         */
-        private fun showSyncingDialogAndStartFirestoreSync()
-        {
-            // Inflate a custom view containing a progress bar and status text
-            val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_sync_status, null)
-            val progressBar = dialogView.findViewById<ProgressBar>(R.id.progressBar)
-            val statusText = dialogView.findViewById<TextView>(R.id.statusText)
-
-            // Build a non-cancelable alert dialog to show sync status
-            val alertDialog = AlertDialog.Builder(this)
-                .setView(dialogView)
-                .setCancelable(false)
-                .create()
-
-            // Prevent touches outside the dialog and dimming the background
-            alertDialog.setCanceledOnTouchOutside(false)
-            alertDialog.window?.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-            )
-            alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            alertDialog.window?.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
-
-            alertDialog.show()
-
-            // Start the sync and show progress
-            progressBar.isVisible = true
-            statusText.text = getString(R.string.tv_status_syncing)
-
-            // Create a one-time WorkManager request for syncing Firestore data to Room
-            val syncRequest = OneTimeWorkRequestBuilder<FirestoreToRoomSyncWorker>().build()
-
-            // Enqueue the sync task
-            WorkManager.getInstance(this).enqueue(syncRequest)
-
-            // Observe the sync task status using LiveData
-            WorkManager.getInstance(this)
-                .getWorkInfoByIdLiveData(syncRequest.id)
-                .observe(this as LifecycleOwner) { workInfo ->
-
-                    // When the sync finishes (success or failure)
-                    if (workInfo != null && workInfo.state.isFinished)
-                    {
-                        progressBar.isVisible = false
-                        alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-
-                        if (workInfo.state == WorkInfo.State.SUCCEEDED)
-                        {
-                            // Update UI on success
-                            statusText.text = getString(R.string.text_sync_complete)
-                        }
-                        else
-                        {
-                            // Update UI on failure
-                            statusText.text = getString(R.string.text_sync_failed)
-                        }
-
-                        // Dismiss the dialog after a 2-second delay
-                        statusText.postDelayed({
-                            alertDialog.dismiss()
-                        }, 2000)
-                    }
-                }
-        }
 
     // endregion
 
