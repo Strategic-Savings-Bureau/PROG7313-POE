@@ -18,24 +18,24 @@ import kotlinx.coroutines.tasks.await
  * This worker handles background synchronization of unsynced Room database entities
  * (such as savings goals, incomes, expenses, budgets, and user profiles) to Firebase Firestore.
  * It:
- *   - Authenticates the current user with FirebaseAuth
- *   - Retrieves unsynced local Room entities
- *   - Performs batch writes to Firestore collections under the authenticated user's ID
- *   - Updates local Room entities to mark them as synced after successful upload
- *   - Supports automatic retries on failure
+ * - Authenticates the current user with FirebaseAuth
+ * - Retrieves unsynced local Room entities
+ * - Performs batch writes to Firestore collections under the authenticated user's ID
+ * - Updates local Room entities to mark them as synced after successful upload
+ * - Supports automatic retries on failure
  *
  * Authors/Technologies Used:
- *   - Firebase Authentication & Firestore: Google Firebase Team
- *   - Android Jetpack WorkManager & Room Persistence Library: Android Developers
- *   - Kotlin Coroutines for asynchronous background processing: Kotlin Team
+ * - Firebase Authentication & Firestore: Google Firebase Team
+ * - Android Jetpack WorkManager & Room Persistence Library: Android Developers
+ * - Kotlin Coroutines for asynchronous background processing: Kotlin Team
  *
  * Date Accessed: 6 June 2025
  *
  * References:
- *   - Firebase Auth & Firestore Batch Writes: https://firebase.google.com/docs/firestore/manage-data/transactions
- *   - Android WorkManager Documentation: https://developer.android.com/topic/libraries/architecture/workmanager
- *   - Room Database: https://developer.android.com/training/data-storage/room
- *   - Kotlin Coroutines with WorkManager: https://developer.android.com/kotlin/coroutines/coroutines-adv-workmanager
+ * - Firebase Auth & Firestore Batch Writes: https://firebase.google.com/docs/firestore/manage-data/transactions
+ * - Android WorkManager Documentation: https://developer.android.com/topic/libraries/architecture/workmanager
+ * - Room Database: https://developer.android.com/training/data-storage/room
+ * - Kotlin Coroutines with WorkManager: https://developer.android.com/kotlin/coroutines/coroutines-adv-workmanager
  */
 
 /**
@@ -151,7 +151,9 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
                 // Add each unsynced user to batch write
                 unsyncedUsers.forEach { user ->
                     val userRef = firestoreDb.collection("user_profiles").document(user.userId)
-                    batch.set(userRef, user, SetOptions.merge())
+                    // Update isSynced to true BEFORE sending to Firestore
+                    val userForFirestore = user.copy(isSynced = true)
+                    batch.set(userRef, userForFirestore, SetOptions.merge())
                 }
 
                 // Commit all user writes to Firestore
@@ -159,6 +161,7 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
 
                 // Mark users as synced in Room
                 unsyncedUsers.forEach { user ->
+                    // This update ensures Room's state is correct after a successful Firestore write
                     val updatedUser = user.copy(isSynced = true)
                     roomDatabase.userDao().upsertUser(updatedUser)
                 }
@@ -206,6 +209,7 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
 
         if (unsyncedItems.isNotEmpty()) {
             val batch = firestoreDb.batch()
+            val itemsToUpdateInRoom = mutableListOf<T>() // Collect items to update in Room
 
             // Add each item to the Firestore batch
             unsyncedItems.forEach { item ->
@@ -215,25 +219,27 @@ class RoomToFirestoreSyncWorker(appContext: Context, workerParams: WorkerParamet
                     .collection(collectionName)
                     .document(docId)
 
-                batch.set(docRef, item, SetOptions.merge())
-            }
-
-            // Commit batch write to Firestore
-            batch.commit().await()
-
-            // Update each item as synced in Room
-            unsyncedItems.forEach { item ->
+                // Create a copy of the item with isSynced = true
+                // Before adding it to the Firestore batch.
                 @Suppress("UNCHECKED_CAST")
-                val updatedItem = when (item) {
+                val itemForFirestore = when (item) {
                     is SavingGoal -> item.copy(isSynced = true) as T
                     is Saving -> item.copy(isSynced = true) as T
                     is Income -> item.copy(isSynced = true) as T
                     is ExpenseCategory -> item.copy(isSynced = true) as T
                     is Expense -> item.copy(isSynced = true) as T
                     is Budget -> item.copy(isSynced = true) as T
-                    else -> throw IllegalArgumentException("Unsupported entity type")
+                    else -> throw IllegalArgumentException("Unsupported entity type: $item")
                 }
+                batch.set(docRef, itemForFirestore, SetOptions.merge())
+                itemsToUpdateInRoom.add(itemForFirestore) // Add the updated item to the list
+            }
 
+            // Commit batch write to Firestore
+            batch.commit().await()
+
+            // Update each item as synced in Room *after* Firestore commit
+            itemsToUpdateInRoom.forEach { updatedItem ->
                 updateOp(updatedItem)
             }
 
