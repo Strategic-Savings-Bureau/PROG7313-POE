@@ -82,8 +82,7 @@
     <string name="tv_transaction_type_income">Income</string>
     <string name="settings_title">Settings</string>
 
-    <!-- Currency Converter -->
-    <string name="currency_converter_title">Currency Converter</string>
+
 
     <!-- Notifications -->
     <string name="notifications_title">Notifications</string>
@@ -177,6 +176,7 @@
     <string name="tv_description">Description</string>
     <string name="cd_add_saving_button">Add Saving Button</string>
     <string name="cd_list_of_savings_transactions_for_the_goal">List of savings transactions for the goal</string>
+
 
     <!-- Analysis -->
     <string name="tv_categories">Categories</string>
