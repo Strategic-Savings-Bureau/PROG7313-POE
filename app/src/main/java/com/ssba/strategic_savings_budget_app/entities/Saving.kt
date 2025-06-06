@@ -23,17 +23,20 @@ import java.util.Date
  * @property amount The amount of money saved in this entry.
  * @property description Optional notes or explanation for the saving entry.
  * @property savingGoalId The ID of the associated saving goal (foreign key).
+ * @property userId The Firebase Auth UID of the user who created this entry.
+ * @property isSynced Boolean indicating if this entry is synced with the backend.
+ * @property lastUpdatedTimestamp Timestamp for the last update (for sync conflict resolution).
  */
 
 /*
- 	* Code Attribution
- 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
- 	* Author: Android Developers
- 	* Date Accessed: 10 April 2025
- 	* Source: Developer Guide - Android Developers
- 	* URL: https://developer.android.com/training/data-storage/room
-*/
-
+    * Code Attribution
+    * Purpose: Setting up a Room Database and enabling Firestore compatibility in a Kotlin Android app.
+    * Authors: Android Developers & Firebase Documentation Team
+    * Date Accessed: 10 April 2025
+    * Sources:
+    * - Room: https://developer.android.com/training/data-storage/room
+    * - Firestore Kotlin Model Classes: https://firebase.google.com/docs/firestore/manage-data/add-data#custom_objects
+ */
 
 @Entity(
     tableName = "saving",
@@ -54,9 +57,27 @@ data class Saving(
 
     val savingGoalId: Int, // Foreign key referencing the associated saving goal
 
-    val userId: String, // Foreign key referencing the associated user
+    val userId: String, // Firebase Auth UID of the user
 
     // Sync fields
-    var isSynced: Boolean = false,
-    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
-)
+    var isSynced: Boolean = false, // Sync flag
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis() // Last update timestamp
+) {
+    /**
+     * No-argument constructor required by Firebase Firestore for deserialization.
+     * Firestore uses reflection to instantiate objects and requires an empty constructor.
+     * This constructor should not be used directly and will not interfere with Room,
+     * which uses the primary constructor for entity instantiation.
+     */
+    constructor() : this(
+        savingId = null,
+        title = "",
+        date = Date(0),
+        amount = 0.0,
+        description = "",
+        savingGoalId = 0,
+        userId = "",
+        isSynced = false,
+        lastUpdatedTimestamp = 0L
+    )
+}

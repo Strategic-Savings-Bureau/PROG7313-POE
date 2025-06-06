@@ -23,17 +23,19 @@ import java.util.Date
  * @property amount The amount of income received.
  * @property description Optional notes or explanation for the income entry (e.g., "Freelance project payment").
  * @property userId The ID of the associated user (foreign key referencing the user table).
+ * @property isSynced Boolean flag indicating if the record is synced with the cloud.
+ * @property lastUpdatedTimestamp Timestamp for the last update (used in sync conflict resolution).
  */
 
 /*
- 	* Code Attribution
- 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
- 	* Author: Android Developers
- 	* Date Accessed: 10 April 2025
- 	* Source: Developer Guide - Android Developers
- 	* URL: https://developer.android.com/training/data-storage/room
-*/
-
+    * Code Attribution
+    * Purpose: Setting up a Room Database and Firestore-compatible data model in a Kotlin Android app.
+    * Authors: Android Developers, Firebase Documentation Team
+    * Date Accessed: 10 April 2025
+    * Sources:
+    * - Room: https://developer.android.com/training/data-storage/room
+    * - Firestore Kotlin Data Classes: https://firebase.google.com/docs/firestore/manage-data/add-data#custom_objects
+ */
 
 @Entity(
     tableName = "income",
@@ -55,6 +57,22 @@ data class Income(
     val userId: String, // Foreign key referencing the associated user
 
     // Sync fields
-    var isSynced: Boolean = false,
-    var lastUpdatedTimestamp: Long = System.currentTimeMillis()
-)
+    var isSynced: Boolean = false, // Indicates if this entry is synced with Firestore
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis() // Last sync/update timestamp
+) {
+    /**
+     * No-argument constructor required by Firebase Firestore for automatic deserialization.
+     * Firestore uses reflection to instantiate data classes and mandates an empty constructor.
+     * This constructor is ignored by Room, which uses the primary constructor for object mapping.
+     */
+    constructor() : this(
+        incomeId = null,
+        title = "",
+        date = Date(0),
+        amount = 0.0,
+        description = "",
+        userId = "",
+        isSynced = false,
+        lastUpdatedTimestamp = 0L
+    )
+}
