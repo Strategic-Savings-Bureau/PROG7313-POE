@@ -133,7 +133,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupOnClickListeners() {
         binding.btnRewards.setOnClickListener {
-            StreakManager(this).showStreakDialog()
+            StreakManager(this).showStreakDialog(this)
         }
 
         // Navigate to update user profile

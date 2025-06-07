@@ -293,7 +293,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnRewards.setOnClickListener {
-            StreakManager(this).showStreakDialog()
+            StreakManager(this).showStreakDialog(this)
         }
 
         // Set up Bottom Navigation View onClickListener
