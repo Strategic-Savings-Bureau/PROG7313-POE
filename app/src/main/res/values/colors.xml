@@ -8,4 +8,5 @@
     <color name="savings_blue">#6DB6FE</color>
     <color name="expense_red">#FF4C4C</color>
     <color name="card_surface">#FFFFFF</color>
+    <color name="text_field_background_color">#E6FAF4</color>
 </resources>
