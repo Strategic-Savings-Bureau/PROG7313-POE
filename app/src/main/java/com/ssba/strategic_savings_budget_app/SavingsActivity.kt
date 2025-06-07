@@ -118,7 +118,7 @@ class SavingsActivity : AppCompatActivity() {
     private fun setupOnClickListeners() {
 
         btnRewards.setOnClickListener {
-            StreakManager(this).showStreakDialog()
+            StreakManager(this).showStreakDialog(this)
         }
 
         btnAddGoal.setOnClickListener {

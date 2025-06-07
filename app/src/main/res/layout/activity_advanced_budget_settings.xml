@@ -31,7 +31,6 @@
                 android:layout_height="wrap_content"
                 android:text="Max Limit: $0.00"
                 android:textSize="18sp"
-                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <!-- Display Current Total of Expense Categories -->
@@ -41,7 +40,6 @@
                 android:layout_height="wrap_content"
                 android:text="Current Total: $0.00"
                 android:textSize="16sp"
-                android:textColor="@color/black"
                 android:layout_marginTop="8dp" />
 
         </LinearLayout>

@@ -37,7 +37,7 @@ class SplashScreenActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
 
         // Check the user preferences for the theme
-        val prefs = getSharedPreferences("MODE", MODE_PRIVATE)
+        val prefs = getSharedPreferences("APP_PREFS", MODE_PRIVATE)
         val isNight = prefs.getBoolean("night", false)
         AppCompatDelegate.setDefaultNightMode(
             if (isNight)

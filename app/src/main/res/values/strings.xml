@@ -223,5 +223,10 @@
     <string name="btn_save_notification">Save</string>
     <string name="tv_how_often_would_you_like_to_receive_reminders">How often would you like to receive reminders?</string>
 
+    <!-- Dialog rewards -->
+    <string name="current_streak_title">🔥 Current Streak</string>
+    <string name="next_milestone_label">Next milestone: </string>
+    <string name="next_milestone_days">%d days</string>
+
 
 </resources>
