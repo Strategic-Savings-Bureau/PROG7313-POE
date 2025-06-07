@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.ssba.strategic_savings_budget_app.R
 
