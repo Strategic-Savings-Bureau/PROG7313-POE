@@ -292,8 +292,8 @@ Thanks to GitHub Actions, every commit is automatically validated, builds remain
 
 | Name               | Student ID |
 | ------------------ | ---------- |
-| Blaise de Gier     | ST10249838 |
-| Sashveer Ramjathan | ST10361554 |
+| Blaise Mikka de Gier     | ST10249838 |
+| Sashveer Lakhan Ramjathan | ST10361554 |
 | Shravan Ramjathan  | ST10247982 |
 
 ---
