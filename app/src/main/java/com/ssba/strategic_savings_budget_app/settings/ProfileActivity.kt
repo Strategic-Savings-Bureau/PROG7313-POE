@@ -1,12 +1,10 @@
 package com.ssba.strategic_savings_budget_app.settings
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,11 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.SettingsActivity
@@ -26,6 +23,7 @@ import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityProfileBinding
 import com.ssba.strategic_savings_budget_app.entities.User
 import com.ssba.strategic_savings_budget_app.helpers.SupabaseUtils
+import com.ssba.strategic_savings_budget_app.landing.RegisterActivity.AppConstants
 import com.ssba.strategic_savings_budget_app.models.UserViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,16 +32,16 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
 /*
- 	* Code Attribution
- 	* Purpose:
- 	*   - Implementing Swipe to Refresh functionality in an Android app
- 	*   - Loading and displaying images using Glide library
- 	*   - Accessing the authenticated user and updating the user's password using Firebase Authentication
- 	* Author: Android Developers / BumpTech / Firebase Team
- 	* Sources:
- 	*   - Swipe to Refresh: https://developer.android.com/reference/android/widget/SwipeRefreshLayout
- 	*   - Glide: https://github.com/bumptech/glide
- 	*   - Firebase Authentication - Update Password: https://firebase.google.com/docs/auth/android/manage-users#update_a_users_password
+    * Code Attribution
+    * Purpose:
+    * - Implementing Swipe to Refresh functionality in an Android app
+    * - Loading and displaying images using Glide library
+    * - Accessing the authenticated user and updating the user's password using Firebase Authentication
+    * Author: Android Developers / BumpTech / Firebase Team
+    * Sources:
+    * - Swipe to Refresh: https://developer.android.com/reference/android/widget/SwipeRefreshLayout
+    * - Glide: https://github.com/bumptech/glide
+    * - Firebase Authentication - Update Password: https://firebase.google.com/docs/auth/android/manage-users#update_a_users_password
 */
 
 class ProfileActivity : AppCompatActivity() {
@@ -131,10 +129,10 @@ class ProfileActivity : AppCompatActivity() {
                         return@launch
                     }
 
-                    val user = db.userDao.getUserById(userID) ?: return@launch
+                    val user = db.userDao().getUserById(userID) ?: return@launch
                     val updated = user.copy(profilePictureUrl = newUrl)
                     withContext(Dispatchers.IO) {
-                        db.userDao.upsertUser(updated)
+                        db.userDao().upsertUser(updated)
                     }
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
@@ -200,10 +198,11 @@ class ProfileActivity : AppCompatActivity() {
             viewModel.fullName.value = text
             viewModel.validateFullName()
         }
-        binding.etEmail.addTextChangedListener { editable ->
+        // ADDED: Text Watcher for Current Password
+        binding.etCurrentPassword.addTextChangedListener { editable ->
             val text = editable.toString()
-            viewModel.email.value = text
-            viewModel.validateEmail()
+            viewModel.currentPassword.value = text
+            viewModel.validateCurrentPassword()
         }
         binding.etPassword.addTextChangedListener { editable ->
             val text = editable.toString()
@@ -225,8 +224,9 @@ class ProfileActivity : AppCompatActivity() {
         viewModel.fullNameError.observe(this) { error ->
             binding.etFullName.error = error
         }
-        viewModel.emailError.observe(this) { error ->
-            binding.etEmail.error = error
+        // ADDED: Observer for Current Password Error
+        viewModel.currentPasswordError.observe(this) { error ->
+            binding.etCurrentPassword.error = error
         }
         viewModel.passwordError.observe(this) { error ->
             binding.etPassword.error = error
@@ -237,6 +237,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     // Implementation for Button On Click Listeners
+    @SuppressLint("UseKtx")
     private fun setupButtonClickListeners() {
         // Back Button to Return to Menu On Click Listener
         binding.btnBackButton.setOnClickListener {
@@ -267,48 +268,33 @@ class ProfileActivity : AppCompatActivity() {
             // Get the user inputs
             val username = binding.etUsername.text.toString().trim()
             val fullName = binding.etFullName.text.toString().trim()
-            val email = binding.etEmail.text.toString().trim()
 
             // Validate the user inputs
             viewModel.validateUsername()
             viewModel.validateFullName()
-            viewModel.validateEmail()
             if (viewModel.usernameError.value != null ||
-                viewModel.fullNameError.value != null ||
-                viewModel.emailError.value != null
+                viewModel.fullNameError.value != null
             ) {
                 return@setOnClickListener
             }
 
             lifecycleScope.launch {
                 // Get the user credentials
-                val current = auth.currentUser ?: return@launch
+                val current = auth.currentUser ?: run {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@ProfileActivity, "No user logged in.", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
                 val uid = current.uid
 
-                // Update Firebase Authentication
-                if (email.isNotEmpty() && email != current.email) {
-                    try {
-                        @Suppress("DEPRECATION")
-                        current.updateEmail(email).await()
-                    } catch (e: Exception) {
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                this@ProfileActivity,
-                                "Failed to update email: ${e.message}",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        Log.e("ProfileActivity", "Failed to update email", e)
-                        return@launch
-                    }
-                }
 
                 // Update Room DB
                 val existing = withContext(Dispatchers.IO) {
                     db.userDao().getUserById(uid)
                 } ?: run {
                     // fallback: if not in DB yet, initialize with empty picture URL
-                    User(uid, username, fullName, email, "")
+                    User(uid, username, fullName, current.email ?: "", "")
                 }
 
                 // Create updated user
@@ -316,7 +302,7 @@ class ProfileActivity : AppCompatActivity() {
                     userId = uid,
                     username = username,
                     fullName = fullName,
-                    email = email,
+                    email = existing.email,
                     profilePictureUrl = existing.profilePictureUrl
                 )
 
@@ -335,12 +321,17 @@ class ProfileActivity : AppCompatActivity() {
         // Button to Update User Password On Click Listener
         binding.btnUpdatePassword.setOnClickListener {
             // Get the user inputs
+            val currentPassword = binding.etCurrentPassword.text.toString() // Get current password
             val newPassword = binding.etPassword.text.toString()
 
-            // Validate the user inputs
+            // Validate all necessary user inputs
+            viewModel.validateCurrentPassword() // Validate current password
             viewModel.validatePassword()
             viewModel.validateConfirmPassword()
-            if (viewModel.passwordError.value != null ||
+
+            // Check for validation errors
+            if (viewModel.currentPasswordError.value != null || // Check current password error
+                viewModel.passwordError.value != null ||
                 viewModel.confirmPasswordError.value != null
             ) {
                 return@setOnClickListener
@@ -348,10 +339,29 @@ class ProfileActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 // Get current user
-                val user = auth.currentUser ?: return@launch
+                val user = auth.currentUser ?: run {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@ProfileActivity, "No user logged in.", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
+
+                val userEmail = user.email
+
+                if (userEmail == null) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@ProfileActivity, "User email not found for reauthentication.", Toast.LENGTH_LONG).show()
+                    }
+                    Log.e("ProfileActivity", "User email is null, cannot reauthenticate.")
+                    return@launch
+                }
 
                 try {
-                    // Update password
+                    // Step 1: Reauthenticate the user
+                    val credential = EmailAuthProvider.getCredential(userEmail, currentPassword)
+                    user.reauthenticate(credential).await()
+
+                    // If reauthentication succeeds, proceed to update the password
                     user.updatePassword(newPassword).await()
 
                     // Display message and clear inputs
@@ -361,15 +371,33 @@ class ProfileActivity : AppCompatActivity() {
                             "Password updated successfully",
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        val sharedPrefKeyPass = getString(R.string.saved_password)
+                        val sharedPrefPassword =getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY,MODE_PRIVATE)?:return@withContext
+                        with(sharedPrefPassword.edit()) {
+                            putString(sharedPrefKeyPass, newPassword) // Use the defined key
+
+                            apply()
+                        }
+
                         // clear the fields
+                        binding.etCurrentPassword.text?.clear() // Clear current password field
                         binding.etPassword.text?.clear()
                         binding.etConfirmPassword.text?.clear()
+
+                        startActivity(Intent(this@ProfileActivity, SettingsActivity::class.java))
+                        finish()
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
+                        val errorMessage = when (e) {
+                            is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> "Invalid current password. Please try again."
+                            is com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException -> "This operation requires recent authentication. Please log out and log back in, then try again."
+                            else -> "Failed to update password: ${e.message}"
+                        }
                         Toast.makeText(
                             this@ProfileActivity,
-                            "Failed to update password: ${e.message}",
+                            errorMessage,
                             Toast.LENGTH_LONG
                         ).show()
                         Log.e("ProfileActivity", "Failed to update password", e)
@@ -418,7 +446,6 @@ class ProfileActivity : AppCompatActivity() {
         withContext(Dispatchers.Main) {
             binding.etUsername.setText(user?.username)
             binding.etFullName.setText(user?.fullName)
-            binding.etEmail.setText(user?.email)
             val picUrl = user?.profilePictureUrl.takeUnless { it.isNullOrBlank() }
             Glide.with(this@ProfileActivity)
                 .load(picUrl)
