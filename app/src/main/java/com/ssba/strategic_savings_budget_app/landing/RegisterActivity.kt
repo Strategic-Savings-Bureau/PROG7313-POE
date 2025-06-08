@@ -148,9 +148,9 @@ class RegisterActivity : AppCompatActivity() {
             // Redundant Final Check
             if (viewModel.validateAll()) {
                 // Proceed with registration
-               val email =  binding.etEmail.text.toString().trim()
-              val password =  binding.etPassword.text.toString().trim()
-                registerUser(email,password)
+                val email = binding.etEmail.text.toString().trim()
+                val password = binding.etPassword.text.toString().trim()
+                registerUser(email, password)
             }
         }
 
@@ -193,7 +193,9 @@ class RegisterActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         val sharedPrefKey =
                             getString(R.string.saved_email) // Make sure saved_email_key exists in strings.xml
-                        val sharedPref = getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY,MODE_PRIVATE)?:return@withContext
+                        val sharedPref =
+                            getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY, MODE_PRIVATE)
+                                ?: return@withContext
 
                         with(sharedPref.edit()) {
                             putString(sharedPrefKey, email) // Use the defined key
@@ -201,7 +203,9 @@ class RegisterActivity : AppCompatActivity() {
                         }
 
                         val sharedPrefKeyPass = getString(R.string.saved_password)
-                        val sharedPrefPassword =getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY,MODE_PRIVATE)?:return@withContext
+                        val sharedPrefPassword =
+                            getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY, MODE_PRIVATE)
+                                ?: return@withContext
                         with(sharedPrefPassword.edit()) {
                             putString(sharedPrefKeyPass, password) // Use the defined key
 
@@ -256,7 +260,9 @@ class RegisterActivity : AppCompatActivity() {
             ""
         }
     }
+
     object AppConstants {
-        const val PREFERENCE_FILE_KEY = "com.ssba.strategic_savings_budget_app.landing.LoginActivity"
+        const val PREFERENCE_FILE_KEY =
+            "com.ssba.strategic_savings_budget_app.landing.LoginActivity"
     }
 }
