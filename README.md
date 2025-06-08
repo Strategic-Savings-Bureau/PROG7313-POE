@@ -16,10 +16,11 @@ Welcome to the **Strategic Savings App** – your all-in-one mobile solution for
 6. [⚙️ Requirements & Configuration](#requirements--configuration)
 7. [🛠️ Tech Stack](#tech-stack)
 8. [🗂️ Project Structure](#project-structure)
-9. [⚡ Quick Start](#quick-start)
-10. [📦 Releases & APK Download](#releases--apk-download)
-11. [👥 Team Members](#team-members)
-12. [🎥 Demo Video](#demo-video)
+9. [🚦 GitHub Actions & Workflow Automation](#github-actions--workflow-automation)
+10. [⚡ Quick Start](#quick-start)
+11. [📦 Releases & APK Download](#releases--apk-download)
+12. [👥 Team Members](#team-members)
+13. [🎥 Demo Video](#demo-video)
 
 ---
 
@@ -219,6 +220,43 @@ PROG7313-POE/
 ├── settings.gradle.kts
 └── README.md            # ← You are here!
 ```
+
+---
+
+## 🚦 GitHub Actions & Workflow Automation
+
+Modern app development demands reliability, consistency, and speed. For the Strategic Savings App, we leveraged **GitHub Actions** and workflow automation to ensure every code change is automatically built, tested, and validated before merging into the main codebase.
+
+### Why GitHub Actions Matter for Our Project
+
+- **Continuous Integration (CI):**
+  - Every push and pull request triggers our CI workflow.
+  - The app is built and tested automatically, catching bugs before they reach production.
+  - Ensures code quality stays high, even as the team grows or changes.
+
+- **Automated Testing:**
+  - Unit tests and lint checks run headlessly on every new commit.
+  - This prevents regressions and saves manual QA time.
+
+- **Build Automation:**
+  - Android builds are generated in clean, reproducible environments.
+  - Ensures every team member and reviewer sees the same results.
+
+- **Seamless Collaboration:**
+  - Workflows create status checks and pass/fail badges on pull requests.
+  - Developers get instant feedback, helping us move fast without breaking things.
+
+### How We Utilize GitHub Actions
+
+- **Workflow Location:**  
+  All our workflows live under `.github/workflows/` in the repo.
+- **CI Pipeline:**  
+  - **Build:** Checks out code, sets up the correct JDK and Android SDK, and builds the APK.
+  - **Test:** Runs all unit and instrumentation tests.
+  - **Lint:** Ensures code style and best practices are followed.
+
+**Result:**  
+Thanks to GitHub Actions, every commit is automatically validated, builds remain reproducible, and our team can confidently ship high-quality code at speed—without ever worrying about "it works on my machine" problems.
 
 ---
 
