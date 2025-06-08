@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.SettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
@@ -131,10 +131,10 @@ class ProfileActivity : AppCompatActivity() {
                         return@launch
                     }
 
-                    val user = db.userDao.getUserById(userID) ?: return@launch
+                    val user = db.userDao().getUserById(userID) ?: return@launch
                     val updated = user.copy(profilePictureUrl = newUrl)
                     withContext(Dispatchers.IO) {
-                        db.userDao.upsertUser(updated)
+                        db.userDao().upsertUser(updated)
                     }
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
