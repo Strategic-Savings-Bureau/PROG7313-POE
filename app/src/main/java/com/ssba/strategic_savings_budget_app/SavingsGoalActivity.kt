@@ -2,7 +2,9 @@ package com.ssba.strategic_savings_budget_app
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -30,27 +32,28 @@ import com.ssba.strategic_savings_budget_app.models.StreakManager
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import androidx.core.content.edit
 
 /*
- 	* Code Attribution
- 	* Purpose:
- 	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
- 	*   - Creating and displaying an AlertDialog in an Android app
- 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
- 	*   - Implementing the Material DatePicker for selecting dates in the app
- 	* Author: Android Developers / Firebase Team
- 	* Sources:
- 	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
- 	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
- 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
- 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
+ 	* Code Attribution
+ 	* Purpose:
+ 	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+ 	*   - Creating and displaying an AlertDialog in an Android app
+ 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+ 	*   - Implementing the Material DatePicker for selecting dates in the app
+ 	* Author: Android Developers / Firebase Team
+ 	* Sources:
+ 	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
+ 	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
+ 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+ 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
 */
 
 
-class SavingsGoalActivity : AppCompatActivity()
-{
+class SavingsGoalActivity : AppCompatActivity() {
     // region Declarations
     // View Binding
     private lateinit var binding: ActivitySavingsGoalBinding
@@ -61,6 +64,9 @@ class SavingsGoalActivity : AppCompatActivity()
     private lateinit var auth: FirebaseAuth
 
     private lateinit var savingsGoalTitle: String
+
+    // SharedPreferences for this activity
+    private lateinit var sharedPreferences: SharedPreferences
 
     // region View Components
     private lateinit var btnRewards: ImageButton
@@ -78,8 +84,7 @@ class SavingsGoalActivity : AppCompatActivity()
     // endregion
 
     @SuppressLint("SetTextI18n")
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -92,6 +97,10 @@ class SavingsGoalActivity : AppCompatActivity()
 
         // Database Instance
         db = AppDatabase.getInstance(this)
+
+        // Initialize SharedPreferences with a unique name for this activity
+        sharedPreferences = getSharedPreferences("SavingsGoalActivityPrefs", Context.MODE_PRIVATE)
+
 
         // region Initialise View Components
         btnRewards = binding.btnRewards
@@ -113,8 +122,7 @@ class SavingsGoalActivity : AppCompatActivity()
         // get the title of the savings goal from the intent
         savingsGoalTitle = intent.getStringExtra("SAVINGS_GOAL_TITLE") ?: ""
 
-        if (savingsGoalTitle.isEmpty())
-        {
+        if (savingsGoalTitle.isEmpty()) {
             finish()
             return
         }
@@ -122,10 +130,9 @@ class SavingsGoalActivity : AppCompatActivity()
         lifecycleScope.launch {
 
             // get the savings goal from the database
-            val savingsGoal = db.savingsGoalDao.getSavingGoalByTitle(savingsGoalTitle)
+            val savingsGoal = db.savingsGoalDao().getSavingGoalByTitle(savingsGoalTitle)
 
-            if (savingsGoal == null)
-            {
+            if (savingsGoal == null) {
                 finish()
                 return@launch
             }
@@ -192,7 +199,7 @@ class SavingsGoalActivity : AppCompatActivity()
     private fun setupOnClickListeners()
     {
         btnRewards.setOnClickListener {
-            StreakManager(this).showStreakDialog()
+            StreakManager(this).showStreakDialog(this)
         }
 
         btnBack.setOnClickListener {
@@ -222,6 +229,17 @@ class SavingsGoalActivity : AppCompatActivity()
             val btnApplyDateFilter = dialogView.findViewById<Button>(R.id.btnApplyDateFilter)
             val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
 
+            // Load saved dates from SharedPreferences
+            val savedStartDate = sharedPreferences.getString("startDate", null)
+            val savedEndDate = sharedPreferences.getString("endDate", null)
+
+            if (!savedStartDate.isNullOrEmpty()) {
+                etStartDate.setText(savedStartDate)
+            }
+            if (!savedEndDate.isNullOrEmpty()) {
+                etEndDate.setText(savedEndDate)
+            }
+
             etStartDate.setOnClickListener {
                 showDatePicker(true, etStartDate, etEndDate)
             }
@@ -244,16 +262,30 @@ class SavingsGoalActivity : AppCompatActivity()
                 }
 
                 // convert the dates to Date objects
-                val startDateObj =
-                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(startDate)
-                val endDateObj =
-                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(endDate)
+                val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                val startDateObj = dateFormat.parse(startDate)
+                var endDateObj = dateFormat.parse(endDate)
+
+                // Adjust endDateObj to include the whole day if start and end dates are the same
+                if (startDateObj != null && endDateObj != null) {
+                    if (startDateObj.time == endDateObj.time) {
+                        val calendar = Calendar.getInstance()
+                        calendar.time = endDateObj
+                        calendar.add(Calendar.DAY_OF_MONTH, 1)
+                        calendar.add(Calendar.MILLISECOND, -1) // Set to the very end of the day
+                        endDateObj = calendar.time
+                    }
+                }
 
                 // check if the dates are valid
                 if (startDateObj != null && endDateObj != null)
                 {
                     lifecycleScope.launch {
-
+                        // Save filtered dates to SharedPreferences
+                        sharedPreferences.edit {
+                            putString("startDate", startDate)
+                                .putString("endDate", endDate)
+                        }
 
                         // set up the recycler view
                         val transactions = getAllSavingsForGoal(savingsGoalTitle, db)
@@ -308,7 +340,15 @@ class SavingsGoalActivity : AppCompatActivity()
             btnClearFilter.setOnClickListener {
 
                 lifecycleScope.launch {
+                    // Clear saved dates from SharedPreferences
+                    sharedPreferences.edit {
+                        remove("startDate")
+                            .remove("endDate")
+                    }
 
+                    // Clear the TextViews in the dialog
+                    etStartDate.setText("")
+                    etEndDate.setText("")
 
                     // set up the recycler view
                     val transactions = getAllSavingsForGoal(savingsGoalTitle, db)
@@ -324,9 +364,7 @@ class SavingsGoalActivity : AppCompatActivity()
                             Toast.LENGTH_SHORT
                         ).show()
                         return@launch
-                    }
-                    else
-                    {
+                    } else {
                         // region Set up RecyclerView
 
                         // get all the savings for the goal
@@ -368,7 +406,7 @@ class SavingsGoalActivity : AppCompatActivity()
     // get the total of all savings for the current goal
     private suspend fun getTotalSavingsForGoal(goalTitle: String, db: AppDatabase): Double
     {
-        val savingsGoalWithSavings = db.savingsGoalDao.getSavingsBySavingGoalTitle(goalTitle)
+        val savingsGoalWithSavings = db.savingsGoalDao().getSavingsBySavingGoalTitle(goalTitle)
 
         if (savingsGoalWithSavings.isEmpty()) {
             return 0.0
@@ -393,7 +431,7 @@ class SavingsGoalActivity : AppCompatActivity()
     private suspend fun getAllSavingsForGoal(goalTitle: String, db: AppDatabase): List<Saving>
     {
         // get the savings goal from the database
-        val savingsGoalWithSavings = db.savingsGoalDao.getSavingsBySavingGoalTitle(goalTitle)
+        val savingsGoalWithSavings = db.savingsGoalDao().getSavingsBySavingGoalTitle(goalTitle)
 
         if (savingsGoalWithSavings.isEmpty()) {
             return emptyList()
@@ -406,7 +444,15 @@ class SavingsGoalActivity : AppCompatActivity()
     // Method to filter Savings transactions by date range
     private fun filterSavingsByDateRange(list: List<Saving>, startDate: Date, endDate: Date): List<Saving> {
         return list
-            .filter { it.date in startDate..endDate }
+            .filter {
+                val transactionDate = it.date
+                // Normalize transactionDate to start of day for comparison
+                val calTransaction = Calendar.getInstance().apply { time = transactionDate; set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
+                val calStartDate = Calendar.getInstance().apply { time = startDate; set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
+                val calEndDate = Calendar.getInstance().apply { time = endDate; set(Calendar.HOUR_OF_DAY, 23); set(Calendar.MINUTE, 59); set(Calendar.SECOND, 59); set(Calendar.MILLISECOND, 999) }
+
+                !calTransaction.time.before(calStartDate.time) && !calTransaction.time.after(calEndDate.time)
+            }
             .sortedByDescending { it.date.time }
     }
 

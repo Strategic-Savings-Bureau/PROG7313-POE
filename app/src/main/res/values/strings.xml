@@ -7,6 +7,8 @@
     <string name="supabase_user_profile_bucket_name">user-profile-pictures</string>
     <string name="supabase_receipt_bucket_name">expense-reciepts</string>
 
+    <!-- Currency Converter -->
+    <string name="currency_freaks">90f448f82cb349b588016c06de3f5969</string>
     <!--Login -->
     <string name="login_title">Welcome Back</string>
     <string name="email_hint">Email Address</string>
@@ -40,6 +42,9 @@
     <string name="save_changes">Save Changes</string>
     <string name="change_password">Change Password</string>
     <string name="update_password">Update Password</string>
+    <string name="tv_sync_database">Sync Database</string>
+    <string name="btn_sync_now">Sync Now</string>
+    <string name="tv_last_synced">Last synced: 31 Jan 2025, 12:32</string>
 
     <!-- Expense -->
     <string name="enter_date">Date</string>
@@ -82,8 +87,6 @@
     <string name="tv_transaction_type_income">Income</string>
     <string name="settings_title">Settings</string>
 
-    <!-- Currency Converter -->
-    <string name="currency_converter_title">Currency Converter</string>
 
     <!-- Notifications -->
     <string name="notifications_title">Notifications</string>
@@ -181,6 +184,7 @@
     <string name="cd_add_saving_button">Add Saving Button</string>
     <string name="cd_list_of_savings_transactions_for_the_goal">List of savings transactions for the goal</string>
 
+
     <!-- Analysis -->
     <string name="tv_categories">Categories</string>
     <string name="cd_create_a_new_expense_category">Create a new expense category</string>
@@ -208,5 +212,23 @@
     <string name="tv_success">Biometric Auth Succeeded!</string>
     <string name="btn_use_biometrics">Use Biometrics</string>
     <string name="tv_click_the_button_below_to_authenticate_using_biometrics">Click the button below to login</string>
+    <string name="saved_email">saved_email </string>
+    <string name="saved_password">saved_password </string>
+    <string name="login_with_biometrics">Login with biometrics</string>
+    <string name="currency_converter_title">Currency Converter</string>
+
+    <!-- Database Sync -->
+    <string name="tv_status_syncing">Syncing…</string>
+    <string name="tv_last_synced_update">Last synced: %1$s</string>
+    <string name="text_sync_complete">Sync complete ✅</string>
+    <string name="text_sync_failed">Sync failed ❌</string>
+    <string name="btn_save_notification">Save</string>
+    <string name="tv_how_often_would_you_like_to_receive_reminders">How often would you like to receive reminders?</string>
+
+    <!-- Dialog rewards -->
+    <string name="current_streak_title">🔥 Current Streak</string>
+    <string name="next_milestone_label">Next milestone: </string>
+    <string name="next_milestone_days">%d days</string>
+
 
 </resources>

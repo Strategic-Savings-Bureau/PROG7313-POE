@@ -2,6 +2,7 @@ package com.ssba.strategic_savings_budget_app
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -47,24 +48,25 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import androidx.core.content.edit
 
 /*
- 	* Code Attribution
- 	* Purpose:
- 	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
- 	*   - Creating and displaying an AlertDialog in an Android app
- 	*   - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
- 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
- 	*   - Implementing the Material DatePicker for selecting dates in the app
- 	*   - Data Visualisation with Line Chart
- 	* Author: Android Developers / Firebase Team / MPAndroidChart
- 	* Sources:
- 	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
- 	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
- 	*   - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
- 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
- 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
- 	*   - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
+    * Code Attribution
+    * Purpose:
+    * - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+    * - Creating and displaying an AlertDialog in an Android app
+    * - Setting up Bottom Navigation View with OnItemSelectedListener for navigation between activities
+    * - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+    * - Implementing the Material DatePicker for selecting dates in the app
+    * - Data Visualisation with Line Chart
+    * Author: Android Developers / Firebase Team / MPAndroidChart
+    * Sources:
+    * - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
+    * - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
+    * - Bottom Navigation View: https://developer.android.com/reference/com/google/android/material/bottomnavigation/BottomNavigationView
+    * - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+    * - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
+    * - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
 */
 
 class TransactionsActivity : AppCompatActivity() {
@@ -89,6 +91,12 @@ class TransactionsActivity : AppCompatActivity() {
     private lateinit var btnDateFilter: ImageButton
     private lateinit var lcTransactions: LineChart
     private lateinit var cgDays: ChipGroup
+    // endregion
+
+    // region SharedPreferences for date filter
+    private val prefsName = "transactions_filter_prefs"
+    private val keyStartDate = "start_date"
+    private val keyEndDate = "end_date"
     // endregion
 
     @SuppressLint("SetTextI18n")
@@ -153,7 +161,6 @@ class TransactionsActivity : AppCompatActivity() {
                 rvTransactions.visibility = View.GONE
                 tvNoTransactions.visibility = View.VISIBLE
                 cgDays.visibility = View.GONE
-                lcTransactions.visibility = View.GONE
             }
             else
             {
@@ -185,7 +192,7 @@ class TransactionsActivity : AppCompatActivity() {
     private fun setupOnClickListeners() {
 
         btnRewards.setOnClickListener {
-            StreakManager(this).showStreakDialog()
+            StreakManager(this).showStreakDialog(this)
         }
 
         btnIncomeTransactions.setOnClickListener {
@@ -201,6 +208,7 @@ class TransactionsActivity : AppCompatActivity() {
         }
 
         btnDateFilter.setOnClickListener {
+            val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
 
             // show date picker dialog
             val dialogView = layoutInflater.inflate(R.layout.dialog_date_range_filter, null)
@@ -216,6 +224,10 @@ class TransactionsActivity : AppCompatActivity() {
             val btnApplyDateFilter = dialogView.findViewById<Button>(R.id.btnApplyDateFilter)
             val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
 
+            // Load and display saved dates
+            etStartDate.setText(prefs.getString(keyStartDate, ""))
+            etEndDate.setText(prefs.getString(keyEndDate, ""))
+
             etStartDate.setOnClickListener {
                 showDatePicker(true, etStartDate, etEndDate)
             }
@@ -227,25 +239,32 @@ class TransactionsActivity : AppCompatActivity() {
             btnApplyDateFilter.setOnClickListener {
 
                 // get the selected dates
-                val startDate = etStartDate.text.toString()
-                val endDate = etEndDate.text.toString()
+                val startDateStr = etStartDate.text.toString()
+                val endDateStr = etEndDate.text.toString()
 
                 // check if the dates are empty
-                if (startDate.isEmpty() || endDate.isEmpty())
+                if (startDateStr.isEmpty() || endDateStr.isEmpty())
                 {
                     Toast.makeText(this, "Please select both dates", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
                 // convert the dates to Date objects
-                val startDateObj =
-                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(startDate)
-                val endDateObj =
-                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(endDate)
+                val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                val startDateObj = dateFormat.parse(startDateStr)
+                var endDateObj = dateFormat.parse(endDateStr)
 
                 // check if the dates are valid
                 if (startDateObj != null && endDateObj != null)
                 {
+                    // Adjust end date to include the whole day for accurate filtering
+                    val calendar = Calendar.getInstance()
+                    calendar.time = endDateObj
+                    calendar.set(Calendar.HOUR_OF_DAY, 23)
+                    calendar.set(Calendar.MINUTE, 59)
+                    calendar.set(Calendar.SECOND, 59)
+                    endDateObj = calendar.time
+
                     lifecycleScope.launch {
 
                         // Get the current user's ID
@@ -261,12 +280,17 @@ class TransactionsActivity : AppCompatActivity() {
                         // set up the recycler view and Line Graph
                         val transactions = getAllTransactions(db, userId)
 
+                        // Save the selected dates to SharedPreferences
+                        prefs.edit {
+                            putString(keyStartDate, startDateStr)
+                                .putString(keyEndDate, endDateStr)
+                        }
+
                         if (transactions.isEmpty())
                         {
                             rvTransactions.visibility = View.GONE
                             tvNoTransactions.visibility = View.VISIBLE
                             cgDays.visibility = View.GONE
-                            lcTransactions.visibility = View.GONE
 
                             dialog.dismiss()
                             Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
@@ -274,7 +298,9 @@ class TransactionsActivity : AppCompatActivity() {
                         }
 
                         // filter the transactions by date
-                        val filteredTransactions = filterTransactionsByDateRange(transactions, startDateObj, endDateObj)
+                        val filteredTransactions = filterTransactionsByDateRange(transactions, startDateObj,
+                            endDateObj as Date
+                        )
 
                         if (filteredTransactions.isEmpty())
                         {
@@ -282,6 +308,7 @@ class TransactionsActivity : AppCompatActivity() {
                             tvNoTransactions.visibility = View.VISIBLE
                             cgDays.visibility = View.GONE
                             lcTransactions.visibility = View.GONE
+
 
                             Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
                             dialog.dismiss()
@@ -328,6 +355,10 @@ class TransactionsActivity : AppCompatActivity() {
             }
 
             btnClearFilter.setOnClickListener {
+                // Clear SharedPreferences and EditText fields
+                prefs.edit { clear() }
+                etStartDate.setText("")
+                etEndDate.setText("")
 
                 lifecycleScope.launch {
 
@@ -349,7 +380,6 @@ class TransactionsActivity : AppCompatActivity() {
                         rvTransactions.visibility = View.GONE
                         tvNoTransactions.visibility = View.VISIBLE
                         cgDays.visibility = View.GONE
-                        lcTransactions.visibility = View.GONE
 
                         dialog.dismiss()
                         Toast.makeText(this@TransactionsActivity, "No Transactions Found", Toast.LENGTH_SHORT).show()
@@ -494,7 +524,7 @@ class TransactionsActivity : AppCompatActivity() {
         val allExpenses = mutableListOf<Expense>()
 
         // Step 1: Get the user's expense categories
-        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
+        val userWithCategories = db.userDao().getUserWithExpenseCategories(userId)
 
         if (userWithCategories.isNotEmpty())
         {
@@ -503,7 +533,7 @@ class TransactionsActivity : AppCompatActivity() {
             // Step 2: For each category, get the expenses
             for (category in expenseCategories)
             {
-                val expensesWithCategory = db.expenseCategoryDao.getExpensesByCategoryName(category.name)
+                val expensesWithCategory = db.expenseCategoryDao().getExpensesByCategoryName(category.name)
 
                 if (expensesWithCategory.isNotEmpty())
                 {
@@ -521,7 +551,7 @@ class TransactionsActivity : AppCompatActivity() {
         val allSavings = mutableListOf<Saving>()
 
         // Step 1: Get the user's saving goals
-        val userWithSavingGoals = db.userDao.getUserWithSavingGoals(userId)
+        val userWithSavingGoals = db.userDao().getUserWithSavingGoals(userId)
 
         if (userWithSavingGoals.isNotEmpty()) {
             val savingGoals = userWithSavingGoals[0].savingGoals
@@ -529,7 +559,7 @@ class TransactionsActivity : AppCompatActivity() {
             // Step 2: For each category, get the expenses
             for (goal in savingGoals) {
                 val savingGoalsWithSavings =
-                    db.savingsGoalDao.getSavingsBySavingGoalTitle(goal.title)
+                    db.savingsGoalDao().getSavingsBySavingGoalTitle(goal.title)
 
                 if (savingGoalsWithSavings.isNotEmpty()) {
                     allSavings.addAll(savingGoalsWithSavings[0].savings)
@@ -545,7 +575,7 @@ class TransactionsActivity : AppCompatActivity() {
     private suspend fun getAllTransactions(db: AppDatabase, userId: String): List<Any>
     {
         // get all the incomes for the current user
-        val incomes = db.userDao.getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
+        val incomes = db.userDao().getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
 
         // get all the expenses for the current user
         val expenses = getAllExpensesForUser(db, userId)
@@ -586,7 +616,7 @@ class TransactionsActivity : AppCompatActivity() {
     @SuppressLint("DefaultLocale")
     private suspend fun getTotalIncome(db: AppDatabase, userId: String): Double
     {
-        val userWithIncomes = db.userDao.getUserWithIncomes(userId)
+        val userWithIncomes = db.userDao().getUserWithIncomes(userId)
 
         var totalIncome = 0.00
 

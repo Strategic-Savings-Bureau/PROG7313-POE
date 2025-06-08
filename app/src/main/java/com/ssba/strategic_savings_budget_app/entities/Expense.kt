@@ -25,17 +25,20 @@ import java.util.Date
  * @property description A detailed description of the expense (e.g., "Lunch at a restaurant").
  * @property receiptPictureUrl URL to the receipt image stored in Supabase Storage (optional).
  * @property categoryId The ID of the category to which this expense belongs (foreign key referencing the expense_category table).
+ * @property userId The ID of the user who owns this expense.
+ * @property isSynced Flag indicating whether the data has been synced to Firestore.
+ * @property lastUpdatedTimestamp Timestamp used for conflict resolution during syncing.
  */
 
 /*
- 	* Code Attribution
- 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
- 	* Author: Android Developers
- 	* Date Accessed: 10 April 2025
- 	* Source: Developer Guide - Android Developers
- 	* URL: https://developer.android.com/training/data-storage/room
-*/
-
+    * Code Attribution
+    * Purpose: Setting up a Room Database and Firestore-compatible data model in a Kotlin Android app.
+    * Authors: Android Developers, Firebase Documentation Team
+    * Date Accessed: 10 April 2025
+    * Sources:
+    * - Room: https://developer.android.com/training/data-storage/room
+    * - Firestore Kotlin Data Classes: https://firebase.google.com/docs/firestore/manage-data/add-data#custom_objects
+ */
 
 @Entity(
     tableName = "expense",
@@ -56,5 +59,29 @@ data class Expense(
 
     val receiptPictureUrl: String, // URL to the receipt image stored in Supabase Storage (optional)
 
-    val categoryId: Int // Foreign key linking this expense to a specific expense category (indexed for filtering by category)
-)
+    val categoryId: Int, // Foreign key linking this expense to a specific expense category (indexed for filtering by category)
+
+    val userId: String, // Foreign key linking this expense to a specific user
+
+    // Sync fields
+    var isSynced: Boolean = false, // Whether this record has been synced to Firestore
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis() // Timestamp of last modification
+) {
+    /**
+     * No-argument constructor required by Firebase Firestore for automatic deserialization.
+     * Firestore requires this to instantiate the object using reflection.
+     * Room continues to use the primary constructor, so this does not interfere with Room.
+     */
+    constructor() : this(
+        expenseId = null,
+        title = "",
+        date = Date(0),
+        amount = 0.0,
+        description = "",
+        receiptPictureUrl = "",
+        categoryId = 0,
+        userId = "",
+        isSynced = false,
+        lastUpdatedTimestamp = 0L
+    )
+}

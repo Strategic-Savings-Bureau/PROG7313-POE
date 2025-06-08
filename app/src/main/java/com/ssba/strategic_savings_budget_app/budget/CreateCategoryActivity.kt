@@ -92,7 +92,7 @@ class CreateCategoryActivity : AppCompatActivity() {
         // Save to database
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                db.expenseCategoryDao.upsertExpenseCategory(newCategory)
+                db.expenseCategoryDao().upsertExpenseCategory(newCategory)
             }
             Toast.makeText(this@CreateCategoryActivity, "Category created!", Toast.LENGTH_SHORT)
                 .show()

@@ -22,17 +22,19 @@ import androidx.room.PrimaryKey
  * @property icon Icon representing the expense category (e.g., image file name or URL).
  * @property maximumMonthlyTotal The maximum allowable total for expenses in this category each month.
  * @property userId The ID of the associated user (foreign key referencing the user table).
+ * @property isSynced Flag indicating if the entry has been synced to the cloud.
+ * @property lastUpdatedTimestamp Timestamp of the last update, used for sync conflict resolution.
  */
 
 /*
- 	* Code Attribution
- 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
- 	* Author: Android Developers
- 	* Date Accessed: 10 April 2025
- 	* Source: Developer Guide - Android Developers
- 	* URL: https://developer.android.com/training/data-storage/room
-*/
-
+    * Code Attribution
+    * Purpose: Setting up a Room Database and Firestore-compatible data model in a Kotlin Android app.
+    * Authors: Android Developers, Firebase Documentation Team
+    * Date Accessed: 10 April 2025
+    * Sources:
+    * - Room: https://developer.android.com/training/data-storage/room
+    * - Firestore Kotlin Data Classes: https://firebase.google.com/docs/firestore/manage-data/add-data#custom_objects
+ */
 
 @Entity(
     tableName = "expense_category",
@@ -51,11 +53,29 @@ data class ExpenseCategory(
 
     val maximumMonthlyTotal: Double, // Maximum allowed total for expenses in this category per month
 
-    val userId: String // Foreign key linking the category to a specific user
-)
-{
-    override fun toString() : String
-    {
+    val userId: String, // Foreign key linking the category to a specific user
+
+    // Sync fields
+    var isSynced: Boolean = false, // Whether this entry is synced to Firestore
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis() // Last updated timestamp
+) {
+    /**
+     * No-argument constructor required by Firebase Firestore for automatic deserialization.
+     * Firestore uses reflection and requires a public empty constructor.
+     * This constructor does not interfere with Room, which uses the main constructor.
+     */
+    constructor() : this(
+        categoryId = null,
+        name = "",
+        description = "",
+        icon = "",
+        maximumMonthlyTotal = 0.0,
+        userId = "",
+        isSynced = false,
+        lastUpdatedTimestamp = 0L
+    )
+
+    override fun toString(): String {
         return name
     }
 }

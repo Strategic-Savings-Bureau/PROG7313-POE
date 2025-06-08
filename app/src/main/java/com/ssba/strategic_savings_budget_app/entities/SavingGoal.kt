@@ -23,17 +23,19 @@ import java.util.Date
  * @property endDate The deadline by which the user intends to reach the savings target.
  * @property description A detailed explanation or motivation behind the saving goal.
  * @property userId The unique identifier (from Firebase Auth) of the user who owns this goal.
+ * @property isSynced Indicates if the goal has been synced with the backend.
+ * @property lastUpdatedTimestamp Timestamp of the last local modification to support conflict resolution.
  */
 
 /*
- 	* Code Attribution
- 	* Purpose: Setting up a Room Database in an Android app (based on official Android documentation)
- 	* Author: Android Developers
- 	* Date Accessed: 10 April 2025
- 	* Source: Developer Guide - Android Developers
- 	* URL: https://developer.android.com/training/data-storage/room
+    * Code Attribution
+    * Purpose: Setting up a Room Database and enabling Firestore compatibility in a Kotlin Android app.
+    * Authors: Android Developers & Firebase Documentation Team
+    * Date Accessed: 10 April 2025
+    * Sources:
+    * - Room: https://developer.android.com/training/data-storage/room
+    * - Firestore Kotlin Model Classes: https://firebase.google.com/docs/firestore/manage-data/add-data#custom_objects
 */
-
 
 @Entity(
     tableName = "saving_goal",
@@ -52,5 +54,25 @@ data class SavingGoal(
 
     val description: String, // Optional details or notes about the goal
 
-    val userId: String // Firebase UID acting as a foreign key linking to the user
-)
+    val userId: String, // Firebase UID acting as a foreign key linking to the user
+
+    var isSynced: Boolean = false, // Sync flag for cloud sync status
+
+    var lastUpdatedTimestamp: Long = System.currentTimeMillis() // Timestamp of last local update
+) {
+    /**
+     * No-argument constructor required by Firebase Firestore for deserialization.
+     * Firestore uses reflection to instantiate objects and requires a no-arg constructor.
+     * This does not interfere with Room, which uses the primary constructor.
+     */
+    constructor() : this(
+        savingGoalId = null,
+        title = "",
+        targetAmount = 0.0,
+        endDate = Date(0),
+        description = "",
+        userId = "",
+        isSynced = false,
+        lastUpdatedTimestamp = 0L
+    )
+}

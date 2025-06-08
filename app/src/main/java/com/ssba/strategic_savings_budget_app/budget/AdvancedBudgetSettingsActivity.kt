@@ -7,13 +7,17 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityAdvancedBudgetSettingsBinding
 import com.ssba.strategic_savings_budget_app.databinding.ItemExpenseCategoryCardBinding
@@ -36,7 +40,9 @@ class AdvancedBudgetSettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityAdvancedBudgetSettingsBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
 
         if (auth.currentUser == null) {
@@ -70,7 +76,7 @@ class AdvancedBudgetSettingsActivity : AppCompatActivity() {
                 binding.textMaxLimit.text = "Max Limit: R ${state.maximumMonthlyExpenses}"
 
                 val categories = withContext(Dispatchers.IO) {
-                    db.expenseCategoryDao.getExpenseCategoriesByUserId(userId).sortedByDescending { it.maximumMonthlyTotal }
+                    db.expenseCategoryDao().getExpenseCategoriesByUserId(userId).sortedByDescending { it.maximumMonthlyTotal }
                 }
                 currentCategories = categories
                 adapter.submitList(categories)
@@ -81,12 +87,15 @@ class AdvancedBudgetSettingsActivity : AppCompatActivity() {
         binding.cancelBtn.setOnClickListener {
             lifecycleScope.launch {
                 val savedCategories = withContext(Dispatchers.IO) {
-                    db.expenseCategoryDao.getExpenseCategoriesByUserId(userId)
+                    db.expenseCategoryDao().getExpenseCategoriesByUserId(userId)
                 }
                 currentCategories = savedCategories
                 adapter.submitList(savedCategories)
                 updateCurrentTotal()
                 Toast.makeText(this@AdvancedBudgetSettingsActivity, "Changes discarded", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@AdvancedBudgetSettingsActivity, BudgetSettingsActivity::class.java)
+                startActivity(intent)
+                finish()
             }
         }
 
@@ -100,7 +109,7 @@ class AdvancedBudgetSettingsActivity : AppCompatActivity() {
             }
 
             lifecycleScope.launch(Dispatchers.IO) {
-                currentCategories.forEach { db.expenseCategoryDao.upsertExpenseCategory(it) }
+                currentCategories.forEach { db.expenseCategoryDao().upsertExpenseCategory(it) }
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@AdvancedBudgetSettingsActivity, "Changes saved", Toast.LENGTH_SHORT).show()
                     finish()
@@ -142,8 +151,12 @@ class AdvancedBudgetSettingsActivity : AppCompatActivity() {
 
             fun bind(category: ExpenseCategory) {
                 binding.textCategoryName.text = category.name
-                Glide.with(binding.imageIcon.context).load(category.icon).into(binding.imageIcon)
-
+                val iconUri = category.icon.toUri()
+                Glide.with(binding.imageIcon.context).load(iconUri)
+                    .centerInside()
+                    .placeholder(R.drawable.ic_default_image)
+                    .error(R.drawable.ic_default_expense_category)
+                    .into(binding.imageIcon)
                 // Remove old watcher
                 currentWatcher?.let { binding.editAmount.removeTextChangedListener(it) }
 

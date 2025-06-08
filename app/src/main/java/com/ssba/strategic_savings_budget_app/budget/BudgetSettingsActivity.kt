@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -17,6 +18,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.R
+import com.ssba.strategic_savings_budget_app.SettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.models.BudgetViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -30,8 +32,6 @@ class BudgetSettingsActivity : AppCompatActivity() {
 
     private lateinit var minIncomeInput: EditText
     private lateinit var maxExpenseInput: EditText
-    private lateinit var minIncomeErrorTextView: TextView // Renamed for clarity
-    private lateinit var maxExpenseErrorTextView: TextView // Renamed for clarity
     private lateinit var advancedButton: Button
     private lateinit var saveButton: Button
     private lateinit var cancelButton: Button
@@ -44,6 +44,7 @@ class BudgetSettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_budget_settings)
 
         db = AppDatabase.getInstance(this)
@@ -122,6 +123,8 @@ class BudgetSettingsActivity : AppCompatActivity() {
         }
 
         cancelButton.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
             finish()
         }
     }
@@ -151,7 +154,6 @@ class BudgetSettingsActivity : AppCompatActivity() {
             }
         })
     }
-
     private fun observeUiState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

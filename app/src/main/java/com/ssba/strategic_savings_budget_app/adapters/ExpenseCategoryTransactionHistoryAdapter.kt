@@ -73,7 +73,7 @@ class ExpenseCategoryTransactionHistoryAdapter(private var expenses: List<Expens
 
             val category = withContext(Dispatchers.IO) {
 
-                db.expenseCategoryDao.getExpenseCategoryById(transaction.categoryId)
+                db.expenseCategoryDao().getExpenseCategoryById(transaction.categoryId)
             }
 
             if (category != null)

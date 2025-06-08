@@ -56,9 +56,7 @@
                 android:background="@drawable/rounded_input"
                 android:hint="Holiday Fund"
                 android:padding="12dp"
-                android:text="@={viewmodel.titleOrName}"
-                android:textColor="@color/black"
-                android:textColorHint="?android:textColorPrimary" />
+                android:text="@={viewmodel.titleOrName}" />
 
             <!-- Amount -->
             <TextView
@@ -77,9 +75,7 @@
                 android:hint="R500,00"
                 android:inputType="numberDecimal"
                 android:padding="12dp"
-                android:text="@={viewmodel.amount}"
-                android:textColor="@color/black"
-                android:textColorHint="?android:textColorPrimary" />
+                android:text="@={viewmodel.amount}" />
 
             <!-- Date Picker -->
             <TextView
@@ -110,8 +106,7 @@
                     android:focusable="false"
                     android:inputType="none"
                     android:padding="12dp"
-                    android:text="@={viewmodel.date}"
-                    android:textColor="@color/black" />
+                    android:text="@={viewmodel.date}" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -132,9 +127,7 @@
                 android:gravity="top|start"
                 android:hint="Enter details about your goal"
                 android:padding="12dp"
-                android:text="@={viewmodel.description}"
-                android:textColor="@color/black"
-                android:textColorHint="?android:textColorPrimary" />
+                android:text="@={viewmodel.description}" />
 
             <!-- Buttons -->
             <LinearLayout
