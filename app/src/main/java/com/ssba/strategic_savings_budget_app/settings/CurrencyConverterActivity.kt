@@ -34,9 +34,9 @@ class CurrencyConverterActivity : AppCompatActivity() {
     private val dummyCurrencies = listOf("USD", "EUR", "JPY", "GBP", "CAD", "AUD", "ZAR")
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+
         binding = ActivityCurrencyConverterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

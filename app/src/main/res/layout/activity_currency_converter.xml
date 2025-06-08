@@ -18,7 +18,7 @@
         android:id="@+id/backCard"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:cardBackgroundColor="@android:color/white"
+        app:cardBackgroundColor="?android:attr/colorBackgroundFloating"
         app:cardCornerRadius="25dp"
         app:cardElevation="4dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        app:cardBackgroundColor="@android:color/white"
+        app:cardBackgroundColor="?android:attr/colorBackgroundFloating"
         app:cardCornerRadius="16dp"
         app:cardElevation="6dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +102,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        app:cardBackgroundColor="@android:color/white"
+        app:cardBackgroundColor="?android:attr/colorBackgroundFloating"
         app:cardCornerRadius="16dp"
         app:cardElevation="6dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:hint="They receive">
+                    android:hint="Your converted amount">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAmountTo"
