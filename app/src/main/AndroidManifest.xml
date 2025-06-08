@@ -24,7 +24,9 @@
         <receiver
             android:name=".models.Notification"
             android:exported="false" />
-
+        <activity
+            android:name=".settings.CurrencyConverterActivity"
+            android:exported="false" />
         <activity
             android:name=".settings.NotificationsSettingsActivity"
             android:exported="false" />

@@ -7,6 +7,8 @@
     <string name="supabase_user_profile_bucket_name">user-profile-pictures</string>
     <string name="supabase_receipt_bucket_name">expense-reciepts</string>
 
+    <!-- Currency Converter -->
+    <string name="currency_freaks">90f448f82cb349b588016c06de3f5969</string>
     <!--Login -->
     <string name="login_title">Welcome Back</string>
     <string name="email_hint">Email Address</string>
