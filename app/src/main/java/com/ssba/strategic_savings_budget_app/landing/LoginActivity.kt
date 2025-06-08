@@ -22,6 +22,7 @@ import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityLoginBinding
 import com.ssba.strategic_savings_budget_app.helpers.BiometricUtils
 import com.ssba.strategic_savings_budget_app.interfaces.BiometricAuthListener
+import com.ssba.strategic_savings_budget_app.landing.RegisterActivity.AppConstants
 import kotlinx.coroutines.launch
 
 /*
@@ -124,6 +125,26 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
 
                     if (task.isSuccessful)
                     {
+                        val sharedPrefKey =
+                            getString(R.string.saved_email) // Make sure saved_email_key exists in strings.xml
+                        val sharedPref =
+                            getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY, MODE_PRIVATE)
+                                ?: return@addOnCompleteListener
+
+                        with(sharedPref.edit()) {
+                            putString(sharedPrefKey, email) // Use the defined key
+                            apply()
+                        }
+
+                        val sharedPrefKeyPass = getString(R.string.saved_password)
+                        val sharedPrefPassword =
+                            getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY, MODE_PRIVATE)
+                                ?: return@addOnCompleteListener
+                        with(sharedPrefPassword.edit()) {
+                            putString(sharedPrefKeyPass, password) // Use the defined key
+
+                            apply()
+                        }
                         // Display success message
                         Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT).show()
 
