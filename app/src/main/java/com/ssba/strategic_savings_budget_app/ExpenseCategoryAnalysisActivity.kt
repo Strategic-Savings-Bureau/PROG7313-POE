@@ -2,6 +2,7 @@ package com.ssba.strategic_savings_budget_app
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -44,23 +45,24 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import androidx.core.content.edit
 
 /*
- 	* Code Attribution
- 	* Purpose:
- 	*   - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
- 	*   - Creating and displaying an AlertDialog in an Android app
- 	*   - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
- 	*   - Implementing the Material DatePicker for selecting dates in the app
- 	*   - Data Visualisation with Line Chart
- 	* Author: Android Developers / Firebase Team / MPAndroidChart
- 	* Date Accessed: 30 April 2025
- 	* Sources:
- 	*   - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
- 	*   - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
- 	*   - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
- 	*   - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
- 	*   - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
+    * Code Attribution
+    * Purpose:
+    * - Formatting numbers as South African Rand (ZAR) currency using NumberFormat
+    * - Creating and displaying an AlertDialog in an Android app
+    * - Accessing the authenticated user and checking if the user is logged in with Firebase Authentication
+    * - Implementing the Material DatePicker for selecting dates in the app
+    * - Data Visualisation with Line Chart
+    * Author: Android Developers / Firebase Team / MPAndroidChart
+    * Date Accessed: 30 April 2025
+    * Sources:
+    * - NumberFormat: https://developer.android.com/reference/java/text/NumberFormat
+    * - AlertDialog: https://developer.android.com/guide/topics/ui/dialogs/alert-dialog
+    * - Firebase Authentication - Check if User is Logged In: https://firebase.google.com/docs/auth/android/manage-users#check_if_a_user_is_signed_in
+    * - Material DatePicker: https://developer.android.com/reference/com/google/android/material/datepicker/MaterialDatePicker
+    * - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
 */
 
 class ExpenseCategoryAnalysisActivity : AppCompatActivity()
@@ -91,6 +93,12 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     private lateinit var tvProgressPercentage: TextView
     private lateinit var tvTitle: TextView
     private lateinit var lcExpenses: LineChart
+    // endregion
+
+    // region SharedPreferences for date filter
+    private fun getPrefsName() = "${categoryName}_filter_prefs"
+    private val keyStartDate = "start_date"
+    private val keyEndDate = "end_date"
     // endregion
 
     @SuppressLint("SetTextI18n")
@@ -139,7 +147,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
         lifecycleScope.launch {
 
             // get the expense category from the database
-            val expenseCategory = db.expenseCategoryDao.getExpenseCategoryByName(categoryName)
+            val expenseCategory = db.expenseCategoryDao().getExpenseCategoryByName(categoryName)
 
             if (expenseCategory == null)
             {
@@ -223,7 +231,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     private fun setupOnClickListeners()
     {
         btnRewards.setOnClickListener {
-            StreakManager(this).showStreakDialog()
+            StreakManager(this).showStreakDialog(this)
         }
 
         btnBack.setOnClickListener {
@@ -238,6 +246,8 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
         }
 
         btnDateFilter.setOnClickListener {
+            // SharedPreferences instance unique to this category
+            val prefs = getSharedPreferences(getPrefsName(), Context.MODE_PRIVATE)
 
             // show date picker dialog
             val dialogView = layoutInflater.inflate(R.layout.dialog_date_range_filter, null)
@@ -253,6 +263,10 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
             val btnApplyDateFilter = dialogView.findViewById<Button>(R.id.btnApplyDateFilter)
             val btnClearFilter = dialogView.findViewById<Button>(R.id.btnClearFilter)
 
+            // Load and display saved dates
+            etStartDate.setText(prefs.getString(keyStartDate, ""))
+            etEndDate.setText(prefs.getString(keyEndDate, ""))
+
             etStartDate.setOnClickListener {
                 showDatePicker(true, etStartDate, etEndDate)
             }
@@ -264,26 +278,38 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
             btnApplyDateFilter.setOnClickListener {
 
                 // get the selected dates
-                val startDate = etStartDate.text.toString()
-                val endDate = etEndDate.text.toString()
+                val startDateStr = etStartDate.text.toString()
+                val endDateStr = etEndDate.text.toString()
 
                 // check if the dates are empty
-                if (startDate.isEmpty() || endDate.isEmpty())
+                if (startDateStr.isEmpty() || endDateStr.isEmpty())
                 {
                     Toast.makeText(this, "Please select both dates", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
                 // convert the dates to Date objects
-                val startDateObj =
-                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(startDate)
-                val endDateObj =
-                    SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).parse(endDate)
+                val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                val startDateObj = dateFormat.parse(startDateStr)
+                var endDateObj = dateFormat.parse(endDateStr)
 
                 // check if the dates are valid
                 if (startDateObj != null && endDateObj != null)
                 {
+                    // Adjust end date to include the whole day
+                    val calendar = Calendar.getInstance()
+                    calendar.time = endDateObj
+                    calendar.set(Calendar.HOUR_OF_DAY, 23)
+                    calendar.set(Calendar.MINUTE, 59)
+                    calendar.set(Calendar.SECOND, 59)
+                    endDateObj = calendar.time
+
                     lifecycleScope.launch {
+
+                        prefs.edit {
+                            putString(keyStartDate, startDateStr)
+                            putString(keyEndDate, endDateStr)
+                        }
 
                         // set up the recycler view
                         val transactions = getAllExpensesForCategory(categoryName, db)
@@ -299,7 +325,9 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
                         }
 
                         // filter the transactions by date
-                        val filteredTransactions = filterExpensesByDateRange(transactions, startDateObj, endDateObj)
+                        val filteredTransactions = filterExpensesByDateRange(transactions, startDateObj,
+                            endDateObj as Date
+                        )
 
                         if (filteredTransactions.isEmpty())
                         {
@@ -351,11 +379,15 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
             }
 
             btnClearFilter.setOnClickListener {
+                // Clear SharedPreferences and EditText fields
+                prefs.edit { clear() }
+                etStartDate.setText("")
+                etEndDate.setText("")
 
                 lifecycleScope.launch {
 
                     // get the expense category from the database
-                    val expenseCategory = db.expenseCategoryDao.getExpenseCategoryByName(categoryName)
+                    val expenseCategory = db.expenseCategoryDao().getExpenseCategoryByName(categoryName)
 
                     if (expenseCategory == null)
                     {
@@ -467,7 +499,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     // get the total of all expenses for the current category
     private suspend fun getTotalExpensesForCategory(categoryName: String, db: AppDatabase): Double
     {
-        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryName)
+        val categoryWithExpenses = db.expenseCategoryDao().getExpensesByCategoryName(categoryName)
 
         if (categoryWithExpenses.isEmpty()) {
             return 0.0
@@ -497,7 +529,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     // get the total of all expenses for the current category in the current month
     private suspend fun getTotalMonthlyExpensesForCategory(categoryTitle: String, db: AppDatabase): Double
     {
-        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryTitle)
+        val categoryWithExpenses = db.expenseCategoryDao().getExpensesByCategoryName(categoryTitle)
 
         if (categoryWithExpenses.isEmpty()) {
             return 0.0
@@ -536,7 +568,7 @@ class ExpenseCategoryAnalysisActivity : AppCompatActivity()
     private suspend fun getAllExpensesForCategory(categoryName: String, db: AppDatabase): List<Expense>
     {
         // get the expense category from the database
-        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryName)
+        val categoryWithExpenses = db.expenseCategoryDao().getExpensesByCategoryName(categoryName)
 
         if (categoryWithExpenses.isEmpty()) {
             return emptyList()

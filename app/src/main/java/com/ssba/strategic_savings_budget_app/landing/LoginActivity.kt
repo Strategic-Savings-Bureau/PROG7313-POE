@@ -5,9 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView // Import TextView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +16,8 @@ import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.R
+import com.ssba.strategic_savings_budget_app.SyncCheckActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityLoginBinding
 import com.ssba.strategic_savings_budget_app.helpers.BiometricUtils
@@ -75,6 +76,21 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
         btnRegister = binding.btnRegister
         tvLoginBiometric = binding.tvLoginBiometric // Initialize Biometric Login TextView
 
+        // check if shared preferences exist
+        val sharedPrefCheck = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        val emailSharedPref = sharedPrefCheck.getString(getString(R.string.saved_email),"")
+        val passwordSharedPref = sharedPrefCheck.getString(getString(R.string.saved_password),"")
+
+        // if shared preferences do not exist, hide the biometric login button
+        if (emailSharedPref.isNullOrEmpty() || passwordSharedPref.isNullOrEmpty())
+        {
+            tvLoginBiometric.visibility = View.GONE
+        }
+        else
+        {
+            tvLoginBiometric.visibility = View.VISIBLE
+        }
+
         // Log into Account On Click Listener
         btnLogin.setOnClickListener {
             // Get Email and Password from EditText
@@ -102,20 +118,22 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
             }
 
             lifecycleScope.launch {
-                // Check if User Exists in Room Database
-                val user = db.userDao.getUserByEmail(email)
 
                 // Attempt To Login
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                    if (task.isSuccessful && user != null) {
+
+                    if (task.isSuccessful)
+                    {
                         // Display success message
                         Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT).show()
+
                         val sharedPrefKey = getString(R.string.saved_email) // Make sure saved_email_key exists in strings.xml
                         val sharedPref = this@LoginActivity.getPreferences(Context.MODE_PRIVATE) ?: return@addOnCompleteListener
                         with (sharedPref.edit()) {
                             putString(sharedPrefKey, email) // Use the defined key
                             apply()
                         }
+
                         val sharedPrefKeyPass = getString(R.string.saved_password)
                         val sharedPrefPassword = this@LoginActivity.getPreferences(Context.MODE_PRIVATE) ?: return@addOnCompleteListener
                         with (sharedPrefPassword.edit()) {
@@ -124,24 +142,27 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
                             apply()
                         }
 
-                        // Navigate to MainActivity
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        // Navigate to SyncCheckActivity
+                        val intent = Intent(this@LoginActivity, SyncCheckActivity::class.java)
                         startActivity(intent)
                         finish()
-                    } else {
+
+                    }
+                    else
+                    {
                         // Show error message if login fails
-                        var errorMessage = "Invalid Email or Password"
-                        if (task.exception != null) {
+                        val errorMessage = "Invalid Email or Password"
+                        if (task.exception != null)
+                        {
                             Log.e("LoginActivity", "Login failed", task.exception)
-                            // Optionally, you can give more specific feedback if desired, but be careful with security.
                             // errorMessage += " (${task.exception?.localizedMessage})"
                         }
-                        if (user == null && task.isSuccessful) { // Firebase login ok, but user not in Room
-                            errorMessage = "Login data mismatch. Please contact support." // Or handle as needed
-                            Log.w("LoginActivity", "User authenticated with Firebase but not found in local Room DB: $email")
-                            // Decide if you want to proceed or show error.
-                            // For now, showing error based on original logic 'user != null'
-                        }
+
+//                        if (user == null && task.isSuccessful) { // Firebase login ok, but user not in Room
+//                            errorMessage = "Login data mismatch. Please contact support." // Or handle as needed
+//                            Log.w("LoginActivity", "User authenticated with Firebase but not found in local Room DB: $email")
+//                        }
+
                         Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_LONG).show()
                     }
                 }
@@ -205,7 +226,7 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
     }
 
     private fun navigateToMainActivity() {
-        val sharedPref = this?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
         val email = sharedPref.getString(getString(R.string.saved_email),"")
         val password = sharedPref.getString(getString(R.string.saved_password),"")
         etEmail.text.clear()

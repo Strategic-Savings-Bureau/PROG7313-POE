@@ -188,10 +188,23 @@ class MainActivity : AppCompatActivity() {
         // Method to Set Up onClickListeners
         setupOnClickListeners()
 
-        // Check if a budget is set up
         lifecycleScope.launch {
+
+            // Get the current user's UID from Firebase Authentication
             val userID = auth.currentUser?.uid
-            if (db.budgetDao.getBudgetByUserId(userID!!) == null) {
+
+            // If the user is not logged in, redirect to the login screen
+            if (userID == null)
+            {
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                finish()
+                return@launch
+            }
+
+            // Check if the user has a budget set up in the local Room database
+            if (db.budgetDao().getBudgetByUserId(userID) == null)
+            {
+                // If no budget is found, prompt the user to set up a budget
                 showBudgetSetupDialog(userID)
             }
         }
@@ -280,7 +293,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnRewards.setOnClickListener {
-            StreakManager(this).showStreakDialog()
+            StreakManager(this).showStreakDialog(this)
         }
 
         // Set up Bottom Navigation View onClickListener
@@ -319,7 +332,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun getCurrentUser(db: AppDatabase, userId: String): User? {
-        return db.userDao.getUserById(userId)
+        return db.userDao().getUserById(userId)
     }
 
     private fun showBudgetSetupDialog(userId: String) {
@@ -359,10 +372,12 @@ class MainActivity : AppCompatActivity() {
                             maximumMonthlyExpenses = expenses,
                             userId = userId
                         )
-                        db.budgetDao.upsertBudget(newBudget)
+                        db.budgetDao().upsertBudget(newBudget)
                         Toast.makeText(this@MainActivity, "Budget created successfully", Toast.LENGTH_SHORT).show()
                         Log.i("MainActivity", "Budget created successfully")
                         dialog.dismiss()
+
+                        setUpMonthlyComparisonBarChart(db, userId, bcMonthlyOverview)
                     }
                 } catch (e: NumberFormatException) {
                     Toast.makeText(this, "Invalid number format", Toast.LENGTH_SHORT).show()
@@ -378,7 +393,7 @@ class MainActivity : AppCompatActivity() {
     private suspend fun getRecentTransactions(db: AppDatabase, userId: String): List<Any>
     {
         // get all the incomes for the current user
-        val incomes = db.userDao.getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
+        val incomes = db.userDao().getUserWithIncomes(userId).firstOrNull()?.incomes ?: emptyList()
 
         // get all the expenses for the current user
          val expenses = getAllExpensesForUser(db, userId)
@@ -409,7 +424,7 @@ class MainActivity : AppCompatActivity() {
         val allExpenses = mutableListOf<Expense>()
 
         // Step 1: Get the user's expense categories
-        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
+        val userWithCategories = db.userDao().getUserWithExpenseCategories(userId)
 
         if (userWithCategories.isNotEmpty())
         {
@@ -418,7 +433,7 @@ class MainActivity : AppCompatActivity() {
             // Step 2: For each category, get the expenses
             for (category in expenseCategories)
             {
-                val expensesWithCategory = db.expenseCategoryDao.getExpensesByCategoryName(category.name)
+                val expensesWithCategory = db.expenseCategoryDao().getExpensesByCategoryName(category.name)
 
                 if (expensesWithCategory.isNotEmpty())
                 {
@@ -434,7 +449,7 @@ class MainActivity : AppCompatActivity() {
     // method to check if user has any expense categories return bool
     private suspend fun hasExpenseCategories(db: AppDatabase, userId: String): Boolean
     {
-        val userWithCategories = db.userDao.getUserWithExpenseCategories(userId)
+        val userWithCategories = db.userDao().getUserWithExpenseCategories(userId)
 
         if (userWithCategories.isEmpty())
         {
@@ -452,7 +467,7 @@ class MainActivity : AppCompatActivity() {
     // method to check if user has any savings goals return bool
     private suspend fun hasSavingsGoals(db: AppDatabase, userId: String): Boolean
     {
-        val userWithGoals = db.userDao.getUserWithSavingGoals(userId)
+        val userWithGoals = db.userDao().getUserWithSavingGoals(userId)
 
         if (userWithGoals.isEmpty())
         {
@@ -470,7 +485,7 @@ class MainActivity : AppCompatActivity() {
     // method to get the users budget
     private suspend fun getMinimumIncome(db: AppDatabase, userId: String): Double
     {
-        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
+        val budget = db.budgetDao().getBudgetByUserId(userId) ?: return 0.00
 
         return budget.minimumMonthlyIncome
     }
@@ -478,7 +493,7 @@ class MainActivity : AppCompatActivity() {
     // method to get total Income for current month
     @SuppressLint("DefaultLocale")
     private suspend fun getTotalIncomeForCurrentMonth(db: AppDatabase, userId: String): Double {
-        val userWithIncomes = db.userDao.getUserWithIncomes(userId)
+        val userWithIncomes = db.userDao().getUserWithIncomes(userId)
         var totalIncome = 0.00
 
         if (userWithIncomes.isEmpty()) {
@@ -509,7 +524,7 @@ class MainActivity : AppCompatActivity() {
     // method to get the users budget
     private suspend fun getMaximumExpenseLimit(db: AppDatabase, userId: String): Double
     {
-        val budget = db.budgetDao.getBudgetByUserId(userId) ?: return 0.00
+        val budget = db.budgetDao().getBudgetByUserId(userId) ?: return 0.00
 
         return budget.maximumMonthlyExpenses
     }
@@ -549,7 +564,7 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun getTotalSavingsForCurrentMonth(db: AppDatabase, userId: String): Double
     {
-        val savingsGoalsWithUser = db.userDao.getUserWithSavingGoals(userId)
+        val savingsGoalsWithUser = db.userDao().getUserWithSavingGoals(userId)
 
         if (savingsGoalsWithUser.isEmpty()) {
             return 0.0
@@ -563,7 +578,7 @@ class MainActivity : AppCompatActivity() {
         for (goal in savingsGoalsWithUser[0].savingGoals)
         {
             // get the savings for the current goal
-            val savingsGoalWithSavings = db.savingsGoalDao.getSavingsBySavingGoalTitle(goal.title)
+            val savingsGoalWithSavings = db.savingsGoalDao().getSavingsBySavingGoalTitle(goal.title)
 
             if (savingsGoalWithSavings.isNotEmpty())
             {
@@ -670,7 +685,7 @@ class MainActivity : AppCompatActivity() {
             valueTextSize = 14f
             valueTextColor = chartTextColor
             colors = listOf(
-                if (income > incomeGoal) ContextCompat.getColor(chart.context, R.color.income_green) else Color.BLUE,
+                if (income > incomeGoal) ContextCompat.getColor(chart.context, R.color.income_green) else ContextCompat.getColor(chart.context, R.color.bg_teal),
                 if (expenses > expenseLimit) Color.RED else ContextCompat.getColor(chart.context, R.color.expense_gold),
                 ContextCompat.getColor(chart.context, R.color.savings_blue)
             )
@@ -740,4 +755,5 @@ class MainActivity : AppCompatActivity() {
     }
 
     // endregion
+
 }

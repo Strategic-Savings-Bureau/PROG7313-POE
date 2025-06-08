@@ -63,7 +63,7 @@ class SavingGoalEntryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         db = AppDatabase.getInstance(this)
-        savingGoalDao = db.savingsGoalDao
+        savingGoalDao = db.savingsGoalDao()
 
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel

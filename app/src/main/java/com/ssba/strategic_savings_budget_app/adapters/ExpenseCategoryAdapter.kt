@@ -139,7 +139,7 @@ class ExpenseCategoryAdapter(private var expenseCategories: List<ExpenseCategory
     // get the total of all expenses for the current category in the current month
     private suspend fun getTotalMonthlyExpensesForCategory(categoryTitle: String, db: AppDatabase): Double
     {
-        val categoryWithExpenses = db.expenseCategoryDao.getExpensesByCategoryName(categoryTitle)
+        val categoryWithExpenses = db.expenseCategoryDao().getExpensesByCategoryName(categoryTitle)
 
         if (categoryWithExpenses.isEmpty()) {
             return 0.0
