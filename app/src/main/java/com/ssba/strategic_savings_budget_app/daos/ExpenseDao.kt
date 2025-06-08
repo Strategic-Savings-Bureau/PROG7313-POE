@@ -2,8 +2,11 @@ package com.ssba.strategic_savings_budget_app.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
+import com.ssba.strategic_savings_budget_app.entities.Budget
 import com.ssba.strategic_savings_budget_app.entities.Expense
 import java.util.Date
 
@@ -115,4 +118,19 @@ interface ExpenseDao {
     suspend fun getTotalExpenseAmountByCategoryId(categoryId: Int): Double
 
     //endregion
+
+    // region Sync Queries
+
+    /**
+     * Retrieves all un-synced expenses from the database.
+     *
+     * @return A list of all expenses in the database.
+     */
+    @Query("SELECT * FROM expense WHERE userId = :userId AND isSynced = false")
+    suspend fun getUnSyncedExpenses(userId: String): List<Expense>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertExpenses(expenses: List<Expense>)
+
+    // endregion
 }

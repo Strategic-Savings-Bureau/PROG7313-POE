@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -119,7 +118,7 @@ class SavingsActivity : AppCompatActivity() {
     private fun setupOnClickListeners() {
 
         btnRewards.setOnClickListener {
-            StreakManager(this).showStreakDialog()
+            StreakManager(this).showStreakDialog(this)
         }
 
         btnAddGoal.setOnClickListener {
@@ -170,7 +169,7 @@ class SavingsActivity : AppCompatActivity() {
     {
         val savingGoals = mutableListOf<SavingGoal>()
 
-        val userWithGoals = db.userDao.getUserWithSavingGoals(userId)
+        val userWithGoals = db.userDao().getUserWithSavingGoals(userId)
 
         if (userWithGoals.isNotEmpty())
         {

@@ -17,8 +17,8 @@
         <!-- Category Icon -->
         <ImageView
             android:id="@+id/image_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/btn_rewards_background_round"
             android:contentDescription=""
             android:layout_marginEnd="16dp" />

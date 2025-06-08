@@ -8,8 +8,9 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import com.ssba.strategic_savings_budget_app.AuthActivity
+
 import com.ssba.strategic_savings_budget_app.interfaces.BiometricAuthListener
+import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 
 /**
  * Utility object for handling biometric authentication logic.
@@ -114,7 +115,7 @@ object BiometricUtils
         title: String = "Biometric Authentication",
         description: String = "Use biometrics to login",
         activity: AppCompatActivity,
-        listener: AuthActivity,
+        listener: LoginActivity,
         cryptoObject: BiometricPrompt.CryptoObject? = null,
     )
     {

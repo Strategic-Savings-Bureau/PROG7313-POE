@@ -13,6 +13,7 @@ import com.ssba.strategic_savings_budget_app.databinding.ActivityNotificationsSe
 import com.ssba.strategic_savings_budget_app.models.Notification
 import android.provider.Settings
 import android.os.SystemClock
+import androidx.activity.enableEdgeToEdge
 
 class NotificationsSettingsActivity : AppCompatActivity() {
 
@@ -21,6 +22,7 @@ class NotificationsSettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityNotificationsSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

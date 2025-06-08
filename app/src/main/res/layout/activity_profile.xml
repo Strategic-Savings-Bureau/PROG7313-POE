@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.ssba.strategic_savings_budget_app.models.UserViewModel" />
@@ -13,190 +12,264 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/bg_teal">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:paddingBottom="60dp"
-            tools:context=".settings.ProfileActivity">
+            android:paddingBottom="60dp">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="16dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="40dp">
+                    android:paddingTop="40dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
-                    <!-- Back Button -->
                     <ImageButton
                         android:id="@+id/btnBackButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:src="@drawable/ic_back_arrow_filled"
+                        app:tint="?attr/colorOnSurface"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="ContentDescription,TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
-                    <!-- Title -->
                     <TextView
                         android:id="@+id/tvProfileTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/profile_title"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnSurface"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/btnBackButton"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-                <!-- Profile Picture -->
-                <ImageView
-                    android:id="@+id/ivProfilePic"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="32dp"
-                    android:contentDescription="@string/profile_image_desc"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/ic_default_profile"
-                    tools:ignore="ImageContrastCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAddProfilePicture"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/profileCard"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/add_profile_picture"
-                    app:iconTint="?attr/colorPrimary"
-                    app:strokeColor="?attr/colorPrimary" />
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="6dp"
+                    app:strokeWidth="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/header">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:hint="@string/username_hint">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etUsername"
+                    <androidx.core.widget.NestedScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:text="@={viewModel.username}"
-                        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:fillViewport="true">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="@string/full_name_hint">
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="20dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFullName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
-                        android:maxLines="1"
-                        android:text="@={viewModel.fullName}"
-                        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            <ImageView
+                                android:id="@+id/ivProfilePic"
+                                android:layout_width="160dp"
+                                android:layout_height="160dp"
+                                android:layout_marginTop="16dp"
+                                android:contentDescription="@string/profile_image_desc"
+                                android:scaleType="centerCrop"
+                                app:srcCompat="@drawable/ic_default_profile"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                tools:ignore="ImageContrastCheck" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="@string/email_hint">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnAddProfilePicture"
+                                style="@style/Widget.Material3.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="@string/add_profile_picture"
+                                android:textColor="@color/bg_teal"
+                                app:iconTint="?attr/colorPrimary"
+                                app:layout_constraintTop_toBottomOf="@id/ivProfilePic"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        android:text="@={viewModel.email}"
-                        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilUsername"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="24dp"
+                                android:hint="@string/username_hint"
+                                app:layout_constraintTop_toBottomOf="@id/btnAddProfilePicture"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent">
 
-                <!-- Save Changes Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSaveChanges"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:text="@string/save_changes"
-                    app:iconGravity="start"
-                    app:iconPadding="8dp"
-                    tools:ignore="VisualLintButtonSize" />
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etUsername"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@android:color/transparent"
+                                    android:inputType="text"
+                                    android:maxLines="1"
+                                    android:text="@={viewModel.username}"
+                                    android:textColorHint="#757575"
+                                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Password Section -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/change_password"
-                    android:textStyle="bold" />
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilFullName"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:hint="@string/full_name_hint"
+                                app:layout_constraintTop_toBottomOf="@id/tilUsername"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="@string/password_hint">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etFullName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@android:color/transparent"
+                                    android:inputType="textPersonName"
+                                    android:maxLines="1"
+                                    android:text="@={viewModel.fullName}"
+                                    android:textColorHint="#757575"
+                                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:text="@={viewModel.password}"
-                        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilEmail"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:hint="@string/email_hint"
+                                app:layout_constraintTop_toBottomOf="@id/tilFullName"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="@string/confirm_password_hint">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etEmail"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@android:color/transparent"
+                                    android:inputType="textEmailAddress"
+                                    android:text="@={viewModel.email}"
+                                    android:textColorHint="#757575"
+                                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etConfirmPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:text="@={viewModel.confirmPassword}"
-                        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnSaveChanges"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                android:backgroundTint="@color/bg_teal"
+                                android:text="@string/save_changes"
+                                android:textColor="?attr/colorOnPrimary"
+                                app:iconGravity="start"
+                                app:iconPadding="8dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tilEmail"
+                                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck,TextContrastCheck" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnUpdatePassword"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:text="@string/update_password"
-                    tools:ignore="VisualLintButtonSize" />
+                            <TextView
+                                android:id="@+id/tvPasswordSectionTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                android:text="@string/change_password"
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
+                                android:textColor="?attr/colorOnSurface"
+                                app:layout_constraintTop_toBottomOf="@id/btnSaveChanges"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"/>
 
-            </LinearLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilPassword"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:hint="@string/password_hint"
+                                app:endIconMode="password_toggle"
+                                app:layout_constraintTop_toBottomOf="@id/tvPasswordSectionTitle"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etPassword"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@android:color/transparent"
+                                    android:inputType="textPassword"
+                                    android:text="@={viewModel.password}"
+                                    android:textColorHint="#757575"
+                                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilConfirmPassword"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:hint="@string/confirm_password_hint"
+                                app:endIconMode="password_toggle"
+                                app:layout_constraintTop_toBottomOf="@id/tilPassword"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etConfirmPassword"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@android:color/transparent"
+                                    android:inputType="textPassword"
+                                    android:text="@={viewModel.confirmPassword}"
+                                    android:textColorHint="#757575"
+                                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnUpdatePassword"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="24dp"
+                                android:backgroundTint="@color/expense_gold"
+                                android:text="@string/update_password"
+                                android:textColor="?attr/colorOnSurfaceInverse"
+                                app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.core.widget.NestedScrollView>
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

@@ -53,18 +53,24 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/titleText" />
 
-                <EditText
-                    android:id="@+id/minIncomeInput"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/minIncomeInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:background="@android:drawable/edit_text"
-                    android:hint="R0.00"
-                    android:inputType="numberDecimal"
-                    android:padding="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/minIncomeLabel" />
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeLabel">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/minIncomeInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_input"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        tools:ignore="SpeakableTextPresentCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/minIncomeErrorText"
@@ -74,7 +80,7 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/minIncomeInput" />
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeInputLayout" />
 
                 <TextView
                     android:id="@+id/maxExpensesLabel"
@@ -84,20 +90,26 @@
                     android:text="Maximum Monthly Expenses"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/minIncomeInput" />
+                    app:layout_constraintTop_toBottomOf="@id/minIncomeInputLayout" />
 
-                <EditText
-                    android:id="@+id/maxExpensesInput"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/maxExpensesInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:background="@android:drawable/edit_text"
-                    android:hint="R0.00"
-                    android:inputType="numberDecimal"
-                    android:padding="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/maxExpensesLabel" />
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesLabel">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/maxExpensesInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_input"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        tools:ignore="SpeakableTextPresentCheck" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/maxExpensesErrorText"
@@ -107,20 +119,20 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInput" />
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInputLayout" />
 
                 <Button
                     android:id="@+id/advancedSettingsBtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
+                    android:backgroundTint="@color/expense_gold"
                     android:text="Advanced Settings"
                     android:textColor="?android:textColorPrimary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInput" />
+                    app:layout_constraintTop_toBottomOf="@id/maxExpensesInputLayout" />
 
-                <!-- Reversed Buttons with updated styles -->
                 <LinearLayout
                     android:id="@+id/actionButtons"
                     android:layout_width="0dp"
@@ -132,29 +144,31 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/advancedSettingsBtn">
 
-                    <!-- Cancel Button: Outlined style -->
+
                     <Button
                         android:id="@+id/cancelBtn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/outlined_button"
                         android:text="Cancel"
-                        android:textColor="?android:textColorPrimary" />
+                        android:backgroundTint="@color/black"
+                        android:textColor="#FFFFFF"
+                        />
 
                     <Space
                         android:layout_width="16dp"
                         android:layout_height="wrap_content" />
 
-                    <!-- Save Button: Primary filled -->
                     <Button
                         android:id="@+id/saveBtn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:backgroundTint="@color/bg_teal"
+                        android:textColor="?android:textColorPrimary"
                         android:text="Save"
-                        android:textColor="?android:textColorPrimary" />
+                        />
+
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

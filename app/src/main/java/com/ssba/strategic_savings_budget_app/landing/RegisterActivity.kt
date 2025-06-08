@@ -15,6 +15,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.MainActivity
+import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityRegisterBinding
 import com.ssba.strategic_savings_budget_app.entities.User
@@ -175,7 +176,9 @@ class RegisterActivity : AppCompatActivity() {
             // Redundant Final Check
             if (viewModel.validateAll()) {
                 // Proceed with registration
-                registerUser()
+                val email = binding.etEmail.text.toString().trim()
+                val password = binding.etPassword.text.toString().trim()
+                registerUser(email, password)
             }
         }
 
@@ -188,10 +191,10 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     // Method for Registration Logic
-    private fun registerUser() {
+    private fun registerUser(email: String, password: String) {
         auth.createUserWithEmailAndPassword(
-            binding.etEmail.text.toString().trim(),
-            binding.etPassword.text.toString().trim()
+            email,
+            password
         ).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // Get User ID
@@ -215,9 +218,29 @@ class RegisterActivity : AppCompatActivity() {
                     )
 
                     // Insert user into RoomDB.
-                    db.userDao.upsertUser(user)
+                    db.userDao().upsertUser(user)
 
                     withContext(Dispatchers.Main) {
+                        val sharedPrefKey =
+                            getString(R.string.saved_email) // Make sure saved_email_key exists in strings.xml
+                        val sharedPref =
+                            getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY, MODE_PRIVATE)
+                                ?: return@withContext
+
+                        with(sharedPref.edit()) {
+                            putString(sharedPrefKey, email) // Use the defined key
+                            apply()
+                        }
+
+                        val sharedPrefKeyPass = getString(R.string.saved_password)
+                        val sharedPrefPassword =
+                            getSharedPreferences(AppConstants.PREFERENCE_FILE_KEY, MODE_PRIVATE)
+                                ?: return@withContext
+                        with(sharedPrefPassword.edit()) {
+                            putString(sharedPrefKeyPass, password) // Use the defined key
+
+                            apply()
+                        }
                         Toast.makeText(
                             this@RegisterActivity,
                             "Registration Successful",
@@ -266,5 +289,10 @@ class RegisterActivity : AppCompatActivity() {
             Log.e("RegisterActivity", "Image upload failed", e)
             ""
         }
+    }
+
+    object AppConstants {
+        const val PREFERENCE_FILE_KEY =
+            "com.ssba.strategic_savings_budget_app.landing.LoginActivity"
     }
 }

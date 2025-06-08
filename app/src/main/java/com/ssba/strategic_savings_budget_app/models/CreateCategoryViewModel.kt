@@ -30,9 +30,9 @@ class CreateCategoryViewModel: ViewModel() {
             _categoryNameError.value = null
         }
 
-        // Validate category description (not empty, at least 5 characters)
-        if (categoryDescription.value.isNullOrEmpty() || categoryDescription.value!!.length < 5) {
-            _categoryDescriptionError.value = "Description must be at least 5 characters"
+        // Validate category description (not empty, at least 3 characters)
+        if (categoryDescription.value.isNullOrEmpty() || categoryDescription.value!!.length < 3) {
+            _categoryDescriptionError.value = "Description must be at least 3 characters"
             valid = false
         } else {
             _categoryDescriptionError.value = null

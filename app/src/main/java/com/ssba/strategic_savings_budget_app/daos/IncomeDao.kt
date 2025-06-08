@@ -2,8 +2,11 @@ package com.ssba.strategic_savings_budget_app.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
+import com.ssba.strategic_savings_budget_app.entities.Budget
 import com.ssba.strategic_savings_budget_app.entities.Income
 import java.util.Date
 
@@ -106,4 +109,17 @@ interface IncomeDao {
     suspend fun getTotalIncomeWithinDateRange(startDate: Date, endDate: Date): Double
 
     //endregion
+
+    // region Sync Queries
+    /**
+     * Retrieves all un-synced income records from the database.
+     *
+     * @return A list of all income records in the database.
+     */
+    @Query("SELECT * FROM income WHERE userId = :userId AND isSynced = false")
+    suspend fun getUnSyncedIncomes(userId: String): List<Income>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertIncomes(incomes: List<Income>)
+    // endregion
 }

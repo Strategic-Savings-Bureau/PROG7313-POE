@@ -88,8 +88,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
         // Initialize database and DAOs
         db = AppDatabase.getInstance(this)
-        expenseDao = db.expenseDao
-        categoryDao = db.expenseCategoryDao
+        expenseDao = db.expenseDao()
+        categoryDao = db.expenseCategoryDao()
 
         // Inflate view binding
         binding = ActivityExpenseEntryBinding.inflate(layoutInflater)
@@ -99,6 +99,9 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
         // Initialize Supabase Client
         SupabaseUtils.init(this)
+
+        // initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
 
         Log.d("ExpenseEntryActivity", "Binding initialized")
 
@@ -235,12 +238,13 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
                 // 2) build the Expense object
                 val expense = Expense(
-                    title = viewModel.titleOrName.value!!.trim(),
-                    date = Date(selectedDateMillis ?: System.currentTimeMillis()),
-                    amount = viewModel.amount.value!!.toDouble(),
-                    description = viewModel.description.value!!.trim(),
-                    receiptPictureUrl = publicUrl,
-                    categoryId = selectedCategoryId
+                    title               = viewModel.titleOrName.value!!.trim(),
+                    date                = Date(selectedDateMillis ?: System.currentTimeMillis()),
+                    amount              = viewModel.amount.value!!.toDouble(),
+                    description         = viewModel.description.value!!.trim(),
+                    receiptPictureUrl   = publicUrl,
+                    categoryId          = selectedCategoryId,
+                    userId              = auth.currentUser!!.uid
                 )
 
                 // 3) write into Room on IO dispatcher

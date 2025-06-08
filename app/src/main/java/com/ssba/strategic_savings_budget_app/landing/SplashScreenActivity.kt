@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.auth.FirebaseAuth
-import com.ssba.strategic_savings_budget_app.AuthActivity
+
 import com.ssba.strategic_savings_budget_app.MainActivity
 import com.ssba.strategic_savings_budget_app.databinding.ActivitySplashScreenBinding
 
@@ -37,7 +37,7 @@ class SplashScreenActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
 
         // Check the user preferences for the theme
-        val prefs = getSharedPreferences("MODE", MODE_PRIVATE)
+        val prefs = getSharedPreferences("APP_PREFS", MODE_PRIVATE)
         val isNight = prefs.getBoolean("night", false)
         AppCompatDelegate.setDefaultNightMode(
             if (isNight)
@@ -56,11 +56,13 @@ class SplashScreenActivity : AppCompatActivity() {
     private fun checkAuthState() {
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
-        val destination = if (currentUser != null) {
-            AuthActivity::class.java
-        } else {
-            LoginActivity::class.java
-        }
+
+        val destination =
+            if(currentUser!=null){
+                MainActivity::class.java
+            }else {
+                LoginActivity::class.java
+            }
 
         keepSplashOnScreen = false
         startActivity(Intent(this, destination))
