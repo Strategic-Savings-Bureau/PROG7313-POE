@@ -148,8 +148,8 @@ Our app **meets and exceeds** all core requirements for a modern budgeting tool:
 **Want to explore the app instantly?**
 
 > **Demo Account Credentials**
-> - **Email:** `demo@strategicsavings.app`
-> - **Password:** `Demo123!`
+> - **Email:** `strategicsavings@gmail.com`
+> - **Password:** `Piggy.1`
 
 - Log in with this account to access preloaded data: expenses, receipts, goals, and graphs—all set up to showcase every feature.
 - All demo data can be synced to your device for offline exploring.
