@@ -1,12 +1,9 @@
 package com.ssba.strategic_savings_budget_app.settings
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,11 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.SettingsActivity
@@ -64,7 +59,8 @@ class ProfileActivity : AppCompatActivity() {
     private var profilePictureUri: Uri? = null
 
     // Image Picker
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
                 binding.ivProfilePic.setImageURI(it)
                 profilePictureUri = it
@@ -105,12 +101,13 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             bitmap?.let {
-                // 2a) Show thumbnail immediately
+                // Show thumbnail immediately
                 binding.ivProfilePic.setImageBitmap(it)
 
-                // 2b) Convert Bitmap → JPEG bytes and upload
+                // Convert Bitmap → JPEG bytes and upload
                 lifecycleScope.launch {
                     val userID = auth.currentUser!!.uid
                     val baos = ByteArrayOutputStream().apply {

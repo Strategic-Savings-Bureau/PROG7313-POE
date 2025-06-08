@@ -87,26 +87,6 @@
                     android:text="@={viewmodel.categoryDescription}"
                     android:layout_marginTop="12dp" />
 
-                <!-- Icon (Text for now) -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Category Icon (URL)"
-                    android:textSize="16sp"
-                    android:textColor="?android:textColorPrimary" />
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etCategoryIcon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_input"
-                    android:padding="12dp"
-                    android:hint="e.g., https://groceries.icon"
-                    android:inputType="textUri"
-                    android:text="@={viewmodel.categoryIcon}"
-                    android:layout_marginTop="12dp" />
-
                 <!-- Maximum Monthly Total -->
                 <TextView
                     android:layout_width="wrap_content"
@@ -126,6 +106,37 @@
                     android:inputType="numberDecimal"
                     android:text="@={viewmodel.maximumMonthlyTotal}"
                     android:layout_marginTop="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add A Photo"
+                        android:textSize="16sp"
+                        android:textColor="?android:textColorPrimary" />
+
+                    <Button
+                        android:id="@+id/btnAttach"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#E6FAF4"
+                        android:text="Upload"
+                        android:textColor="#000000" />
+
+                    <ImageView
+                        android:id="@+id/ivPhoto"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="12dp"
+                        android:visibility="gone"
+                        tools:ignore="ContentDescription,ImageContrastCheck" />
+                </LinearLayout>
 
                 <!-- Buttons -->
                 <LinearLayout
@@ -156,6 +167,7 @@
                         android:backgroundTint="#000"
                         android:text="Cancel"
                         android:textColor="#FFF" />
+
                 </LinearLayout>
 
             </LinearLayout>

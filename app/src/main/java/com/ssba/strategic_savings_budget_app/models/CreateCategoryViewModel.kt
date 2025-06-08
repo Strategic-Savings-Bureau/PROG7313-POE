@@ -8,7 +8,6 @@ class CreateCategoryViewModel: ViewModel() {
 
     val categoryName = MutableLiveData("")
     val categoryDescription = MutableLiveData("")
-    val categoryIcon = MutableLiveData("")
     val maximumMonthlyTotal = MutableLiveData("")
 
     private val _categoryNameError = MutableLiveData<String?>()
@@ -16,9 +15,6 @@ class CreateCategoryViewModel: ViewModel() {
 
     private val _categoryDescriptionError = MutableLiveData<String?>()
     val categoryDescriptionError: LiveData<String?> = _categoryDescriptionError
-
-    private val _categoryIconError = MutableLiveData<String?>()
-    val categoryIconError: LiveData<String?> = _categoryIconError
 
     private val _maximumMonthlyTotalError = MutableLiveData<String?>()
     val maximumMonthlyTotalError: LiveData<String?> = _maximumMonthlyTotalError
@@ -42,14 +38,6 @@ class CreateCategoryViewModel: ViewModel() {
             _categoryDescriptionError.value = null
         }
 
-        // Validate category icon (not empty, at least 3 characters)
-        if (categoryIcon.value.isNullOrEmpty() || categoryIcon.value!!.length < 3) {
-            _categoryIconError.value = "Icon must be at least 3 characters"
-            valid = false
-        } else {
-            _categoryIconError.value = null
-        }
-
         // Validate maximum monthly total (should be a positive number)
         val maxTotal = maximumMonthlyTotal.value?.toDoubleOrNull()
         if (maxTotal == null || maxTotal <= 0.0) {
@@ -66,7 +54,6 @@ class CreateCategoryViewModel: ViewModel() {
     fun resetFields() {
         categoryName.value = ""
         categoryDescription.value = ""
-        categoryIcon.value = ""
         maximumMonthlyTotal.value = ""
     }
 }
