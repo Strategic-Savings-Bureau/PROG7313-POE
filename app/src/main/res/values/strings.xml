@@ -229,6 +229,7 @@
     <string name="current_streak_title">🔥 Current Streak</string>
     <string name="next_milestone_label">Next milestone: </string>
     <string name="next_milestone_days">%d days</string>
+    <string name="tv_new_password">New Password</string>
 
 
 </resources>
