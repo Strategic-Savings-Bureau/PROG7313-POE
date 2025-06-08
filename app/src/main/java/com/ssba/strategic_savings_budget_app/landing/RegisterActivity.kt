@@ -1,6 +1,7 @@
 package com.ssba.strategic_savings_budget_app.landing
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +24,7 @@ import com.ssba.strategic_savings_budget_app.models.UserViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 /*
  	* Code Attribution
@@ -48,8 +51,22 @@ class RegisterActivity : AppCompatActivity() {
     // Room Database
     private lateinit var db: AppDatabase
 
-    // Profile Picture Uri
+    // Profile Picture Uri/ByteArray
     private var profilePictureUri: Uri? = null
+    private var profilePictureBytes: ByteArray? = null
+
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+            bitmap?.let {
+                // Show thumbnail immediately
+                binding.ivProfilePic.setImageBitmap(it)
+
+                val baos = ByteArrayOutputStream().apply {
+                    it.compress(Bitmap.CompressFormat.JPEG, 85, this)
+                }
+                profilePictureBytes = baos.toByteArray()
+            }
+        }
 
     // Image Picker
     private val pickImageLauncher =
@@ -140,7 +157,18 @@ class RegisterActivity : AppCompatActivity() {
     private fun setupButtonClickListeners() {
         // Add Profile Picture On Click Listener
         binding.btnAddProfilePicture.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+            AlertDialog.Builder(this)
+                .setTitle("Select Image")
+                .setItems(arrayOf("Camera", "Gallery")) { _, which ->
+                    if (which == 0) {
+                        // LAUNCH CAMERA (thumbnail-only)
+                        cameraLauncher.launch(null)
+                    } else {
+                        // LAUNCH GALLERY (exactly as before)
+                        pickImageLauncher.launch("image/*")
+                    }
+                }
+                .show()
         }
 
         // Create Account On Click Listener
@@ -176,6 +204,8 @@ class RegisterActivity : AppCompatActivity() {
                     // Upload the image if present; otherwise, default to an empty string.
                     val profilePictureUrl = profilePictureUri?.let { uri ->
                         uploadImageToSupabase(uri, userId)
+                    } ?: profilePictureBytes?.let { byteArray ->
+                        SupabaseUtils.uploadProfileImageToStorage(userId, byteArray)
                     } ?: ""
 
                     // Create the user object with the result of the upload (or default URL).

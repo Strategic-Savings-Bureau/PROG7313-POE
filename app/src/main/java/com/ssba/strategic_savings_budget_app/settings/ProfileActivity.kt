@@ -2,6 +2,7 @@ package com.ssba.strategic_savings_budget_app.settings
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -9,12 +10,13 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.R
 import com.ssba.strategic_savings_budget_app.SettingsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
@@ -27,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 /*
     * Code Attribution
@@ -86,6 +89,49 @@ class ProfileActivity : AppCompatActivity() {
                     }
 
                     // Update the user profile picture in RoomDB
+                    val updated = user.copy(profilePictureUrl = newUrl)
+                    withContext(Dispatchers.IO) {
+                        db.userDao().upsertUser(updated)
+                    }
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@ProfileActivity,
+                            "Profile picture updated (Please restart the app)",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+            bitmap?.let {
+                // Show thumbnail immediately
+                binding.ivProfilePic.setImageBitmap(it)
+
+                // Convert Bitmap → JPEG bytes and upload
+                lifecycleScope.launch {
+                    val userID = auth.currentUser!!.uid
+                    val baos = ByteArrayOutputStream().apply {
+                        it.compress(Bitmap.CompressFormat.JPEG, 85, this)
+                    }
+                    val jpegBytes = baos.toByteArray()
+
+                    val newUrl = try {
+                        SupabaseUtils.uploadProfileImageToStorage(userID, jpegBytes)
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(
+                                this@ProfileActivity,
+                                "Upload failed: ${e.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        return@launch
+                    }
+
+                    val user = db.userDao().getUserById(userID) ?: return@launch
                     val updated = user.copy(profilePictureUrl = newUrl)
                     withContext(Dispatchers.IO) {
                         db.userDao().upsertUser(updated)
@@ -203,8 +249,20 @@ class ProfileActivity : AppCompatActivity() {
 
         // Add Profile Picture On Click Listener
         binding.btnAddProfilePicture.setOnClickListener {
-            // Launch the image picker
-            pickImageLauncher.launch("image/*")
+            binding.btnAddProfilePicture.setOnClickListener {
+                AlertDialog.Builder(this)
+                    .setTitle("Select Image")
+                    .setItems(arrayOf("Camera", "Gallery")) { _, which ->
+                        if (which == 0) {
+                            // LAUNCH CAMERA (thumbnail-only)
+                            cameraLauncher.launch(null)
+                        } else {
+                            // LAUNCH GALLERY (exactly as before)
+                            pickImageLauncher.launch("image/*")
+                        }
+                    }
+                    .show()
+            }
         }
 
         // Button to Update User Profile On Click Listener
@@ -371,9 +429,7 @@ class ProfileActivity : AppCompatActivity() {
         return try {
             // Retrieve and return the public URL of the uploaded image
             return SupabaseUtils.uploadProfileImageToStorage(fileName, fileBytes)
-        }
-        catch (e: Exception)
-        {
+        } catch (e: Exception) {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     this@ProfileActivity,

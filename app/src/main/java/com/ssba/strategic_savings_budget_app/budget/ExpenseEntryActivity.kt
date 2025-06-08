@@ -1,14 +1,16 @@
 package com.ssba.strategic_savings_budget_app.budget
+
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
@@ -23,9 +25,11 @@ import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
 import com.ssba.strategic_savings_budget_app.helpers.SupabaseUtils
 import com.ssba.strategic_savings_budget_app.models.ExpenseEntryViewModel
 import com.ssba.strategic_savings_budget_app.models.StreakManager
+import io.github.jan.supabase.auth.Auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.util.Date
 import java.util.UUID
 
@@ -34,10 +38,34 @@ class ExpenseEntryActivity : AppCompatActivity() {
     private val viewModel: ExpenseEntryViewModel by viewModels()
     private lateinit var binding: ActivityExpenseEntryBinding
 
-    private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+    // Launchers
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                receiptUri = it
+
+                binding.ivReceipt.setImageURI(it)
+                binding.ivReceipt.visibility = android.view.View.VISIBLE
+            }
+        }
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+            bitmap?.let {
+                // Show thumbnail immediately
+                binding.ivReceipt.setImageBitmap(it)
+                binding.ivReceipt.visibility = android.view.View.VISIBLE
+
+                val baos = ByteArrayOutputStream().apply {
+                    it.compress(Bitmap.CompressFormat.JPEG, 85, this)
+                }
+                receiptBytes = baos.toByteArray()
+            }
+        }
+
     private var receiptUri: Uri? = null
-   private lateinit var auth: FirebaseAuth
+    private var receiptBytes: ByteArray? = null
     private lateinit var db: AppDatabase
+    private lateinit var auth: FirebaseAuth
     private lateinit var expenseDao: com.ssba.strategic_savings_budget_app.daos.ExpenseDao
     private lateinit var categoryDao: com.ssba.strategic_savings_budget_app.daos.ExpenseCategoryDao
 
@@ -80,27 +108,12 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
         Log.d("ExpenseEntryActivity", "Binding initialized")
 
-        setupImagePicker()
         setupValidationObservers()
         setupDatePicker()
         loadCategories()
         setupActions()
 
         Log.d("ExpenseEntryActivity", "onCreate completed")
-    }
-
-    private fun setupImagePicker() {
-        Log.d("ExpenseEntryActivity", "setupImagePicker started")
-
-        pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let {
-                receiptUri = it
-                Toast.makeText(this, "Receipt selected", Toast.LENGTH_SHORT).show()
-                Log.d("ExpenseEntryActivity", "Receipt selected: $uri")
-            }
-        }
-
-        Log.d("ExpenseEntryActivity", "setupImagePicker completed")
     }
 
     private fun setupValidationObservers() {
@@ -183,7 +196,18 @@ class ExpenseEntryActivity : AppCompatActivity() {
         // Attach button
         binding.btnAttach.setOnClickListener {
             Log.d("ExpenseEntryActivity", "Attach button clicked")
-            pickImageLauncher.launch("image/*")
+            AlertDialog.Builder(this)
+                .setTitle("Select Image")
+                .setItems(arrayOf("Camera", "Gallery")) { _, which ->
+                    if (which == 0) {
+                        // LAUNCH CAMERA (thumbnail-only)
+                        cameraLauncher.launch(null)
+                    } else {
+                        // LAUNCH GALLERY (exactly as before)
+                        pickImageLauncher.launch("image/*")
+                    }
+                }
+                .show()
         }
 
         // Save button
@@ -191,7 +215,11 @@ class ExpenseEntryActivity : AppCompatActivity() {
             Log.d("ExpenseEntryActivity", "Save button clicked")
 
             if (!viewModel.validateAll()) {
-                Toast.makeText(this, "Please fill in all required fields correctly.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Please fill in all required fields correctly.",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -200,6 +228,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
                 // 1) upload to Supabase (if there's a receiptUri) and await the URL
                 val publicUrl = receiptUri?.let { uri ->
                     uploadImageToSupabase(uri, "receipt_${UUID.randomUUID()}.jpg")
+                } ?: receiptBytes?.let { byteArray ->
+                    SupabaseUtils.uploadReceiptImageToStorage("receipt_${UUID.randomUUID()}.jpg", byteArray)
                 } ?: ""
 
                 Log.d("ExpenseEntryActivity", "Received Supabase URL: $publicUrl")
@@ -226,7 +256,8 @@ class ExpenseEntryActivity : AppCompatActivity() {
                 }
 
                 // 4) feedback + navigate away
-                Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ExpenseEntryActivity, "Expense Saved", Toast.LENGTH_SHORT)
+                    .show()
 
                 // 5) Update the streak
                 val streakManager = StreakManager(this@ExpenseEntryActivity)
@@ -246,6 +277,7 @@ class ExpenseEntryActivity : AppCompatActivity() {
 
         Log.d("ExpenseEntryActivity", "setupActions completed")
     }
+
     private suspend fun uploadImageToSupabase(uri: Uri, fileName: String): String {
 
         // Read the image bytes
@@ -256,9 +288,7 @@ class ExpenseEntryActivity : AppCompatActivity() {
         return try {
 
             return SupabaseUtils.uploadReceiptImageToStorage(fileName, fileBytes)
-        }
-        catch (e: Exception)
-        {
+        } catch (e: Exception) {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     this@ExpenseEntryActivity,

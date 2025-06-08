@@ -98,6 +98,22 @@ object SupabaseUtils
     }
 
     /**
+     * Uploads a category image to the 'category-images' bucket in Supabase Storage.
+     *
+     * @param filename The unique identifier (used as file path) for the image.
+     * @param image The category image as a byte array.
+     * @return The public URL of the uploaded image, or an empty string if the upload fails.
+     */
+    suspend fun uploadCategoryToStorage(filename: String, image: ByteArray): String {
+        return uploadImageToBucket(
+            bucketName = "category-images",
+            filePath = filename,
+            image = image,
+            tag = "CategoryUpload"
+        )
+    }
+
+    /**
      * Uploads an image to the specified Supabase storage bucket.
      *
      * @param bucketName The name of the Supabase bucket.
