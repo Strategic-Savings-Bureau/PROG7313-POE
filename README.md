@@ -301,7 +301,7 @@ Thanks to GitHub Actions, every commit is automatically validated, builds remain
 ## 🎥 Demo Video
 
 Check out a walkthrough of the Strategic Savings App here:  
-[Demo Video: https://youtu.be/76AumXWomrA](https://youtu.be/76AumXWomrA)
+[Demo Video: https://youtu.be/76AumXWomrA] (https://youtu.be/76AumXWomrA)
 
 ---
 
