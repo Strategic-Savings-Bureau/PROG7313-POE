@@ -129,4 +129,6 @@ dependencies {
 
     // Google Guava libraries
     implementation("com.google.guava:guava:33.2.1-android")
+
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }

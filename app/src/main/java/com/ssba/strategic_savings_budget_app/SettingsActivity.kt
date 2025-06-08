@@ -29,6 +29,7 @@ import com.ssba.strategic_savings_budget_app.databinding.ActivitySettingsBinding
 import com.ssba.strategic_savings_budget_app.helpers.RoomToFirestoreSyncWorker
 import com.ssba.strategic_savings_budget_app.landing.LoginActivity
 import com.ssba.strategic_savings_budget_app.models.StreakManager
+import com.ssba.strategic_savings_budget_app.settings.CurrencyConverterActivity
 import com.ssba.strategic_savings_budget_app.settings.NotificationsSettingsActivity
 import com.ssba.strategic_savings_budget_app.settings.ProfileActivity
 import kotlinx.coroutines.launch
@@ -143,7 +144,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.btnCurrencyConverter.setOnClickListener {
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, CurrencyConverterActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         binding.btnNotifications.setOnClickListener {
