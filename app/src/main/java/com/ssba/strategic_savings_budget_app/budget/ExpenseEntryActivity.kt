@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.firebase.auth.FirebaseAuth
 import com.ssba.strategic_savings_budget_app.TransactionsActivity
 import com.ssba.strategic_savings_budget_app.data.AppDatabase
 import com.ssba.strategic_savings_budget_app.databinding.ActivityExpenseEntryBinding
@@ -24,6 +25,7 @@ import com.ssba.strategic_savings_budget_app.entities.ExpenseCategory
 import com.ssba.strategic_savings_budget_app.helpers.SupabaseUtils
 import com.ssba.strategic_savings_budget_app.models.ExpenseEntryViewModel
 import com.ssba.strategic_savings_budget_app.models.StreakManager
+import io.github.jan.supabase.auth.Auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,6 +65,7 @@ class ExpenseEntryActivity : AppCompatActivity() {
     private var receiptUri: Uri? = null
     private var receiptBytes: ByteArray? = null
     private lateinit var db: AppDatabase
+    private lateinit var auth: FirebaseAuth
     private lateinit var expenseDao: com.ssba.strategic_savings_budget_app.daos.ExpenseDao
     private lateinit var categoryDao: com.ssba.strategic_savings_budget_app.daos.ExpenseCategoryDao
 

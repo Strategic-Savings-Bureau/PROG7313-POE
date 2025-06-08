@@ -108,36 +108,6 @@
                     android:visibility="@{viewmodel.categoryDescriptionError == null ? View.GONE : View.VISIBLE}"
                     tools:text="Error message here" />
 
-                <!-- Icon (Text for now) -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Category Icon (URL)"
-                    android:textSize="16sp"
-                    android:textColor="?android:textColorPrimary" />
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etCategoryIcon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_input"
-                    android:padding="12dp"
-                    android:hint="e.g., https://groceries.icon"
-                    android:inputType="textUri"
-                    android:text="@={viewmodel.categoryIcon}"
-                    android:layout_marginTop="12dp" />
-
-                <!-- Error message for Category Icon -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@{viewmodel.categoryIconError}"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:visibility="@{viewmodel.categoryIconError == null ? View.GONE : View.VISIBLE}"
-                    tools:text="Error message here" />
-
                 <!-- Maximum Monthly Total -->
                 <TextView
                     android:layout_width="wrap_content"
