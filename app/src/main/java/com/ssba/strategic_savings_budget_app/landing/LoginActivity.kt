@@ -77,7 +77,7 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
         tvLoginBiometric = binding.tvLoginBiometric // Initialize Biometric Login TextView
 
         // check if shared preferences exist
-        val sharedPrefCheck = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPrefCheck = this.getSharedPreferences(RegisterActivity.AppConstants.PREFERENCE_FILE_KEY,MODE_PRIVATE) ?: return
         val emailSharedPref = sharedPrefCheck.getString(getString(R.string.saved_email),"")
         val passwordSharedPref = sharedPrefCheck.getString(getString(R.string.saved_password),"")
 
@@ -126,21 +126,6 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
                     {
                         // Display success message
                         Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT).show()
-
-                        val sharedPrefKey = getString(R.string.saved_email) // Make sure saved_email_key exists in strings.xml
-                        val sharedPref = this@LoginActivity.getPreferences(Context.MODE_PRIVATE) ?: return@addOnCompleteListener
-                        with (sharedPref.edit()) {
-                            putString(sharedPrefKey, email) // Use the defined key
-                            apply()
-                        }
-
-                        val sharedPrefKeyPass = getString(R.string.saved_password)
-                        val sharedPrefPassword = this@LoginActivity.getPreferences(Context.MODE_PRIVATE) ?: return@addOnCompleteListener
-                        with (sharedPrefPassword.edit()) {
-                            putString(sharedPrefKeyPass, password) // Use the defined key
-
-                            apply()
-                        }
 
                         // Navigate to SyncCheckActivity
                         val intent = Intent(this@LoginActivity, SyncCheckActivity::class.java)
@@ -226,7 +211,7 @@ class LoginActivity : AppCompatActivity(), BiometricAuthListener {
     }
 
     private fun navigateToMainActivity() {
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = getSharedPreferences(RegisterActivity.AppConstants.PREFERENCE_FILE_KEY,MODE_PRIVATE) ?: return
         val email = sharedPref.getString(getString(R.string.saved_email),"")
         val password = sharedPref.getString(getString(R.string.saved_password),"")
         etEmail.text.clear()
