@@ -107,9 +107,10 @@
                                 android:text="@string/add_profile_picture"
                                 android:textColor="@color/bg_teal"
                                 app:iconTint="?attr/colorPrimary"
-                                app:layout_constraintTop_toBottomOf="@id/ivProfilePic"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"/>
+                                app:layout_constraintTop_toBottomOf="@id/ivProfilePic"
+                                tools:ignore="TextContrastCheck" />
 
                             <com.google.android.material.textfield.TextInputLayout
                                 android:id="@+id/tilUsername"
@@ -157,28 +158,6 @@
                                     tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
                             </com.google.android.material.textfield.TextInputLayout>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/tilEmail"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="16dp"
-                                android:hint="@string/email_hint"
-                                app:layout_constraintTop_toBottomOf="@id/tilFullName"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etEmail"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:backgroundTint="@android:color/transparent"
-                                    android:inputType="textEmailAddress"
-                                    android:text="@={viewModel.email}"
-                                    android:textColorHint="#757575"
-                                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btnSaveChanges"
                                 android:layout_width="match_parent"
@@ -191,7 +170,7 @@
                                 app:iconPadding="8dp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tilEmail"
+                                app:layout_constraintTop_toBottomOf="@id/tilFullName"
                                 tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck,TextContrastCheck" />
 
                             <TextView
@@ -207,15 +186,38 @@
                                 app:layout_constraintEnd_toEndOf="parent"/>
 
                             <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilCurrentPassword"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:hint="Current Password"
+                                app:endIconMode="password_toggle"
+                                app:layout_constraintTop_toBottomOf="@id/tvPasswordSectionTitle"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                tools:ignore="HardcodedText">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etCurrentPassword"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@android:color/transparent"
+                                    android:inputType="textPassword"
+                                    android:text="@={viewModel.currentPassword}"
+                                    android:textColorHint="#757575"
+                                    tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
                                 android:id="@+id/tilPassword"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="16dp"
-                                android:hint="@string/password_hint"
+                                android:hint="@string/tv_new_password"
                                 app:endIconMode="password_toggle"
-                                app:layout_constraintTop_toBottomOf="@id/tvPasswordSectionTitle"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tilCurrentPassword" app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent">
 
                                 <com.google.android.material.textfield.TextInputEditText
@@ -260,10 +262,11 @@
                                 android:backgroundTint="@color/expense_gold"
                                 android:text="@string/update_password"
                                 android:textColor="?attr/colorOnSurfaceInverse"
-                                app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
+                                tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </androidx.core.widget.NestedScrollView>
