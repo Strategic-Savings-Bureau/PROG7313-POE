@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,7 @@
         android:theme="@style/Theme.Strategicsavingsbudgetapp"
         tools:targetApi="31">
         <activity
-            android:name=".settings.CurrencyConverterActivity"
+            android:name=".SyncCheckActivity"
             android:exported="false" />
 
         <receiver

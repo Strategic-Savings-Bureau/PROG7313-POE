@@ -3,4 +3,5 @@
     <style name="Base.Theme.Strategicsavingsbudgetapp" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:textColorPrimary">@color/white</item>
     </style>
+    <color name="text_field_background_color">#2C2C2C</color>
 </resources>

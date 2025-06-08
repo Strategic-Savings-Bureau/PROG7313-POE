@@ -2,9 +2,12 @@ package com.ssba.strategic_savings_budget_app.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.ssba.strategic_savings_budget_app.entities.Budget
 import com.ssba.strategic_savings_budget_app.entities.SavingGoal
 import com.ssba.strategic_savings_budget_app.entities.relations.SavingGoalWithSavings
 import java.util.Date
@@ -104,4 +107,18 @@ interface SavingGoalDao {
     suspend fun getSavingsBySavingGoalTitle(title: String): List<SavingGoalWithSavings>
 
     //endregion
+
+    // region Sync Queries
+    /**
+     * Retrieves all un-synced saving goals from the database.
+     *
+     * @return A list of all saving goals in the database.
+     */
+    @Query("SELECT * FROM saving_goal WHERE userId = :userId AND isSynced = false")
+    suspend fun getUnSyncedSavingGoals(userId: String): List<SavingGoal>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSavingGoals(savingGoals: List<SavingGoal>)
+
+    // endregion
 }

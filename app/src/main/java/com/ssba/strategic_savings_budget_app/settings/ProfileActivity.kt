@@ -66,7 +66,7 @@ class ProfileActivity : AppCompatActivity() {
                     // Fetch UserID from Firebase
                     val userID = auth.currentUser!!.uid
                     // Fetch RoomDB user
-                    val user = db.userDao.getUserById(userID) ?: return@launch
+                    val user = db.userDao().getUserById(userID) ?: return@launch
 
                     // Upload to Supabase
                     val newUrl = try {
@@ -85,7 +85,7 @@ class ProfileActivity : AppCompatActivity() {
                     // Update the user profile picture in RoomDB
                     val updated = user.copy(profilePictureUrl = newUrl)
                     withContext(Dispatchers.IO) {
-                        db.userDao.upsertUser(updated)
+                        db.userDao().upsertUser(updated)
                     }
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
@@ -244,7 +244,7 @@ class ProfileActivity : AppCompatActivity() {
 
                 // Update Room DB
                 val existing = withContext(Dispatchers.IO) {
-                    db.userDao.getUserById(uid)
+                    db.userDao().getUserById(uid)
                 } ?: run {
                     // fallback: if not in DB yet, initialize with empty picture URL
                     User(uid, username, fullName, email, "")
@@ -261,7 +261,7 @@ class ProfileActivity : AppCompatActivity() {
 
                 // Upsert updated user
                 withContext(Dispatchers.IO) {
-                    db.userDao.upsertUser(updatedUser)
+                    db.userDao().upsertUser(updatedUser)
                 }
 
                 // Display message and clear inputs
@@ -355,7 +355,7 @@ class ProfileActivity : AppCompatActivity() {
 
     // Extract data loading into a suspend function
     private suspend fun loadUserData() {
-        val user = db.userDao.getUserById(auth.currentUser?.uid ?: return)
+        val user = db.userDao().getUserById(auth.currentUser?.uid ?: return)
         withContext(Dispatchers.Main) {
             binding.etUsername.setText(user?.username)
             binding.etFullName.setText(user?.fullName)

@@ -82,7 +82,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
 
                     val category = withContext(Dispatchers.IO) {
 
-                        db.expenseCategoryDao.getExpenseCategoryById(transaction.categoryId)
+                        db.expenseCategoryDao().getExpenseCategoryById(transaction.categoryId)
                     }
 
                     if (category != null)
@@ -209,7 +209,7 @@ class TransactionHistoryAdapter(private var transactions: List<Any>) :
 
                     val savingsGoal = withContext(Dispatchers.IO) {
 
-                        db.savingsGoalDao.getSavingGoalById(transaction.savingGoalId)
+                        db.savingsGoalDao().getSavingGoalById(transaction.savingGoalId)
                     }
 
                     if (savingsGoal != null)

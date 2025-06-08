@@ -56,29 +56,46 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.cardview)
+    implementation(libs.firebase.firestore)
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     /*
-        * Code Attribution
-        * Purpose:
-        *   - Adding Room database support to the app for local storage and database operations
-        *   - Adding Supabase for backend integration with features like storage, authentication, and data handling
-        *   - Using Picasso for image loading and caching
-        *   - Implementing SwipeRefreshLayout for adding pull-to-refresh functionality to views
-        *   - Using MPAndroidChart for creating charts and graphs
-        * Author: Various Open Source Communities
-        * Sources:
-        *   - Room Database: https://developer.android.com/jetpack/androidx/releases/room
-        *   - Supabase: https://supabase.com/docs
-        *   - Picasso: https://square.github.io/picasso/
-        *   - SwipeRefreshLayout: https://developer.android.com/reference/androidx/swiperefreshlayout/widget/SwipeRefreshLayout
-        *   - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
-    */
+     * Code Attribution
+     *
+     * Purpose:
+     *   - Integrate Room for local database support with Kotlin coroutine extensions for asynchronous operations.
+     *   - Add Supabase SDK for backend integration including authentication, storage, and data handling.
+     *   - Use Glide for efficient image loading and caching.
+     *   - Implement SwipeRefreshLayout for pull-to-refresh UI patterns.
+     *   - Integrate MPAndroidChart for interactive charting and data visualization.
+     *   - Add biometric authentication support for enhanced security.
+     *   - Use Guava and AndroidX concurrent-futures for additional utilities and concurrency support.
+     *
+     * Authors/Technologies Used:
+     *   - Room Database & Android Jetpack Components: Android Developers
+     *   - Supabase SDK: Supabase Open Source Community
+     *   - Glide Image Loading: Bumptech
+     *   - SwipeRefreshLayout: Android Developers
+     *   - MPAndroidChart: PhilJay (Open Source)
+     *   - Biometric API: AndroidX Team
+     *   - Guava Libraries: Google
+     *
+     * Date Accessed: 6 June 2025
+     *
+     * References:
+     *   - Room Database: https://developer.android.com/jetpack/androidx/releases/room
+     *   - Supabase Documentation: https://supabase.com/docs
+     *   - Glide: https://github.com/bumptech/glide
+     *   - SwipeRefreshLayout: https://developer.android.com/reference/androidx/swiperefreshlayout/widget/SwipeRefreshLayout
+     *   - MPAndroidChart: https://github.com/PhilJay/MPAndroidChart
+     *   - Android Biometric API: https://developer.android.com/training/sign-in/biometric-auth
+     *   - Guava: https://github.com/google/guava
+     */
 
-    // Add Room to App
+    // Room dependencies
     val room_version = "2.6.1"
     implementation ("com.google.android.material:material:<version>")
     implementation("androidx.room:room-runtime:$room_version") // Core Room library for database operations
@@ -86,7 +103,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version") // Alternative for Java projects (not needed with KSP)
     implementation("androidx.room:room-ktx:$room_version") // Kotlin extensions for Room (adds coroutines support)
 
-    // Add Supabase to App
+    // Supabase dependencies
     val kotlin_version = "3.1.4"
     val ktor_version = "3.1.2"
 
@@ -95,15 +112,21 @@ dependencies {
     implementation("io.ktor:ktor-client-android:$ktor_version")
     implementation("io.github.jan-tennert.supabase:storage-kt:$ktor_version")
 
-    // Add Glide to App (image loading library)
+    // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
-    // Add SwipeRefreshLayout to App
+    // SwipeRefreshLayout for pull-to-refresh
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-    // Add MPAndroidChart to App
+    // MPAndroidChart for charts
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    
-    // biometrics
+
+    // Biometric Authentication
     implementation("androidx.biometric:biometric:1.1.0")
+
+    // AndroidX concurrent futures Kotlin extensions
+    implementation("androidx.concurrent:concurrent-futures-ktx:1.1.0")
+
+    // Google Guava libraries
+    implementation("com.google.guava:guava:33.2.1-android")
 }

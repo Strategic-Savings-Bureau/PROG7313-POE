@@ -185,7 +185,7 @@ class RegisterActivity : AppCompatActivity() {
                     )
 
                     // Insert user into RoomDB.
-                    db.userDao.upsertUser(user)
+                    db.userDao().upsertUser(user)
 
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@RegisterActivity, "Registration Successful", Toast.LENGTH_SHORT).show()
