@@ -31,8 +31,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/cd_back_button"
             android:src="@drawable/ic_back_arrow_filled"
-            app:tint="@color/black"
-            tools:ignore="RedundantDescriptionCheck" />
+            tools:ignore="RedundantDescriptionCheck,ImageContrastCheck" />
 
     </androidx.cardview.widget.CardView>
 
@@ -61,7 +60,8 @@
                 android:layout_marginBottom="12dp"
                 android:text="Select Currencies"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textColor="?android:attr/textColorPrimary"
+                tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,7 +74,8 @@
                     style="@style/Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    tools:ignore="TouchTargetSizeCheck" />
 
                 <ImageView
                     android:id="@+id/swap_currency"
@@ -82,15 +83,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
+                    android:contentDescription="swap currency"
                     android:src="@drawable/ic_swap_horiz"
-                    app:tint="?attr/colorOnSurface" />
+                    app:tint="?attr/colorOnSurface"
+                    tools:ignore="HardcodedText" />
 
                 <Spinner
                     android:id="@+id/spinnerTo"
                     style="@style/Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -119,14 +123,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:baselineAligned="false"
                 android:text="Enter Amount"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textColor="?android:attr/textColorPrimary"
+                tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="DisableBaselineAlignment">
 
                 <!-- Input Amount -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -136,13 +143,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:hint="You send">
+                    android:hint="You send"
+                    tools:ignore="HardcodedText">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAmountFrom"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        tools:ignore="TextContrastCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Converted Amount -->
@@ -153,7 +162,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:hint="Your converted amount">
+                    android:hint="Converted amount"
+                    tools:ignore="HardcodedText">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAmountTo"
@@ -161,7 +171,6 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:focusable="false"
-                        android:textColor="?android:attr/textColorSecondary"
                         tools:text="118.34" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
