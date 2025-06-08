@@ -312,6 +312,6 @@ Check out a walkthrough of the Strategic Savings App here:
 
 <p align="center">
   <sub>
-    Built with ❤️ by the Strategic Savings Bureau team.
+   > Built with ❤️ by the Strategic Savings Bureau team.
   </sub>
 </p>
