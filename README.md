@@ -103,9 +103,25 @@ Our app **meets and exceeds** all core requirements for a modern budgeting tool:
    - Register with email/password (or use biometric if set up).
    - Your profile and all financial data are secured via Firebase Auth.
 
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Sign%20up%20and%20login.jpg" alt="Sign up and login screen" width="320"/>
+  <br>
+  <em>Register a new account here</em>
+</p>
+
+---
+
 ### 2. **Create Categories**
    - Head to the **Categories** tab and add your own expense categories.
    - Each category can have a custom icon (from camera or gallery).
+
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Add%20a%20category.jpg" alt="Add a category screen" width="320"/>
+  <br>
+  <em>Create a category to add expenses to</em>
+</p>
+
+---
 
 ### 3. **Add a Transaction**
    - Use the quick actions button on the main dashboard.
@@ -114,33 +130,95 @@ Our app **meets and exceeds** all core requirements for a modern budgeting tool:
    - **Attach a receipt:** Option to take a new photo or select from your gallery.
    - Tap **Save** — your balance and graphs update instantly.
 
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Add%20a%20transaction.jpg" alt="Add a transaction screen" width="320"/>
+  <br>
+  <em>Use the quick actions on the top to add income, expenses or savings</em>
+</p>
+
+---
+
 ### 4. **Set Your Budget**
    - Set using the Budget card when you register. 
    - Go to **Budget Settings**.
    - Set your monthly total budget and individual limits per category.
+
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Set%20your%20budget.jpg" alt="Set your budget screen" width="320"/>
+  <br>
+  <em>You can edit your budget from the budget settings option in the settings menu</em>
+</p>
+
+---
 
 ### 5. **Set and Track Goals**
    - Access the **Goals** tab.
    - Create a saving goal with a target amount and deadline.
    - Track your progress visually; get rewarded for consistency.
 
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Set%20and%20track%20goals.jpg" alt="Set and track goals screen" width="320"/>
+  <br>
+  <em>You can create personalised goals, which you can save towards</em>
+</p>
+
+---
+
 ### 6. **Analyze Spending**
    - Use the **Graphs** section in each screen for interactive charts:
      - **Bar/Line Charts:** View trends over time.
    - Filter any chart or list by date range.
 
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Analyse%20Spending.jpg" alt="Analyze spending graphs" width="320"/>
+  <br>
+  <em>Graphs like this throughout the app can be used to visually track your budget</em>
+</p>
+
+---
+
 ### 7. **View Receipts**
    - Tap on any transaction in **History** to view details and receipt images.
+
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//View%20receipts.jpg" alt="View receipts screen" width="320"/>
+  <br>
+  <em>In the transaction lists, just click on one to view attachments</em>
+</p>
+
+---
 
 ### 8. **Sync & Multi-device**
    - Your data is backed up and synced via Firestore and Supabase.
    - Switch devices at any time—just log in!
 
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Sync%20and%20multi%20device.jpg" alt="Sync and multi-device screen" width="320"/>
+  <br>
+  <em>Sync your data in the settings page and then just log in on your new device</em>
+</p>
+
+---
+
 ### 9. **Switch Themes**
    - Toggle **Dark Mode** in settings for nighttime comfort.
 
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Switch%20Themes.jpg" alt="Switch themes screen" width="320"/>
+  <br>
+  <em>Use the toggle in the settings menu to switch themes easily</em>
+</p>
+
+---
+
 ### 10. **Currency Converter**
    - Access from Settings to convert currencies in real-time.
+
+<p align="center">
+  <img src="https://bxpptnwmvrqqvdwpzucp.supabase.co/storage/v1/object/public/app-pics//Currency%20Converter.jpg" alt="Currency Converter screen" width="320"/>
+  <br>
+  <em>Use the built in currency converter in the settings menu, to do conversions on the go</em>
+</p>
 
 ---
 
@@ -301,7 +379,7 @@ Thanks to GitHub Actions, every commit is automatically validated, builds remain
 ## 🎥 Demo Video
 
 Check out a walkthrough of the Strategic Savings App here:  
-[Demo Video](https://youtu.be/76AumXWomrA)
+[https://youtu.be/76AumXWomrA](https://youtu.be/76AumXWomrA)
 
 ---
 
